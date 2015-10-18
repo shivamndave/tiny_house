@@ -2,7 +2,7 @@ AVR_GCC_CONTROLLER           = atmega2560
 BURNER						 = avrdude
 AVRDUDE_CONTROLLER 	         = m2560
 CC							 = avr-gcc
-CSOURCE						 = uprintftest.c uart.c uprintf.c
+CSOURCE						 = uprintftest.c uart.c
 OBJECTS  					 = ${CSOURCE:.c=.o}
 EXECUTABLE					 = blink
 COMPILER_PATH				 = /dev/cu.usbmodemfa131
