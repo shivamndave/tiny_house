@@ -5,7 +5,6 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include "uart.h"
-#include "uprintf.h"
 
 #define STRING_MAX 100
 #define BLINK_DELAY_MS 1000
@@ -24,7 +23,6 @@ void AVRInit (void);
 
 int main (void)
 {
-    int j = 0;
     char buf[STRING_MAX];
     AVRInit();
     while(1) 
