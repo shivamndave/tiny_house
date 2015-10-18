@@ -1,3 +1,12 @@
+//////////////////////////////////////////////////////
+//     UART LIBRARY TO PROVIDE I/O FUNCTIONALITY    //
+//   TO THE ATMEL AVR ATMEGA 2560 MICROCONTROLLER   //
+// 	 WRITTEN BY: SARGIS S YONAN - 11 OCTOBER 2015   //
+// CODE PARTIALLY BORROWED FROM THE ATMEL DATASHEET //
+//////////////////////////////////////////////////////
+
+
+
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 
@@ -38,11 +47,43 @@ void uartPutString(const char *str)
 		uartTransmitByte(c);
 }
 
-// wirte data from programm memmory address
+// write data from programm memmory address
 void uartPutString_P(const char *addr)
 {
 	unsigned char c;
 
 	while((c = pgm_read_byte(addr++)))
 		uartTransmitByte(c);
+}
+
+
+void UARTGrabString (char* stringBuffer, int maxStringSize)
+{
+    char c = NULL_CHAR;
+    int i = 0;
+    memset(stringBuffer, NULL_CHAR, maxStringSize);
+    // RECEIVE A STRING FROM USART0 LOGIC
+    for (i = 0; (c != NEWLINE_CHAR) && (i < maxStringSize); i++)
+    {
+        c = uartReceiveByte();
+
+        // BACKSPACING LOGIC
+        if (c == BACKSPACE_CHAR)
+        {
+            i--;
+            if (i >= 0)
+            {
+                stringBuffer[i] = NULL_CHAR;
+                if (!(i == 0))
+                {
+                    i--;
+                }
+            }
+            continue;
+        }
+        // END BACKSPACING LOGIC
+        stringBuffer[i] = c;
+    }
+    stringBuffer[i] = NULL_CHAR;
+    // END STRING RECEIVING LOGIC
 }

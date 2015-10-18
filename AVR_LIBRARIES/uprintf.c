@@ -2,6 +2,8 @@
 ///* A LIBRRY THAT MIMICS <stdio.h>'s PRINTF FUNCTION */
 ///* FOR THE AVR ATMEGA 2560 MICROCONTROLLER */
 
+#define OUTPUT_FUNCTION uartPutString
+
 
 #include "uprintf.h"
 
