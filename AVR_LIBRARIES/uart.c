@@ -59,7 +59,7 @@ void UARTGrabString (char* stringBuffer, int maxStringSize)
     int i = 0;
     memset(stringBuffer, NULL_CHAR, maxStringSize);
     // RECEIVE A STRING FROM USART0 LOGIC
-    for (i = 0; (c != NEWLINE_CHAR) && (i < maxStringSize); i++)
+    for (i = 0; (c != NEWLINE_CHAR) && (i < maxStringSize) && (i >= 0); i++)
     {
         c = uartReceiveByte();
 
@@ -70,7 +70,12 @@ void UARTGrabString (char* stringBuffer, int maxStringSize)
             if (i >= 0)
             {
                 stringBuffer[i] = NULL_CHAR;
-                if (!(i == 0))
+                if (i == 0)
+                {
+                	stringBuffer[i] = NULL_CHAR;
+                	continue;
+                }
+                else if (i > 0)
                 {
                     i--;
                 }
