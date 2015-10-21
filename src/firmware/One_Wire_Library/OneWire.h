@@ -15,7 +15,7 @@
 /////////////
 
 // AVR clock frequency
-//#define F_CPU 1000000UL // 1 MHz
+#define F_CPU 16000000UL // 16 MHz
 
 // Pin defines
 
