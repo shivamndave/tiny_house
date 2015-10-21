@@ -29,10 +29,18 @@ int main (void)
 	{
         UARTGrabString(buf, STRING_MAX);
         uprintf("\n\nFEEDBACK >> %s", buf);
-    }	
+
+        if (strncmp(buf, "on", 2) == 0)
+        {
+            PORTB |= 0b10000000;
+        }
+        else if (strncmp(buf, "off", 3) == 0)
+        {
+            PORTB = 0x00;
+        }
+	}
     return 0;
 }
-
 void AVRInit (void)
 {
     DDRB = PORTB5_HI;
