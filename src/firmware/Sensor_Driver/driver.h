@@ -17,6 +17,7 @@
 			// RELAY I/O //
 			///////////////
 // RELAY ON PB5 = PORTB & 0b10000000
+#define RELAY_DDR DDRB
 #define PIN_STATUS_BIT 0x80
 #define RELAY_PIN PINB
 #define RELAY_STATUS (PINB & PIN_STATUS_BIT) 
@@ -31,11 +32,6 @@
 			//////////////////
 #define SENSOR_IN temperatureFunction()
 /////////////////////////////////////////////
-
-
-98741
-
-
 
 
 #define FSM_SUCCESS	true
@@ -74,6 +70,10 @@ struct Machine_Status
 
 typedef struct Machine_Status Status;
 Status *status = NULL;	// allocated within ControllerInit()
+
+
+
+SUCCESS_t SystemInit(void);
 
 SUCCESS_t ControllerInit(void);
 void FreeMemory(void);
