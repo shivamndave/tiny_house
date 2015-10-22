@@ -69,7 +69,6 @@ typedef const struct FSM_STRUCTURE FSM_t:
 struct Machine_Status
 {
 	uint8_t currentState;	// HOLDS CURRENT STATE
-	uint32_t input;			// RECIEVES INPUT
 	FSM_t FSM[NUMBER_OF_STATES];
 };
 
