@@ -41,7 +41,6 @@ SUCCESS_t ControllerInit(void)
 			{&_RelayOn, RELAY_ON_DELTA_T, {RELAY_ON, RELAY_OFF, IDLE}}
 		};
 		status->currentState = INITIAL_STATE;
-		status->input = 0;
 		return FSM_SUCCESS;
 	}
 	return FSM_ERROR;
