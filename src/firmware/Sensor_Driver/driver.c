@@ -6,32 +6,69 @@
 */
 
 #include "driver.h"
+#include "../One_Wire_Library/OneWire.h"
+#include "../UART_LIBRARY/uart.h"
+
+
 
 #define INITIAL_STATE IDLE
 
 
 
 
-
 int main (void)
 {
-	while(true)
+	if (SystemInit())
 	{
-		status->FSM[status->currentState].Output_Func_ptr();
-		_ms_delay(status->FSM[status->currentState].waitTime);
-		status->currentState = status->FSM[status->currentState].nextState[SensorInput()];
+		while(true)
+		{
+			status->FSM[status->currentState].Output_Func_ptr();
+			_ms_delay(status->FSM[status->currentState].waitTime);
+			status->currentState = status->FSM[status->currentState].nextState[SensorInput()];
+		}
 	}
-
 	return 0;
 }
 
 
 
 
+SUCCESS_t SystemInit(void)
+{
+	if (SensorInit())
+	{
+		if (RelayInit())
+		{
+			if (ControllerInit())
+			{
+				return FSM_SUCCESS;
+			}
+		}
+	}
+	return FSM_ERROR;
+}
+
+
+
+SUCCESS_t SensorInit(void)
+{
+	//calls OneWire Library Init Function
+	dallas_skip_rom();
+	return FSM_SUCCESS;
+	return FSM_ERROR;
+}
+
+SUCCESS_t RelayInit(void)
+{
+	RELAY_DDR = RELAY_STATUS_BIT;
+	RELAY_PORT = OFF;
+	return FSM_SUCCESS;
+}
+
 SUCCESS_t ControllerInit(void)
 {
 	status = (*Status)malloc(sizeof(struct Machine_Status));
-	if (status)
+	if (status != NULL)
 	{
 		// CONST STATE DEFINITION - CONST MEMORY KEPT IN ROM
 		FSM =	
@@ -48,7 +85,10 @@ SUCCESS_t ControllerInit(void)
 
 void FreeMemory(void)
 {
-	free(status); 
+	if (!(status == NULL))
+	{
+		free(status); 
+	}
 }
 
 
