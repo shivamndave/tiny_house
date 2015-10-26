@@ -26,11 +26,9 @@ void uartPutString_P(const char*);
 	INPUT:	stringBuffer: a C style char* for a string
  maxStringSize: a maximum size for the char* buffer. At most = (int)sizeof(stringBuffer)
 	RETURN: void; string from UART stored at the beginning of stringBuffer - '\0'
- */
-//////////////////////////////////////////////////////
+ 
 // 	 WRITTEN BY: SARGIS S YONAN - 18 OCTOBER 2015   //
-//////////////////////////////////////////////////////
-
+*/
 void UARTGrabString (char* stringBuffer, int maxStringSize);
 
 void uprintf (char* input_string, ...);

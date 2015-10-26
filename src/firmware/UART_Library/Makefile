@@ -2,14 +2,14 @@ AVR_GCC_CONTROLLER           = atmega2560
 BURNER						 = avrdude
 AVRDUDE_CONTROLLER 	         = m2560
 CC							 = avr-gcc
-CSOURCE						 = uprintftest.c uart.c
+CSOURCE						 = uart.c dallas_paku_lib.c OneWire.c tests.c
 OBJECTS  					 = ${CSOURCE:.c=.o}
-EXECUTABLE					 = blink
+EXECUTABLE					 = tempTest
 COMPILER_PATH				 = /dev/cu.usbmodemfa131
 COMPILER  					 = stk500v2
 BAUDRATE					 = 115200
 OBJECT_COPY					 = avr-objcopy
-CFLAGS						 = -Wall -Wextra -Wimplicit
+CFLAGS						 = -Wall -Wextra -Wimplicit -std=gnu99
 PHASE_ONE					 = -Os -mmcu=${AVR_GCC_CONTROLLER} ${CFLAGS} -c
 PHASE_TWO					 = -mmcu=${AVR_GCC_CONTROLLER} -o ${EXECUTABLE}.elf ${OBJECTS}
 
