@@ -157,5 +157,7 @@ float DTtof(DALLAS_TEMPERATURE dt);
 
 float CelsiusToFahrenheit(float celsius);
 
+//returns temperature in celsius
+float getTemperatureC(void);
 
 #endif
