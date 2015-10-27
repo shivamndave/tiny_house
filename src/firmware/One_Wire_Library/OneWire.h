@@ -10,19 +10,43 @@
 #ifndef ONEWIRE_H
 #define ONEWIRE_H
 
-/////////////
-// Defines //
-/////////////
-
 // AVR clock frequency
 #define F_CPU 16000000UL // 16 MHz
+
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+
+
+#include <avr/pgmspace.h>
+#include <stdio.h>
+#include <util/delay.h>
+
+
+#include <avr/io.h>
+
+#include <util/atomic.h>
+
+// Defines //
+
+/*
+ *chip precision definition
+ *11 bits temp converter mode
+ *4 LSBs value stands for 0.0625 deg Centigrades .
+ *so 0010 means: 0.0625x2 on fractional part.
+ */
+#define PRECISION 625
+
+
+
+
 
 // Pin defines
 
 #define DALLAS_PORT 	PORTC
 #define DALLAS_PORT_IN 	PINC
 #define DALLAS_DDR 		DDRC
-#define DALLAS_PIN 		0
+#define DALLAS_PIN 		0 			// pin 37 on mega2560
 
 // The number of devices on the bus.
 #define DALLAS_NUM_DEVICES 1
@@ -52,9 +76,9 @@
 #define DALLAS_TIME_COMMAND_REST 1  //let bus stabilize after each byte sent.
 
 
-////////////////
+
 // Structures //
-////////////////
+
 
 typedef struct {
 	uint8_t identifier[DALLAS_NUM_IDENTIFIER_BITS / 8];
@@ -65,9 +89,17 @@ typedef struct {
 	uint8_t num_devices;
 } DALLAS_IDENTIFIER_LIST_t;
 
-///////////////
+
+//Real number like representation of dallas two byte temp value
+typedef struct {
+	char sign;
+	uint8_t integer;
+	uint16_t fraction;
+} DALLAS_TEMPERATURE;
+
+
 // Functions //
-///////////////
+
 
 // Writes the LSB of the argument to the bus.
 void dallas_write(uint8_t);
@@ -113,5 +145,14 @@ DALLAS_IDENTIFIER_LIST_t * get_identifier_list(void);
 
 uint8_t dallas_command(uint8_t command, uint8_t with_reset);
 
+
+//Converts Dallas two byte temperature into real like structure
+DALLAS_TEMPERATURE getDallasTemp(uint8_t msb, uint8_t lsb);
+
+//search bus for slaves
+void search_bus();
+
+// converts a dallas temperature type to float for the avr
+float DTtof(DALLAS_TEMPERATURE dt);
 
 #endif

@@ -38,6 +38,12 @@
 #define FSM_ERROR false
 
 
+#define MAX_T_FAR 120
+#define SET_T 
+#define OFFSET_MAX
+#define OFFSET_MIN
+
+
 #define NUMBER_OF_STATES 3
 
 // STATE DEFINITIONS
