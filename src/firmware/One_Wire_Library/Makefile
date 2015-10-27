@@ -13,8 +13,7 @@ BAUDRATE					 = 115200
 OBJECT_COPY					 = avr-objcopy
 CFLAGS						 = -Wall -Werror -Wextra -Wimplicit -std=gnu99
 PHASE_ONE					 = -Os -mmcu=${AVR_GCC_CONTROLLER} ${CFLAGS} -c
-PHASE_TWO					 = -mmcu=${AVR_GCC_CONTROLLER} -o${EXECUTABLE}.elf ${OBJECTS}
-
+PHASE_TWO					 = -mmcu=${AVR_GCC_CONTROLLER} -Wl,-u,vfprintf -lprintf_flt -lm -o${EXECUTABLE}.elf ${OBJECTS}
 
 all:
 	${CC} ${PHASE_ONE} ${CSOURCE}

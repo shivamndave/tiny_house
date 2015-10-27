@@ -10,11 +10,6 @@
 
 #include "OneWire.h"
 
-#include <avr/io.h>
-#include <stdint.h>
-
-#include <util/atomic.h>
-#include <util/delay.h>
 
 DALLAS_IDENTIFIER_LIST_t identifier_list;
 
@@ -399,3 +394,30 @@ void search_bus() {
 
 	return;
 }
+
+
+// converts a dallas temperature type to float for the avr
+float DTtof(DALLAS_TEMPERATURE dt)
+{
+	const int MAX_TEMP_SIZE = 30;
+	char str[MAX_TEMP_SIZE];
+  	float d = 0.0;
+
+	memset(str, '\0', MAX_TEMP_SIZE);
+	sprintf(str, "%d.%d", dt.integer, dt.fraction);
+  	char* pEnd;
+  	d = (float)strtod (str, &pEnd);
+  	if (dt.sign == '-')
+  	{
+  		d *= -1;
+  	}
+  	return (d);
+}
+
+
+
+
+
+
+
+

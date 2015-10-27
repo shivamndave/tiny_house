@@ -50,18 +50,13 @@ int main(void) {
 				//create output string
 				sprintf(line, "%d.%d",temp.integer,temp.fraction);
 
+				conversion = DTtof(temp);
 
-				sscanf(line, "%f", &conversion);
-				if (temp.sign == '-')
-				{
-					conversion *= -1;
-				}
-
+				uprintf("\n%d:  float: %f -- string: %s", count++, conversion, line);
 				//uprintf("%c Temp: 0x%02X%02Xh %c%d.%04d\r\n",ticker_[ticker%8],scratchpad[1],scratchpad[0],temp.sign,temp.integer,temp.fraction);
 				//remove '\n' to get one line output
 
 				//send it over USART/stdout
-				uprintf("%d: string: %s  %f\n",count++, line, conversion);
 
 				//send to LCD as well
 
@@ -86,4 +81,3 @@ int main(void) {
 	return 0;
 
 }
-
