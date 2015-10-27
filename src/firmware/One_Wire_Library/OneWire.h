@@ -14,12 +14,18 @@
 #define F_CPU 16000000UL // 16 MHz
 
 #include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+
 
 #include <avr/pgmspace.h>
 #include <stdio.h>
 #include <util/delay.h>
 
 
+#include <avr/io.h>
+
+#include <util/atomic.h>
 
 // Defines //
 
@@ -142,9 +148,11 @@ uint8_t dallas_command(uint8_t command, uint8_t with_reset);
 
 //Converts Dallas two byte temperature into real like structure
 DALLAS_TEMPERATURE getDallasTemp(uint8_t msb, uint8_t lsb);
+
 //search bus for slaves
 void search_bus();
 
-
+// converts a dallas temperature type to float for the avr
+float DTtof(DALLAS_TEMPERATURE dt);
 
 #endif
