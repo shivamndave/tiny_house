@@ -14,19 +14,19 @@
     </head>
 
     <body>
-        <div class="col2-1">
-            <h4>Menu Item #1</h4>
-            <h4>Menu Item #2</h4>
-            <h4>Menu Item #3</h4>
-            <h4>Menu Item #n</h4>
-        </div>
-
-        <!-- Header Div with info about the project, etc-->
-        <div class="col2-2" ng-controller="MainController">
+        <div class="headerInfoBox" ng-controller="MainController">
             <h1>{{projectTitle}}</h1>
             <h3>{{projectInfo}}</h3>
             <h3>{{projectContributors}}</h3>
             <h4>{{projectNotes}}</h4>
+        </div>
+
+        <!-- Header Div with info about the project, etc-->
+        <div class="headerMenuBox">
+            <h4>Menu Item #1</h4>
+            <h4>Menu Item #2</h4>
+            <h4>Menu Item #3</h4>
+            <h4>Menu Item #n</h4>
         </div>
 
         <!-- Example 2 column grid, good for graphs/larger objects being shown-->

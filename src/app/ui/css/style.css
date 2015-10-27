@@ -6,16 +6,18 @@
     float: left;
     width: 30%;
     padding: 10px;
-    font-family: sans-serif;
     border: 1px solid #000000;
+    background: #87D37C;
+    font-family: sans-serif;
+    color: #FFFFFF;
 }
 
 .headerInfoBox {
     width: 70%;
     float: left;
     padding: 10px;
-    background: #22313F;
     border: 1px solid #000000;
+    background: #87D37C;
     font-family: sans-serif;
     color: #FFFFFF;
 }
