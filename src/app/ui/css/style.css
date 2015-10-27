@@ -1,0 +1,51 @@
+* {
+    box-sizing: border-box;
+}
+
+.headerMenuBox {
+    float: left;
+    width: 30%;
+    padding: 10px;
+    font-family: sans-serif;
+    border: 1px solid #000000;
+}
+
+.headerInfoBox {
+    width: 70%;
+    float: left;
+    padding: 10px;
+    background: #22313F;
+    border: 1px solid #000000;
+    font-family: sans-serif;
+    color: #FFFFFF;
+}
+
+.col2-1, .col2-2 {
+    float: left;
+    width: 50%;
+    padding: 10px;
+    border: 1px solid #000000;
+    background: #87D37C;
+    font-family: sans-serif;
+    color: #FFFFFF;
+}
+
+.col3-1, .col3-2, .col3-3 {
+    float: left;
+    width: 33.33%;
+    padding: 10px;
+    border: 1px solid #000000;
+    background: #87D37C;
+    font-family: sans-serif;
+    color: #FFFFFF;
+}
+
+.col4-1, .col4-2, .col4-3, .col4-4 {
+    float: left;
+    width: 25%;
+    padding: 10px;
+    border: 1px solid #000000;
+    background: #87D37C;
+    font-family: sans-serif;
+    color: #FFFFFF;
+}

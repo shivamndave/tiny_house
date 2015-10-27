@@ -1,26 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html ng-app="tinyhouseApp">
 <!--Meta viewport tag to wrap the site on any device-->
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width", initial-scale="1", minimum-scale="1">
     <head>
         <!-- Load in files -->
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
+        <script src="lib/angular.min.js"></script>
 
         <!-- Local JS Files-->
-        <script src="UI/js/Main.js"></script>
+        <script src="UI/js/MainController.js"></script>
+
+        <!-- Stylesheet -->
+        <link rel="stylesheet" type="text/css" href="ui/css/style.css">
     </head>
 
     <body>
-    <!-- Header Div with info about the project, etc-->
-        <div>
-            <h1>Title of project</h1>
-            <h3>Names, etc</h3>
-            <h3>Info, etc</h3>
-            <h3>Something else</h3>
-            <h4>Note</h4>
+        <div class="col2-1">
+            <h4>Menu Item #1</h4>
+            <h4>Menu Item #2</h4>
+            <h4>Menu Item #3</h4>
+            <h4>Menu Item #n</h4>
         </div>
-        <div>
-        </div>
-    </body>
 
+        <!-- Header Div with info about the project, etc-->
+        <div class="col2-2" ng-controller="MainController">
+            <h1>{{projectTitle}}</h1>
+            <h3>{{projectInfo}}</h3>
+            <h3>{{projectContributors}}</h3>
+            <h4>{{projectNotes}}</h4>
+        </div>
+
+        <div class="col2-1"><h1>Show data source/graph 2 column example</h1></div>
+        <div class="col2-2"><h1>Show data source/graph 2 column example</h1></div>
+
+        <div class="col3-1">3 column example</div>
+        <div class="col3-2">3 column example</div>
+        <div class="col3-3">3 column example</div>
+
+        <div class="col4-1">4 column example</div>
+        <div class="col4-2">4 column example</div>
+        <div class="col4-3">4 column example</div>
+        <div class="col4-4">4 column example</div>
+    </body>
 </html>
