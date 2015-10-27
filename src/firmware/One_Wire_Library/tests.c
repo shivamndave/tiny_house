@@ -52,7 +52,7 @@ int main(void) {
 
 				conversion = DTtof(temp);
 
-				uprintf("\n%d:  float: %f -- string: %s", count++, conversion, line);
+				uprintf("\n%d:  float: %f -- string: %s  -- Farenheight: %f", count++, conversion, line, CelsiusToFahrenheit(conversion));
 				//uprintf("%c Temp: 0x%02X%02Xh %c%d.%04d\r\n",ticker_[ticker%8],scratchpad[1],scratchpad[0],temp.sign,temp.integer,temp.fraction);
 				//remove '\n' to get one line output
 

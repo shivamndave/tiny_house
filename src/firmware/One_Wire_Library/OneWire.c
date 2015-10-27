@@ -415,6 +415,11 @@ float DTtof(DALLAS_TEMPERATURE dt)
 }
 
 
+float CelsiusToFahrenheit(float celsius) 
+{
+    return (celsius * 9 / 5 + 32);
+}
+
 
 
 

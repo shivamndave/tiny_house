@@ -155,4 +155,7 @@ void search_bus();
 // converts a dallas temperature type to float for the avr
 float DTtof(DALLAS_TEMPERATURE dt);
 
+float CelsiusToFahrenheit(float celsius);
+
+
 #endif
