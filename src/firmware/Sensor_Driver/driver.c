@@ -22,9 +22,10 @@ int main (void)
 	{
 		while(true)
 		{
-			status->FSM[status->currentState].Output_Func_ptr();
-			_ms_delay(status->FSM[status->currentState].waitTime);
-			status->currentState = status->FSM[status->currentState].nextState[SensorInput()];
+			SensorInput();
+		//	status->FSM[status->currentState].Output_Func_ptr();
+		//	_ms_delay(status->FSM[status->currentState].waitTime);
+		//	status->currentState = status->FSM[status->currentState].nextState[SensorInput()];
 		}
 	}
 	return 0;
@@ -35,28 +36,17 @@ int main (void)
 
 SUCCESS_t SystemInit(void)
 {
-	if (SensorInit())
+	uartInit(BAUDRATE);
+	if (RelayInit())
 	{
-		if (RelayInit())
+		if (ControllerInit())
 		{
-			if (ControllerInit())
-			{
-				return FSM_SUCCESS;
-			}
+			return FSM_SUCCESS;
 		}
 	}
 	return FSM_ERROR;
 }
 
-
-
-SUCCESS_t SensorInit(void)
-{
-	//calls OneWire Library Init Function
-	dallas_skip_rom();
-	return FSM_SUCCESS;
-	return FSM_ERROR;
-}
 
 SUCCESS_t RelayInit(void)
 {
@@ -94,7 +84,14 @@ void FreeMemory(void)
 
 void SensorInput(void)
 {
-	return SENSOR_IN;
+	float temp = getTemperatureC();
+	if (temp > HI)
+	{
+		_RelayOn();
+	} else {
+		_RelayOff();
+	}
+	return;
 }
 
 

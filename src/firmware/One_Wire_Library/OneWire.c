@@ -421,7 +421,25 @@ float CelsiusToFahrenheit(float celsius)
 }
 
 
+float getTemperatureC(void)
+{
+	uint8_t chip_scratchpad[9];
 
+		if (dallas_command(SKIP_ROM_COMMAND, 1)) 
+		{
+			dallas_command(CONVERT_TEMP__COMMAND, 0);
+			_delay_ms(500); //wait for conversion result.
+
+			if (dallas_command(SKIP_ROM_COMMAND, 1)) 
+			{
+				dallas_command(READ_SCRATCHPAD_COMMAND, 0);
+				dallas_read_buffer(chip_scratchpad, 9);
+				return (DTtof(getDallasTemp(chip_scratchpad[1],chip_scratchpad[0])));
+
+			}
+		}
+		return -9999.99;
+}
 
 
 
