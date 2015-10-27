@@ -51,3 +51,25 @@
     font-family: sans-serif;
     color: #FFFFFF;
 }
+
+@media only screen and (max-width: 500px) {
+    .headerMenuBox {
+        width: 100%;
+    }
+
+    .headerInfoBox {
+        width: 100%;
+    }
+
+    .col2-1, .col2-2 {
+        width: 100%;
+    }
+
+    .col3-1, .col3-2, .col3-3 {
+        width: 100%;
+    }
+
+    .col4-1, .col4-2, .col4-3, .col4-4 {
+        width: 100%;
+    }
+}
