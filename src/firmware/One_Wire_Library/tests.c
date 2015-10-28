@@ -19,7 +19,7 @@ int main(void)
 	uartInit(BAUDRATE);
 	while (1) 
 	{
-		uprintf("temp: %f\n", getTemperatureC());
+		uprintf("temp: %.3f\n", getTemperatureF());
 	}
 
 	return 0;
