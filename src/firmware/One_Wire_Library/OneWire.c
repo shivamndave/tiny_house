@@ -7,37 +7,26 @@
  *    the list of identifiers with the devices on your bus.
  */
 
-#include <avr/io.h>
-#include <stdint.h>
+
 #include "OneWire.h"
 
-#include <util/atomic.h>
-#include <util/delay.h>
-
-//////////////////////
-// Global variables //
-//////////////////////
 
 DALLAS_IDENTIFIER_LIST_t identifier_list;
 
-/////////////////////////////////////
+
 // Identifier routine return codes //
-/////////////////////////////////////
 
 #define DALLAS_IDENTIFIER_NO_ERROR 0x00
 #define DALLAS_IDENTIFIER_DONE 0x01
 #define DALLAS_IDENTIFIER_SEARCH_ERROR 0x02
 
-/////////////////////////////////
+
 // Private function prototypes //
-/////////////////////////////////
 
 static uint8_t dallas_discover_identifier(DALLAS_IDENTIFIER_t *,
 		DALLAS_IDENTIFIER_t *);
 
-///////////////
 // Functions //
-///////////////
 
 void dallas_write(uint8_t bit) {
 	if (bit == 0x00) {
@@ -289,7 +278,7 @@ static uint8_t dallas_discover_identifier(
 				dallas_write(0x00);
 			}
 		} else {
-			// Error!
+			// Error
 			return DALLAS_IDENTIFIER_SEARCH_ERROR;
 		}
 	}
@@ -327,3 +316,136 @@ uint8_t dallas_command(uint8_t command, uint8_t with_reset) {
 	dallas_write_byte(command);
 	return 1;
 }
+
+
+
+/*
+ * Utility functions
+ */
+
+//Converts Dallas two byte temperature into real like structure
+DALLAS_TEMPERATURE getDallasTemp(uint8_t msb, uint8_t lsb) {
+
+	DALLAS_TEMPERATURE temp;
+	temp.sign='+';
+
+	uint16_t result;
+
+	//put lsb and msb into int16
+	result = msb;
+	result = ((result << 8) | lsb);
+
+	//test if temperature is negative then process data
+	if (result & 0xF800) {
+		//little magic: to convert negative temps you just have to make ...
+		result = ~result + 1;
+		temp.sign='-';
+	}
+
+	//drop 4 lsb bits for integral part
+	temp.integer = (result >> 4);
+	//use 4 lsb bits for decimal part
+	temp.fraction = (result & 0x000F)*PRECISION;
+
+	return temp;
+}
+
+
+void search_bus() {
+
+	uint8_t i;
+
+	//Slaves list
+	DALLAS_IDENTIFIER_LIST_t * ids;
+
+
+	if (dallas_reset()) {
+
+		switch (dallas_search_identifiers()) {
+		case 0x00:
+			printf("> Bus Test - OK\r\n");
+			break;
+		case 0x01:
+			printf("> Error! Buss error\r\n");
+			break;
+		case 0x02:
+			printf("> Error! More devices then specified\r\n");
+			break;
+		default:
+			printf("> Error! Unknown INIT message\r\n");
+			break;
+		}
+
+		ids = get_identifier_list();
+
+		//Output IDs found.
+		for (i = 0; i < DALLAS_NUM_IDENTIFIER_BITS / 8; i++) {
+			printf("%X",ids->identifiers[0].identifier[i]);
+			if (i == 7)
+				printf("\r\n");
+			else
+				printf(":");
+		}
+
+		printf("> IDs collecting  finished\r\n");
+
+	} else
+		printf("BUS Error: No slaves found\r\n");
+
+	return;
+}
+
+
+// converts a dallas temperature type to float for the avr
+float DTtof(DALLAS_TEMPERATURE dt)
+{
+	const int MAX_TEMP_SIZE = 30;
+	char str[MAX_TEMP_SIZE];
+  	float d = 0.0;
+
+	memset(str, '\0', MAX_TEMP_SIZE);
+	sprintf(str, "%d.%d", dt.integer, dt.fraction);
+  	char* pEnd;
+  	d = (float)strtod (str, &pEnd);
+  	if (dt.sign == '-')
+  	{
+  		d *= -1;
+  	}
+  	return (d);
+}
+
+
+float CelsiusToFahrenheit(float celsius) 
+{
+    return (celsius * 9 / 5 + 32);
+}
+
+
+float getTemperatureC(void)
+{
+	uint8_t chip_scratchpad[9];
+
+		if (dallas_command(SKIP_ROM_COMMAND, 1)) 
+		{
+			dallas_command(CONVERT_TEMP__COMMAND, 0);
+			_delay_ms(500); //wait for conversion result.
+
+			if (dallas_command(SKIP_ROM_COMMAND, 1)) 
+			{
+				dallas_command(READ_SCRATCHPAD_COMMAND, 0);
+				dallas_read_buffer(chip_scratchpad, 9);
+				return (DTtof(getDallasTemp(chip_scratchpad[1],chip_scratchpad[0])));
+
+			}
+		}
+		return -9999.99;
+}
+
+float getTemperatureF(void)
+{
+	return CelsiusToFahrenheit(getTemperatureC());
+}
+
+
+
+

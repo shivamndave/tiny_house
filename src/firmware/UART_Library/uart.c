@@ -1,9 +1,9 @@
-//////////////////////////////////////////////////////
+
 //     UART LIBRARY TO PROVIDE I/O FUNCTIONALITY    //
 //   TO THE ATMEL AVR ATMEGA 2560 MICROCONTROLLER   //
 // 	 WRITTEN BY: SARGIS S YONAN - 11 OCTOBER 2015   //
 // CODE PARTIALLY BORROWED FROM THE ATMEL DATASHEET //
-//////////////////////////////////////////////////////
+
 
 
 #include "uart.h"
@@ -90,9 +90,9 @@ void UARTGrabString (char* stringBuffer, int maxStringSize)
 }
 
 
-///* CREATED BY SARGIS S YONAN - 12 OCT. 2015 */
-///* A FUNCTION THAT MIMICS <stdio.h>'s PRINTF FUNCTION */
-///* FOR THE AVR ATMEGA 2560 MICROCONTROLLER */
+//* CREATED BY SARGIS S YONAN - 12 OCT. 2015 */
+//* A FUNCTION THAT MIMICS <stdio.h>'s PRINTF FUNCTION */
+//* FOR THE AVR ATMEGA 2560 MICROCONTROLLER */
 
 void uprintf (char* input_string, ...)
 {
@@ -107,9 +107,8 @@ void uprintf (char* input_string, ...)
     newString = (char*)malloc(stringLength *  STRING_MULTIPLIER);
     vsprintf(newString, input_string, valist);
     
-    ////////////////////////////
     // WRITING TO UART STREAM //
-    ////////////////////////////
+    
     OUTPUT_FUNCTION(newString);
     free(newString);
     va_end(valist);
