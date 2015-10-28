@@ -52,7 +52,7 @@ void ProcessCommand(void)
 
 	if (!(receivedChecksum != _uint_checksum(rxByte)))
 	{
-		uartTransmitByte((unsigned char)RECIEVE_ERROR);
+		uartTransmitByte((unsigned char)RECEIVE_ERROR);
 		return;
 	}
 
@@ -63,7 +63,12 @@ void ProcessCommand(void)
 		return;
 	}
 	if ((rxByte & RECEIVE_MESSAGE_CHANGE_SETPOINT) == RECEIVE_MESSAGE_CHANGE_SETPOINT)
-	{
+	{	if ((rxByte & ~(RECEIVE_MESSAGE_CHANGE_SETPOINT)) >= T_ABSOLUTE_MAX) 
+		{
+			uartTransmitByte((unsigned char)TEMPERATURE_MAX_ERROR);
+			return;
+		}
+}
 		status->setpoint = rxByte & (!(RECEIVE_MESSAGE_CHANGE_SETPOINT));
 		return;
 	}
