@@ -8,7 +8,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdint.h>
-
 #include <avr/io.h>
 #include <util/delay.h>
 
@@ -36,8 +35,8 @@
 #define FSM_ERROR false
 
 
-#define T_SETPOINT_DEFAULT 30
-#define T_OFFSSET_DEFAULT 2
+#define T_SETPOINT_DEFAULT 30.0
+#define T_OFFSET_DEFAULT 2.0
 
 #define T_ABSOLUTE_MAX 120 //farenhe.
 
@@ -51,6 +50,7 @@
 #define RECEIVE_MESSAGE_CHANGE_OFFSET 0x40
 #define SEND_MESSAGE 0x20
 #define MAX_SEND_MESSAGE_LENGTH 32
+#define RECIEVE_ERROR 0xFF
 
 // STATE DEFINITIONS
 #define IDLE_STATE 0
@@ -67,10 +67,12 @@ typedef const struct FSM_STRUCTURE FSM_t;
 
 struct Machine_Status
 {
+	bool initialized;
 	uint8_t currentState;	// HOLDS CURRENT STATE
-	uint8_t setpoint;
-	uint8_t offset;
 	uint8_t flags;
+	uint32_t sysTime;
+	float setpoint;
+	float offset;
 };
 
 typedef struct Machine_Status Status;
@@ -79,6 +81,7 @@ Status *status = NULL;	// allocated within ControllerInit()
 
 
 bool SystemInit(void);
+void ProcessCommand(void);
 void FreeMemory(void);
 uint8_t SensorResult(void);
 
