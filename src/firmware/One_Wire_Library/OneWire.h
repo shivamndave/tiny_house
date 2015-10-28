@@ -159,5 +159,6 @@ float CelsiusToFahrenheit(float celsius);
 
 //returns temperature in celsius
 float getTemperatureC(void);
+float getTemperatureF(void);
 
 #endif

@@ -6,6 +6,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
+#define BAUDRATE 57600
+
+
 #define NULL_CHAR '\0'
 #define NEWLINE_CHAR '\n'
 #define BACKSPACE_CHAR 0x08

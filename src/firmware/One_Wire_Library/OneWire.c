@@ -441,6 +441,11 @@ float getTemperatureC(void)
 		return -9999.99;
 }
 
+float getTemperatureF(void)
+{
+	return CelsiusToFahrenheit(getTemperatureC());
+}
+
 
 
 

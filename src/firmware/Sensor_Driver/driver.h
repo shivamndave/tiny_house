@@ -12,7 +12,6 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
-
 			///////////////
 			// RELAY I/O //
 			///////////////
@@ -25,11 +24,7 @@
 #define ON 0x80
 #define OFF 0x00
 /////////////////////////////////////////////
-
-
-#define HI 33
-
-
+					//
 			//////////////////
 			// SENSOR INPUT //
 			//////////////////
@@ -41,40 +36,41 @@
 #define FSM_ERROR false
 
 
-#define MAX_T_FAR 120
-#define SET_T 
-#define OFFSET_MAX
-#define OFFSET_MIN
+#define T_SETPOINT_DEFAULT 30
+#define T_OFFSSET_DEFAULT 2
+
+#define T_ABSOLUTE_MAX 120 //farenhe.
 
 
-#define NUMBER_OF_STATES 3
+#define LT_BIT 0x01
+#define GT_BIT 0x02
+#define EN_BIT 0x04
+
+#define ENABLE_MESSAGE 0x0F
+#define RECEIVE_MESSAGE_CHANGE_SETPOINT 0x80
+#define RECEIVE_MESSAGE_CHANGE_OFFSET 0x40
+#define SEND_MESSAGE 0x20
+#define MAX_SEND_MESSAGE_LENGTH 32
 
 // STATE DEFINITIONS
-#define IDLE 0
-#define RELAY_OFF 1
-#define RELAY_ON 2
-
-#define IDLE_DELTA_T
-#define RELAY_ON_DELTA_T
-#define RELAY_OFF_DELTA_T
-
-
-#define INITIAL_STATE IDLE
-
-#define SUCCESS_t bool;
+#define IDLE_STATE 0
+#define COOLING_STATE 1
+#define HEATING_STATE 2
 
 struct FSM_STRUCTURE
 {
 	void(*Output_Func_ptr)(void);	// OUTPUT FUNCTION
-	uint32_t waitTime;		// SAFE WAIT TIME
-	uint8_t nextState[NUMBER_OF_STATES];	// NEXT STATE LOGIC
+	uint8_t nextState[8];	// NEXT STATE LOGIC
 };
-typedef const struct FSM_STRUCTURE FSM_t:
+typedef const struct FSM_STRUCTURE FSM_t;
+
 
 struct Machine_Status
 {
 	uint8_t currentState;	// HOLDS CURRENT STATE
-	FSM_t FSM[NUMBER_OF_STATES];
+	uint8_t setpoint;
+	uint8_t offset;
+	uint8_t flags;
 };
 
 typedef struct Machine_Status Status;
@@ -82,17 +78,10 @@ Status *status = NULL;	// allocated within ControllerInit()
 
 
 
-SUCCESS_t SystemInit(void);
-
-SUCCESS_t ControllerInit(void);
+bool SystemInit(void);
 void FreeMemory(void);
+uint8_t SensorResult(void);
 
-
-void SensorInput(void);
-
-void _RelayOn(void);
-void _RelayOff(void);
-void _Idle(void);
 
 
 

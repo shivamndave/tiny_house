@@ -10,10 +10,19 @@
 #include "../UART_LIBRARY/uart.h"
 
 
+#define INITIAL_STATE IDLE_STATE
 
-#define INITIAL_STATE IDLE
+void _RelayOn(void);
+void _RelayOff(void);
+void _Idle(void);
 
 
+FSM_t FSM[] = {
+		{&_Idle, {IDLE_STATE, IDLE_STATE, IDLE_STATE, IDLE_STATE, COOLING_STATE, COOLING_STATE, COOLING_STATE, COOLING_STATE}},
+		{&_RelayOff, {STATE_IDLE, STATE_IDLE, STATE_IDLE, STATE_IDLE, STATE_COOLING, STATE_HEATING, STATE_COOLING, STATE_COOLING}},
+		{&_RelayOn, {STATE_IDLE, STATE_IDLE, STATE_IDLE, STATE_IDLE, STATE_HEATING, STATE_HEATING, STATE_COOLING, STATE_HEATING}}
+	};
+		
 
 
 int main (void)
@@ -22,51 +31,56 @@ int main (void)
 	{
 		while(true)
 		{
-			SensorInput();
-		//	status->FSM[status->currentState].Output_Func_ptr();
-		//	_ms_delay(status->FSM[status->currentState].waitTime);
-		//	status->currentState = status->FSM[status->currentState].nextState[SensorInput()];
+			ProcessCommand();
+			FSM[status->currentState].Output_Func_ptr();
+			status->flags = SensorResult();
+			status->currentState = FSM[status->currentState].nextState[status->flags];
 		}
 	}
-	return 0;
-}
-
-
-
-
-SUCCESS_t SystemInit(void)
-{
-	uartInit(BAUDRATE);
-	if (RelayInit())
-	{
-		if (ControllerInit())
-		{
-			return FSM_SUCCESS;
-		}
-	}
+	FreeMemory();
 	return FSM_ERROR;
 }
 
-
-SUCCESS_t RelayInit(void)
+void ProcessCommand(void)
 {
-	RELAY_DDR = RELAY_STATUS_BIT;
-	RELAY_PORT = OFF;
-	return FSM_SUCCESS;
+	uint8_t rxByte = (uint8_t)uartReceiveByte();
+	char str[MAX_SEND_MESSAGE_LENGTH];
+
+	if ( (rxByte & ENABLE_MESSAGE) && (!(status->flags & EN_BIT)) )
+	{
+		status->flags ^= EN_BIT;
+		return;
+	}
+	if ( ((rxByte & RECEIVE_MESSAGE_CHANGE_SETPOINT) == RECEIVE_MESSAGE_CHANGE_SETPOINT) && (!(status->flags & EN_BIT)) )
+	{
+		status->setpoint = rxByte & (!(RECEIVE_MESSAGE_CHANGE_SETPOINT));
+		return;
+	}
+	if ( ((rxByte & RECEIVE_MESSAGE_CHANGE_OFFSET) == RECEIVE_MESSAGE_CHANGE_OFFSET) && (!(status->flags & EN_BIT)) )
+	{
+		status->setpoint = rxByte & (!(RECEIVE_MESSAGE_CHANGE_OFFSET));
+		return;
+	}
+	if ( ((rxByte & SEND_MESSAGE) == SEND_MESSAGE) && (!(status->flags & EN_BIT)) )
+	{
+		memset(str, '\0', MAX_SEND_MESSAGE_LENGTH);
+		sprintf(str, "%.2f/%d/%d/%.2f/%.2f",getTemperatureC(), getTime(), status-currentState, status->setpoint, status->offset);
+		uartPutString(str);	// send system status
+		return;
+	}
 }
 
-SUCCESS_t ControllerInit(void)
+
+bool SystemInit(void)
 {
-	status = (*Status)malloc(sizeof(struct Machine_Status));
+	uartInit(BAUDRATE);
+	
+	status = (Status*)malloc(sizeof(struct Machine_Status));
 	if (status != NULL)
 	{
-		// CONST STATE DEFINITION - CONST MEMORY KEPT IN ROM
-		FSM =	
-		{
-			{&_Idle, IDLE_DELTA_T, {IDLE, IDLE, RELAY_OFF}},
-			{&_RelayOff, RELAY_OFF_DELTA_T, {IDLE, RELAY_OFF, RELAY_ON}},
-			{&_RelayOn, RELAY_ON_DELTA_T, {RELAY_ON, RELAY_OFF, IDLE}}
-		};
+		status->flags = 0x00;
+		status->setpoint = T_SETPOINT_DEFAULT;
+		status->offset = T_OFFSET_DEFAULT;
 		status->currentState = INITIAL_STATE;
 		return FSM_SUCCESS;
 	}
@@ -82,31 +96,26 @@ void FreeMemory(void)
 }
 
 
-void SensorInput(void)
+uint8_t SensorResult(void)
 {
 	float temp = getTemperatureC();
-	if (temp > HI)
-	{
-		_RelayOn();
-	} else {
-		_RelayOff();
-	}
-	return;
+	if (temp >= (status->setpoint + status->offset)) {return (status->flags ^ GT_BIT)};
+	if (temp <= (status->setpoint - status->offset)) {return (status->flags ^ LT_BIT)};
+	return status->flags;
 }
-
 
 void _RelayOn(void)
 {
 	if (RELAY_PIN == OFF)
 	{
-		RELAY_PORT = ON;
+		RELAY_PORT |= ON;
 	}
 }
 void _RelayOff(void)
 {
 	if (RELAY_PIN == ON)
 	{
-		RELAY_PORT = OFF;
+		RELAY_PORT &= OFF;
 	}
 }
 void _Idle(void)
