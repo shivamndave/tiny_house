@@ -16,6 +16,7 @@
 			///////////////
 // RELAY ON PB5 = PORTB & 0b10000000
 #define RELAY_DDR DDRB
+#define RELAY_DDR_SETTING 0x80
 #define PIN_STATUS_BIT 0x80
 #define RELAY_PIN PINB
 #define RELAY_STATUS (PINB & PIN_STATUS_BIT) 
@@ -35,7 +36,7 @@
 #define FSM_ERROR false
 
 
-#define T_SETPOINT_DEFAULT 30.0
+#define T_SETPOINT_DEFAULT 26.0
 #define T_OFFSET_DEFAULT 2.0
 
 #define T_ABSOLUTE_MAX 0b00110000 // 48 degrees celsius
@@ -85,6 +86,7 @@ bool SystemInit(void);
 void ProcessCommand(void);
 void FreeMemory(void);
 uint8_t SensorResult(void);
+void PrintSystemStatusString(void);
 
 
 
