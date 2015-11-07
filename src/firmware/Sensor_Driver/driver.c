@@ -1,8 +1,8 @@
 /*
-*	WRITTEN BY SARGIS S YONAN ON 21 OCTOBER 2015
-*	- A HEADER DEFINITION FOR A SENSOR DRIVER -
-*	-	 USED FOR A MICRO GRID TEST BED		  -
-*	-		  GITHUB.COM/SARGISYONAN		  -
+* WRITTEN BY SARGIS S YONAN ON 21 OCTOBER 2015
+* HEADER DEFINITIONS FOR A SENSOR DRIVER
+* USED FOR A MICRO GRID TEST BED
+* GITHUB.COM/SARGISYONAN -- SARGISY@GMAIL.COM
 */
 
 #include "driver.h"
@@ -31,9 +31,12 @@ int main (void)
 {
 	if (SystemInit())
 	{
+	//enable for tests
+	status->flags ^= EN_BIT;
 		while(true)
 		{
-			ProcessCommand();
+		//	ProcessCommand();
+			PrintSystemStatusString();
 			FSM[status->currentState].Output_Func_ptr();
 			status->flags = SensorResult();
 			status->currentState = FSM[status->currentState].nextState[status->flags];
@@ -68,13 +71,12 @@ void ProcessCommand(void)
 			uartTransmitByte((unsigned char)TEMPERATURE_MAX_ERROR);
 			return;
 		}
-}
-		status->setpoint = rxByte & (!(RECEIVE_MESSAGE_CHANGE_SETPOINT));
+		status->setpoint = rxByte & (~(RECEIVE_MESSAGE_CHANGE_SETPOINT));
 		return;
 	}
 	if ((rxByte & RECEIVE_MESSAGE_CHANGE_OFFSET) == RECEIVE_MESSAGE_CHANGE_OFFSET)
 	{
-		status->setpoint = rxByte & (!(RECEIVE_MESSAGE_CHANGE_OFFSET));
+		status->offset = rxByte & (!(RECEIVE_MESSAGE_CHANGE_OFFSET));
 		return;
 	}
 	if ((rxByte & SEND_MESSAGE) == SEND_MESSAGE)
@@ -87,11 +89,27 @@ void ProcessCommand(void)
 	}
 }
 
+void PrintSystemStatusString(void)
+{
+	static uint8_t lastState = 0;
+	if (lastState == 0)
+	{
+		lastState = status->currentState;
+	}
+	if (lastState != status->currentState)
+	{
+		uprintf("\n---------SYSTEM STATUS---------\nTEMPERATURE (C): %.2f\nFLAGS: %d\nCURRENT STATE: %d\nSETPOINT: %.2f\nOFFSET: %.2f\n-------------------------------",getTemperatureC(), status->flags, status->currentState, status->setpoint, status->offset);
+		lastState = status->currentState;
+	} else {
+		uprintf("TEMPERATURE (C): %.2f\n",getTemperatureC());
+
+	}
+}
 
 bool SystemInit(void)
 {
 	uartInit(BAUDRATE);
-	
+	RELAY_DDR = RELAY_DDR_SETTING;
 	status = (Status*)malloc(sizeof(struct Machine_Status));
 	if (status != NULL)
 	{
@@ -118,10 +136,27 @@ void FreeMemory(void)
 uint8_t SensorResult(void)
 {
 	float temp = getTemperatureC();
-	if (temp >= (status->setpoint + status->offset)) {return (status->flags ^ GT_BIT);}
-	if (temp <= (status->setpoint - status->offset)) {return (status->flags ^ LT_BIT);}
+	status->flags &= 0x04;
+	//1
+	if (temp >= (status->setpoint + status->offset)) 
+	{
+			uprintf("\nSUB:1\n");
+		return (status->flags ^ GT_BIT);
+	}
+
+	//2
+	if (temp <= (status->setpoint - status->offset)) 
+	{
+			uprintf("\nSUB:2\n");
+
+		return (status->flags ^ LT_BIT);
+	}
+//3
+			uprintf("\nSUB:3\n");
+
 	return status->flags;
 }
+
 
 void _RelayOn(void)
 {
