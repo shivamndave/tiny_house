@@ -1,8 +1,8 @@
 /*
-*	WRITTEN BY SARGIS S YONAN ON 21 OCTOBER 2015
-*	- A HEADER DEFINITION FOR A SENSOR DRIVER -
-*	-	 USED FOR A MICRO GRID TEST BED		  -
-*	-		  GITHUB.COM/SARGISYONAN		  -
+* WRITTEN BY SARGIS S YONAN ON 21 OCTOBER 2015
+* HEADER DEFINITIONS FOR A SENSOR DRIVER
+* USED FOR A MICRO GRID TEST BED
+* GITHUB.COM/SARGISYONAN -- SARGISY@GMAIL.COM
 */
 
 #include "driver.h"
@@ -91,7 +91,19 @@ void ProcessCommand(void)
 
 void PrintSystemStatusString(void)
 {
-	uprintf("\n---------SYSTEM STATUS---------\nTEMPERATURE (C): %.2f\nFLAGS: %d\nCURRENT STATE: %d\nSETPOINT: %.2f\nOFFSET: %.2f\n-------------------------------",getTemperatureC(), status->flags, status->currentState, status->setpoint, status->offset);
+	static uint8_t lastState = 0;
+	if (lastState == 0)
+	{
+		lastState = status->currentState;
+	}
+	if (lastState != status->currentState)
+	{
+		uprintf("\n---------SYSTEM STATUS---------\nTEMPERATURE (C): %.2f\nFLAGS: %d\nCURRENT STATE: %d\nSETPOINT: %.2f\nOFFSET: %.2f\n-------------------------------",getTemperatureC(), status->flags, status->currentState, status->setpoint, status->offset);
+		lastState = status->currentState;
+	} else {
+		uprintf("TEMPERATURE (C): %.2f\n",getTemperatureC());
+
+	}
 }
 
 bool SystemInit(void)
