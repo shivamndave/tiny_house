@@ -9,32 +9,32 @@
 #include "../One_Wire_Library/OneWire.h"
 #include "../UART_LIBRARY/uart.h"
 
-
-#define INITIAL_STATE IDLE_STATE
-
 void _RelayOn(void);
 void _RelayOff(void);
 void _Idle(void);
-
+uint16_t _array_checksum(uint16_t* array);
 uint8_t _str_checksum(char *rxByteArray);
 uint8_t _uint_checksum(uint8_t rxByte);
 
 FSM_t FSM[] = {
-		{&_Idle, {IDLE_STATE, IDLE_STATE, IDLE_STATE, IDLE_STATE, COOLING_STATE, COOLING_STATE, COOLING_STATE, COOLING_STATE}},
-		{&_RelayOff, {IDLE_STATE, IDLE_STATE, IDLE_STATE, IDLE_STATE, COOLING_STATE, HEATING_STATE, COOLING_STATE, COOLING_STATE}},
-		{&_RelayOn, {IDLE_STATE, IDLE_STATE, IDLE_STATE, IDLE_STATE, HEATING_STATE, HEATING_STATE, COOLING_STATE, HEATING_STATE}}
+		{&_Idle, {IDLE_STATE, IDLE_STATE, IDLE_STATE, IDLE_STATE, COOLING_STATE, COOLING_STATE, HEATING_STATE, IDLE_STATE}},
+		{&_RelayOff, {IDLE_STATE, IDLE_STATE, IDLE_STATE, IDLE_STATE, IDLE_STATE, COOLING_STATE, HEATING_STATE, IDLE_STATE}},
+		{&_RelayOn, {IDLE_STATE, IDLE_STATE, IDLE_STATE, IDLE_STATE, IDLE_STATE, COOLING_STATE, HEATING_STATE, IDLE_STATE}}
 	};
 		
 
 
 int main (void)
 {
+
+
 	if (SystemInit())
 	{
 	//enable for tests
 	status->flags ^= EN_BIT;
 		while(true)
 		{
+
 		//	ProcessCommand();
 			PrintSystemStatusString();
 			FSM[status->currentState].Output_Func_ptr();
@@ -46,48 +46,102 @@ int main (void)
 	return FSM_ERROR;
 }
 
+
+// the whole received message is checksummed and stored as a
+// 16-bit word before the null term char with the _array_checksum algorithm
+// the first 16-bits are the command, and the next bytes are the argument to that command
+/*
+/ example of packet to send
+/  rx    = | 0b00000000[8 MORE COMMAND BITS] | 8-BIT UPPER ARGUMENT + 8-BIT LOWER ARGUMENT | 16-BIT CHECKSUM | COMMAND_TERMINATION 16-BIT COMMAND (NUL) = 0x0000 |
+/  index =                0                                         1                              2                               3
+/ THE COMMAND -> rx = {{RECIEVE_MESSAGE_CHANGE_SETPOINT}, {0x0064}, CHECKSUM, {0x0000}} = change setpoint to 100 degrees celsius
+*/
+
 void ProcessCommand(void)
 {
-	uint8_t rxByte = (uint8_t)uartReceiveByte();
-	uint8_t receivedChecksum = (uint8_t)uartReceiveByte();
-	char str[MAX_SEND_MESSAGE_LENGTH];
-
-
-	if (!(receivedChecksum != _uint_checksum(rxByte)))
+	
+	uint16_t rxByteArray[MAX_RECEIVE_LENGTH];
+	int i = 0;
+	for (i = 0; i < MAX_RECEIVE_LENGTH; i++)
 	{
-		uartTransmitByte((unsigned char)RECEIVE_ERROR);
-		return;
-	}
-
-
-	if ( (rxByte & ENABLE_MESSAGE) && (!(status->flags & EN_BIT)) )
-	{
-		status->flags ^= EN_BIT;
-		return;
-	}
-	if ((rxByte & RECEIVE_MESSAGE_CHANGE_SETPOINT) == RECEIVE_MESSAGE_CHANGE_SETPOINT)
-	{	if ((rxByte & ~(RECEIVE_MESSAGE_CHANGE_SETPOINT)) >= T_ABSOLUTE_MAX) 
+		rxByteArray[i] = (uint16_t)RX_TX_FUNCTION_getc_getc();
+		if ((rxByteArray[i] & EIGHT_BIT_OFFSET) == '\0')
 		{
-			uartTransmitByte((unsigned char)TEMPERATURE_MAX_ERROR);
-			return;
+			break;
 		}
-		status->setpoint = rxByte & (~(RECEIVE_MESSAGE_CHANGE_SETPOINT));
+	}
+
+	if (_array_checksum(rxByteArray) != rxByteArray[i - 1])
+	{
+		uprintf(RX_TX_FUNCTION_getc_puts, "//%d//TRANSMISSION_ERROR//", TRANSMISSION_ERROR_CODE);
 		return;
 	}
-	if ((rxByte & RECEIVE_MESSAGE_CHANGE_OFFSET) == RECEIVE_MESSAGE_CHANGE_OFFSET)
+
+	switch (rxByteArray[0] & EIGHT_BIT_OFFSET)
 	{
-		status->offset = rxByte & (!(RECEIVE_MESSAGE_CHANGE_OFFSET));
-		return;
-	}
-	if ((rxByte & SEND_MESSAGE) == SEND_MESSAGE)
-	{
-		memset(str, '\0', MAX_SEND_MESSAGE_LENGTH);
-		sprintf(str, "%.2f/%zu/%d/%.2f/%.2f",getTemperatureC(), (size_t)status->sysTime, status->currentState, status->setpoint, status->offset);
-		uartPutString(str);	// send system status
-		uartTransmitByte(_str_checksum(str));
-		return;
+
+
+		case ENABLE_STATE_MACHINE:
+			status->flags |= EN_BIT;
+			return;
+			break;
+
+
+		case DISABLE_STATE_MACHINE:
+			status->flags &= EN_BIT;
+			return;
+			break;
+
+
+		case RECEIVE_MESSAGE_CHANGE_SETPOINT:
+			if (rxByteArray[1] < TEMPERATURE_MAX)
+			{
+				status->setpoint = rxByteArray[1] & EIGHT_BIT_OFFSET;
+			} else {
+				uprintf(RX_TX_FUNCTION_getc_puts, "//%d//CHANGE_SETPOINT_ERROR//", CHANGE_SETPOINT_ERROR_CODE);
+			}
+			return;
+			break;
+
+
+		case RECEIVE_MESSAGE_CHANGE_POSITIVE_OFFSET:
+			if (rxByteArray[1] < POSITIVE_OFFSET_MAX)
+			{
+				status->positiveOffset = rxByteArray[1] & EIGHT_BIT_OFFSET;
+			} else {
+				uprintf(RX_TX_FUNCTION_getc_puts, "//%d//CHANGE_POSITIVE_OFFSET_ERROR//", CHANGE_POSITIVE_OFFSET_ERROR_CODE);
+			}
+			return;
+			break;
+
+
+		case RECEIVE_MESSAGE_CHANGE_NEGATIVE_OFFSET:
+			if (rxByteArray[1] < NEGATIVE_OFFSET_MAX)
+			{
+				status->negativeOffset = rxByteArray[1] & EIGHT_BIT_OFFSET;
+			} else {
+				uprintf(RX_TX_FUNCTION_getc_puts, "//%d//CHANGE_NEGATIVE_OFFSET_ERROR//", CHANGE_NEGATIVE_OFFSET_ERROR_CODE);
+			}
+			return;
+			break;
+
+
+		case RECEIVE_MESSAGE_GET_SYSTEM_STATUS:
+			uprintf(RX_TX_FUNCTION_getc_puts, "//%.2f//%d//%d//%.2f//%.2f//%.2f//%d//", getTemperatureC(), status->currentState, status->sysTime, status->setpoint, status->positiveOffset, status->negativeOffset);
+			return;
+			break;
+
+
+		default:
+			uprintf(RX_TX_FUNCTION_getc_puts, "//%d//UNKNOWN_ERROR//", UNKNOWN_ERROR_CODE);
+			return;
+			break;
+
+
 	}
 }
+
+
 
 void PrintSystemStatusString(void)
 {
@@ -98,27 +152,35 @@ void PrintSystemStatusString(void)
 	}
 	if (lastState != status->currentState)
 	{
-		uprintf("\n---------SYSTEM STATUS---------\nTEMPERATURE (C): %.2f\nFLAGS: %d\nCURRENT STATE: %d\nSETPOINT: %.2f\nOFFSET: %.2f\n-------------------------------",getTemperatureC(), status->flags, status->currentState, status->setpoint, status->offset);
+		// print to debug channel
+		uprintf(uart1_puts, "\n---------SYSTEM STATUS---------\nTEMPERATURE (C): %.2f\nFLAGS: %d\nCURRENT STATE: %d\nSETPOINT: %.2f\nOFFSET: %.2f\n-------------------------------",getTemperatureC(), status->flags, status->currentState, status->setpoint, status->positiveOffset);
 		lastState = status->currentState;
 	} else {
-		uprintf("TEMPERATURE (C): %.2f\n",getTemperatureC());
+		uprintf(uart1_puts, "TEMPERATURE (C): %.2f\n",getTemperatureC());
 
 	}
 }
 
 bool SystemInit(void)
 {
-	uartInit(BAUDRATE);
+//    uart0_init(UART_BAUD_SELECT(BAUDRATE,F_CPU)); 
+   	uart1_init(UART_BAUD_SELECT(BAUDRATE,F_CPU));
+    
+    //enable interupts
+    sei();	
+
 	RELAY_DDR = RELAY_DDR_SETTING;
 	status = (Status*)malloc(sizeof(struct Machine_Status));
 	if (status != NULL)
 	{
 		status->flags = 0x00;
 		status->setpoint = T_SETPOINT_DEFAULT;
-		status->offset = T_OFFSET_DEFAULT;
+		status->positiveOffset = T_OFFSET_DEFAULT;
+		status->negativeOffset = T_OFFSET_DEFAULT;
 		status->currentState = INITIAL_STATE;
-		status->initialized = true;
 		status->sysTime = 0;
+		uprintf(RX_TX_FUNCTION_getc_puts, "//%d//SYSTEM INITIALIZED//", SYSTEM_INITIALIZED);
+
 		return FSM_SUCCESS;
 	}
 	return FSM_ERROR;
@@ -136,24 +198,16 @@ void FreeMemory(void)
 uint8_t SensorResult(void)
 {
 	float temp = getTemperatureC();
-	status->flags &= 0x04;
-	//1
-	if (temp >= (status->setpoint + status->offset)) 
+	if (temp >= (status->setpoint + status->positiveOffset)) 
 	{
-			uprintf("\nSUB:1\n");
+		status->flags &= 0x04;
 		return (status->flags ^ GT_BIT);
 	}
-
-	//2
-	if (temp <= (status->setpoint - status->offset)) 
+	if (temp <= (status->setpoint - status->negativeOffset)) 
 	{
-			uprintf("\nSUB:2\n");
-
+		status->flags &= 0x04;
 		return (status->flags ^ LT_BIT);
 	}
-//3
-			uprintf("\nSUB:3\n");
-
 	return status->flags;
 }
 
@@ -191,4 +245,38 @@ uint8_t _uint_checksum(uint8_t rxByte)
 }
 
 
+uint16_t _array_checksum(uint16_t* array)
+{
+	int i = 1;
+	uint16_t checksum = 0;
+	for (i = 1; array[i] != '\0'; i++)
+	{
+		checksum += (array[i] % 8);
+		if (i == 5)
+		{
+			return checksum;
+			break;
+		}
+	}
+	return (checksum ^ 0xFFFF);
+}
+
+
+float getPositiveOffsetMax(void)
+{
+	return (50 - status->setpoint);
+}
+
+
+
+// ISR()
+ISR(TIM0_OVF_vect)           // every 10ms
+{
+	static systick = 0;
+	if ((systick++) = 100)
+	{
+		systick = 0;
+		status->systime++;
+	}
+}
 
