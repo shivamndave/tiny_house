@@ -5,6 +5,8 @@
 * GITHUB.COM/SARGISYONAN -- SARGISY@GMAIL.COM
 */
 
+#define PROGRAM_DIE() return(0)
+
 #include "driver.h"
 #include "../One_Wire_Library/OneWire.h"
 #include "../UART_LIBRARY/uart.h"
@@ -52,8 +54,8 @@ int main (void)
 // the first 16-bits are the command, and the next bytes are the argument to that command
 /*
 / example of packet to send
-/  rx    = | 0b00000000[8 MORE COMMAND BITS] | 8-BIT UPPER ARGUMENT + 8-BIT LOWER ARGUMENT | 16-BIT CHECKSUM | COMMAND_TERMINATION 16-BIT COMMAND (NUL) = 0x0000 |
-/  index =                0                                         1                              2                               3
+/  rx    = | 0x0000[16 COMMAND BITS] | 8-BIT UPPER ARGUMENT + 8-BIT LOWER ARGUMENT | 16-BIT CHECKSUM | COMMAND_TERMINATION 16-BIT COMMAND (NUL) = 0x0000 |
+/  index =                0                                 1                              2                               3
 / THE COMMAND -> rx = {{RECIEVE_MESSAGE_CHANGE_SETPOINT}, {0x0064}, CHECKSUM, {0x0000}} = change setpoint to 100 degrees celsius
 */
 
@@ -62,18 +64,21 @@ void ProcessCommand(void)
 	
 	uint16_t rxByteArray[MAX_RECEIVE_LENGTH];
 	int i = 0;
+	char *txArray;
+
+
 	for (i = 0; i < MAX_RECEIVE_LENGTH; i++)
 	{
-		rxByteArray[i] = (uint16_t)RX_TX_FUNCTION_getc_getc();
+		rxByteArray[i] = (uint16_t)RX_TX_FUNCTION_getc();
 		if ((rxByteArray[i] & EIGHT_BIT_OFFSET) == '\0')
 		{
 			break;
 		}
 	}
 
-	if (_array_checksum(rxByteArray) != rxByteArray[i - 1])
+	if (_str_checksum(rxByteArray) != rxByteArray[i - 1])
 	{
-		uprintf(RX_TX_FUNCTION_getc_puts, "//%d//TRANSMISSION_ERROR//", TRANSMISSION_ERROR_CODE);
+		uprintf(RX_TX_FUNCTION_puts, "//%d//TRANSMISSION_ERROR//", TRANSMISSION_ERROR_CODE);
 		return;
 	}
 
@@ -98,7 +103,7 @@ void ProcessCommand(void)
 			{
 				status->setpoint = rxByteArray[1] & EIGHT_BIT_OFFSET;
 			} else {
-				uprintf(RX_TX_FUNCTION_getc_puts, "//%d//CHANGE_SETPOINT_ERROR//", CHANGE_SETPOINT_ERROR_CODE);
+				uprintf(RX_TX_FUNCTION_puts, "//%d//CHANGE_SETPOINT_ERROR//", CHANGE_SETPOINT_ERROR_CODE);
 			}
 			return;
 			break;
@@ -109,7 +114,7 @@ void ProcessCommand(void)
 			{
 				status->positiveOffset = rxByteArray[1] & EIGHT_BIT_OFFSET;
 			} else {
-				uprintf(RX_TX_FUNCTION_getc_puts, "//%d//CHANGE_POSITIVE_OFFSET_ERROR//", CHANGE_POSITIVE_OFFSET_ERROR_CODE);
+				uprintf(RX_TX_FUNCTION_puts, "//%d//CHANGE_POSITIVE_OFFSET_ERROR//", CHANGE_POSITIVE_OFFSET_ERROR_CODE);
 			}
 			return;
 			break;
@@ -120,20 +125,20 @@ void ProcessCommand(void)
 			{
 				status->negativeOffset = rxByteArray[1] & EIGHT_BIT_OFFSET;
 			} else {
-				uprintf(RX_TX_FUNCTION_getc_puts, "//%d//CHANGE_NEGATIVE_OFFSET_ERROR//", CHANGE_NEGATIVE_OFFSET_ERROR_CODE);
+				uprintf(RX_TX_FUNCTION_puts, "//%d//CHANGE_NEGATIVE_OFFSET_ERROR//", CHANGE_NEGATIVE_OFFSET_ERROR_CODE);
 			}
 			return;
 			break;
 
 
 		case RECEIVE_MESSAGE_GET_SYSTEM_STATUS:
-			uprintf(RX_TX_FUNCTION_getc_puts, "//%.2f//%d//%d//%.2f//%.2f//%.2f//%d//", getTemperatureC(), status->currentState, status->sysTime, status->setpoint, status->positiveOffset, status->negativeOffset);
+			uprintf(RX_TX_FUNCTION_puts, "//%.2f//%d//%d//%.2f//%.2f//%.2f//%d//", getTemperatureC(), status->currentState, status->sysTime, status->setpoint, status->positiveOffset, status->negativeOffset);
 			return;
 			break;
 
 
 		default:
-			uprintf(RX_TX_FUNCTION_getc_puts, "//%d//UNKNOWN_ERROR//", UNKNOWN_ERROR_CODE);
+			uprintf(RX_TX_FUNCTION_puts, "//%d//UNKNOWN_ERROR//", UNKNOWN_ERROR_CODE);
 			return;
 			break;
 
@@ -235,7 +240,7 @@ uint8_t _str_checksum(char *rxByteArray)
 {
 	uint8_t checksum = 0;
 	while (*rxByteArray != '\0') { checksum += (((*rxByteArray++) ^ 0xFF)); }
-	checksum %= 0xFF;
+	checksum %= 0x1F;
 	return checksum;
 }
 
@@ -251,10 +256,9 @@ uint16_t _array_checksum(uint16_t* array)
 	uint16_t checksum = 0;
 	for (i = 1; array[i] != '\0'; i++)
 	{
-		checksum += (array[i] % 8);
+		checksum += (array[i] % 64);
 		if (i == 5)
 		{
-			return checksum;
 			break;
 		}
 	}
