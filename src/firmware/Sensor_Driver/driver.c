@@ -75,7 +75,7 @@ void ProcessCommand(void)
 			break;
 		}
 	}
-
+ 
 	if (_str_checksum(rxByteArray) != rxByteArray[i - 1])
 	{
 		uprintf(RX_TX_FUNCTION_puts, "//%d//TRANSMISSION_ERROR//", TRANSMISSION_ERROR_CODE);
@@ -107,6 +107,7 @@ void ProcessCommand(void)
 			}
 			return;
 			break;
+
 
 
 		case RECEIVE_MESSAGE_CHANGE_POSITIVE_OFFSET:
