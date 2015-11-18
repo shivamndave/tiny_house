@@ -15,7 +15,11 @@
 
 
 
+#ifndef DRIVER_H
+#define DRIVER_H
 
+
+#define PROGRAM_DIE() return(0)
 
 // FSM SPECS //
 #define INITIAL_STATE 							IDLE_STATE
@@ -30,7 +34,7 @@
 
 // WATER HEATER SPECS //
 #define TEMPERATURE_MAX							48.8889
-#define POSITIVE_OFFSET_MAX						getPositiveOffsetMax()
+#define POSITIVE_OFFSET_MAX						_getPositiveOffsetMax()
 #define NEGATIVE_OFFSET_MAX						1
 
 
@@ -39,7 +43,9 @@
 */
 #define RX_TX_FUNCTION_getc 					uart1_getc
 #define RX_TX_FUNCTION_puts						uart1_puts
-#define BAUDRATE								38400
+#define RX_TX_FUNCTION_flush					uart1_flush
+#define RX_TX_FUNCTION_available				uart1_available
+#define BAUDRATE								57600
 
 #define EIGHT_BIT_OFFSET						0x00FF
 
@@ -135,7 +141,7 @@ struct Machine_Status
 };
 
 typedef struct Machine_Status Status;
-Status *status = NULL;	// allocated within ControllerInit()
+Status *status;	// allocated within ControllerInit()
 
 /** 
  * ==============
@@ -170,15 +176,20 @@ bool SystemInit(void);
  * ==============
  */
 // PROTOTYPE
-void ProcessCommand(void);
+void ProcessCommand(void);	// DEFINED IN ../main.c
 
 
-void FreeMemory(void);
-uint8_t SensorResult(void);
-void PrintSystemStatusString(void);
+void FreeMemory(void);	// FREES SYSTEM STRUCTURE MEMORY
+uint8_t SensorResult(void);	// DETERMINES WHAT THE OUTPUT OF THE SENSOR MEANS TO THE SYSTEM
+void PrintSystemStatusString(void);	// DEBUGGING PRINT FUNCTION
 
-float getPositiveOffsetMax(void);
-float getNegativeOffsetMax(void);
+float _getPositiveOffsetMax(void);	// PRIVATE FUNCTION TO DETERMINE +OFFSET
 
+/* PRIVATE FUNCTIONS THAT DEFINE REAL-WORLD OUTPUT */
+void _RelayOn(void);		// TURNS ON RELAY PIN
+void _RelayOff(void);		// TURNS OFF RELAY PIN
+void _Idle(void);			// AN EMPTY NO-OP
+uint16_t _str_checksum(uint16_t *rxByteArray);	// CALCULATES THE CHECKSUM OF AN ARRAY
 
+#endif
 
