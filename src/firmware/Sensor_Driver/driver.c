@@ -23,12 +23,12 @@ void PrintSystemStatusString(void)
 	if (lastState != status->currentState)
 	{
 		// print to debug channel
-		uprintf(uart1_puts, "\n---------SYSTEM STATUS---------\nTEMPERATURE (C): %.2f\nFLAGS: %d\nCURRENT STATE: %d\nSETPOINT: %.2f\nOFFSET: %.2f\n-------------------------------",getTemperatureC(), status->flags, status->currentState, status->setpoint, status->positiveOffset);
-		uprintf(uart0_puts, "TEMPERATURE (C): %.2f\n",getTemperatureC());
+		uprintf(uart1_puts, "\n---SYSTEM STATUS---\nTEMPERATURE (C): %.2f\nFLAGS: %d\nCURRENT STATE: %d\nSETPOINT: %.2f\nOFFSET: %.2f\n-------------------------------",getTemperatureC(), status->flags, status->currentState, status->setpoint, status->positiveOffset);
+		uprintf(uart0_puts, "%.2f\n",getTemperatureC());
 		lastState = status->currentState;
 	} else {
-		uprintf(uart1_puts, "TEMPERATURE (C): %.2f\n",getTemperatureC());
-		uprintf(uart0_puts, "TEMPERATURE (C): %.2f\n",getTemperatureC());
+		uprintf(uart1_puts, "%.2f\n",getTemperatureC());
+		uprintf(uart0_puts, "%.2f\n",getTemperatureC());
 
 	}
 }

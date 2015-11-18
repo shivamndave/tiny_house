@@ -26,11 +26,16 @@ int main (void)
 	status->flags ^= EN_BIT;
 		while(true)
 		{
-		//	ProcessCommand();
+			
+			
+			if (ProcessCommand() != PROCESS_COMMAND_ERROR){}
+	/*
+		
 			PrintSystemStatusString();
 			FSM[status->currentState].Output_Func_ptr();
 			status->flags = SensorResult();
 			status->currentState = FSM[status->currentState].nextState[status->flags];
+	*/
 		}
 	}
 	FreeMemory();
@@ -50,87 +55,105 @@ int main (void)
 / THE COMMAND -> rx = {{RECIEVE_MESSAGE_CHANGE_SETPOINT}, {0x0064}, CHECKSUM, {0x0000}} = change setpoint to 100 degrees celsius
 */
 
-void ProcessCommand(void)
+uint16_t ProcessCommand(void)
 {
 
-	uint16_t rxByteArray[MAX_RECEIVE_LENGTH];
+	uint16_t *rxByteArray;
 	int i = 0;
-
-	if (RX_TX_FUNCTION_available() <= 0)
+	
+	if (RX_TX_FUNCTION_peek() == UART_NO_DATA)
 	{
 		return;
 	}
 
-	for (i = 0; i < MAX_RECEIVE_LENGTH; i++)
+	rxByteArray = (uint16_t*)calloc(MAX_RECEIVE_LENGTH, (sizeof(uint16_t) * MAX_RECEIVE_LENGTH));
+	
+	if (rxByteArray != NULL)
 	{
-		rxByteArray[i] = (uint16_t)RX_TX_FUNCTION_getc();
-		if ((rxByteArray[i] & EIGHT_BIT_OFFSET) == '\0')
+		for (i = 0; (i < MAX_RECEIVE_LENGTH) || (RX_TX_FUNCTION_peek() == UART_NO_DATA); i++)
 		{
-			break;
+			rxByteArray[i] = RX_TX_FUNCTION_getc();
+			if (rxByteArray[i] == '/')
+			{
+				rxByteArray[i] = '\0';
+				break;
+			}
 		}
+		for (int j = 0; rxByteArray[j] != '\0'; j++) {uart0_putc((uint8_t)rxByteArray[j]);}
+
+		uprintf(RX_TX_FUNCTION_puts, "%d", _str_checksum(rxByteArray));
+
+
+	//		uprintf(uart0_puts, "\nrxByteArray: %s", rxByteArray);
+	//	uprintf(uart0_puts, "\n________\n");
+	 	/*
+		if (_str_checksum(rxByteArray) != rxByteArray[i - 1])
+		{
+			uprintf(RX_TX_FUNCTION_puts, "//%d//TRANSMISSION_ERROR//", TRANSMISSION_ERROR_CODE);
+			return;
+		}
+
+		switch (rxByteArray[0] & EIGHT_BIT_OFFSET)
+		{
+
+
+			case ENABLE_STATE_MACHINE:
+				status->flags |= EN_BIT;
+				break;
+
+
+			case DISABLE_STATE_MACHINE:
+				status->flags &= EN_BIT;
+				break;
+
+
+			case RECEIVE_MESSAGE_CHANGE_SETPOINT:
+				if (rxByteArray[1] < TEMPERATURE_MAX)
+				{
+					status->setpoint = rxByteArray[1] & EIGHT_BIT_OFFSET;
+				} else {
+					uprintf(RX_TX_FUNCTION_puts, "//%d//CHANGE_SETPOINT_ERROR//", CHANGE_SETPOINT_ERROR_CODE);
+				}
+				break;
+
+
+
+			case RECEIVE_MESSAGE_CHANGE_POSITIVE_OFFSET:
+				if (rxByteArray[1] < (uint16_t)POSITIVE_OFFSET_MAX)
+				{
+					status->positiveOffset = rxByteArray[1] & EIGHT_BIT_OFFSET;
+				} else {
+					uprintf(RX_TX_FUNCTION_puts, "//%d//CHANGE_POSITIVE_OFFSET_ERROR//", CHANGE_POSITIVE_OFFSET_ERROR_CODE);
+				}
+				break;
+
+
+			case RECEIVE_MESSAGE_CHANGE_NEGATIVE_OFFSET:
+				if (rxByteArray[1] < NEGATIVE_OFFSET_MAX)
+				{
+					status->negativeOffset = rxByteArray[1] & EIGHT_BIT_OFFSET;
+				} else {
+					uprintf(RX_TX_FUNCTION_puts, "//%d//CHANGE_NEGATIVE_OFFSET_ERROR//", CHANGE_NEGATIVE_OFFSET_ERROR_CODE);
+				}
+				break;
+
+
+			case RECEIVE_MESSAGE_GET_SYSTEM_STATUS:
+				uprintf(RX_TX_FUNCTION_puts, "//%.2f//%d//%d//%.2f//%.2f//%.2f//%d//", getTemperatureC(), status->currentState, status->sysTime, status->setpoint, status->positiveOffset, status->negativeOffset);
+				break;
+
+
+			default:
+				uprintf(RX_TX_FUNCTION_puts, "//%d//UNKNOWN_ERROR//", UNKNOWN_ERROR_CODE);
+				break;
+		}
+
+		*/
+
+
+	} else {
+		return PROCESS_COMMAND_ERROR;
 	}
- 
-	if (_str_checksum(rxByteArray) != rxByteArray[i - 1])
-	{
-		uprintf(RX_TX_FUNCTION_puts, "//%d//TRANSMISSION_ERROR//", TRANSMISSION_ERROR_CODE);
-		return;
-	}
-
-	switch (rxByteArray[0] & EIGHT_BIT_OFFSET)
-	{
-
-
-		case ENABLE_STATE_MACHINE:
-			status->flags |= EN_BIT;
-			break;
-
-
-		case DISABLE_STATE_MACHINE:
-			status->flags &= EN_BIT;
-			break;
-
-
-		case RECEIVE_MESSAGE_CHANGE_SETPOINT:
-			if (rxByteArray[1] < TEMPERATURE_MAX)
-			{
-				status->setpoint = rxByteArray[1] & EIGHT_BIT_OFFSET;
-			} else {
-				uprintf(RX_TX_FUNCTION_puts, "//%d//CHANGE_SETPOINT_ERROR//", CHANGE_SETPOINT_ERROR_CODE);
-			}
-			break;
-
-
-
-		case RECEIVE_MESSAGE_CHANGE_POSITIVE_OFFSET:
-			if (rxByteArray[1] < (uint16_t)POSITIVE_OFFSET_MAX)
-			{
-				status->positiveOffset = rxByteArray[1] & EIGHT_BIT_OFFSET;
-			} else {
-				uprintf(RX_TX_FUNCTION_puts, "//%d//CHANGE_POSITIVE_OFFSET_ERROR//", CHANGE_POSITIVE_OFFSET_ERROR_CODE);
-			}
-			break;
-
-
-		case RECEIVE_MESSAGE_CHANGE_NEGATIVE_OFFSET:
-			if (rxByteArray[1] < NEGATIVE_OFFSET_MAX)
-			{
-				status->negativeOffset = rxByteArray[1] & EIGHT_BIT_OFFSET;
-			} else {
-				uprintf(RX_TX_FUNCTION_puts, "//%d//CHANGE_NEGATIVE_OFFSET_ERROR//", CHANGE_NEGATIVE_OFFSET_ERROR_CODE);
-			}
-			break;
-
-
-		case RECEIVE_MESSAGE_GET_SYSTEM_STATUS:
-			uprintf(RX_TX_FUNCTION_puts, "//%.2f//%d//%d//%.2f//%.2f//%.2f//%d//", getTemperatureC(), status->currentState, status->sysTime, status->setpoint, status->positiveOffset, status->negativeOffset);
-			break;
-
-
-		default:
-			uprintf(RX_TX_FUNCTION_puts, "//%d//UNKNOWN_ERROR//", UNKNOWN_ERROR_CODE);
-			break;
-	}
-	RX_TX_FUNCTION_flush();
 	return;
 }
 /*

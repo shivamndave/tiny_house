@@ -44,15 +44,20 @@
 #define RX_TX_FUNCTION_getc 					uart1_getc
 #define RX_TX_FUNCTION_puts						uart1_puts
 #define RX_TX_FUNCTION_flush					uart1_flush
+#define RX_TX_FUNCTION_peek						uart1_peek
 #define RX_TX_FUNCTION_available				uart1_available
-#define BAUDRATE								57600
+#define BAUDRATE								9600
 
 #define EIGHT_BIT_OFFSET						0x00FF
 
 #define MAX_RECEIVE_LENGTH						64
+
 #define SYSTEM_INITIALIZED						0x0011
 #define ENABLE_STATE_MACHINE					0x00FF
 #define DISABLE_STATE_MACHINE					0x0000
+
+
+#define PROCESS_COMMAND_ERROR					0x0000
 #define CHANGE_SETPOINT_ERROR_CODE				0x00F0
 #define TRANSMISSION_ERROR_CODE					0x00F1
 #define CHANGE_POSITIVE_OFFSET_ERROR_CODE		0x00F2
@@ -176,7 +181,7 @@ bool SystemInit(void);
  * ==============
  */
 // PROTOTYPE
-void ProcessCommand(void);	// DEFINED IN ../main.c
+uint16_t ProcessCommand(void);	// DEFINED IN ../main.c
 
 
 void FreeMemory(void);	// FREES SYSTEM STRUCTURE MEMORY

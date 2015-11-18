@@ -20,7 +20,7 @@ all:
 	${CC} ${PHASE_TWO}
 	${OBJECT_COPY} -j .text -j .data -O ihex ${EXECUTABLE}.elf ${EXECUTABLE}.hex
 	${BURNER} -P ${COMPILER_PATH} -p ${AVRDUDE_CONTROLLER} -c ${COMPILER} -e -b ${BAUDRATE} -U flash:w:${EXECUTABLE}.hex 
-#	rm -f ${OBJECTS} ${EXECUTABLE}.elf ${EXECUTABLE}.hex
+	rm -f ${OBJECTS} ${EXECUTABLE}.elf ${EXECUTABLE}.hex
 clean:
 	rm -f ${OBJECTS} ${EXECUTABLE}.hex ${EXECUTABLE}.elf
 push:
