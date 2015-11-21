@@ -1,0 +1,72 @@
+<DOCTYPE html>
+<html>
+<!--Meta viewport tag to wrap the site on any device-->
+<meta name="viewport" content="width=device-width", initial-scale="1", minimum-scale="1">
+    <head>
+        <!-- Load in files -->
+        <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+        <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+        <script src="http://code.highcharts.com/stock/highstock.js"></script>
+        <script src="http://code.highcharts.com/highcharts-more.js"></script>
+        <script src="http://code.highcharts.com/modules/data.js"></script>
+        <script src="http://code.highcharts.com/modules/exporting.js"></script>
+
+        <!-- Stylesheet -->
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    </head>
+
+    <body>
+      <section>
+        <div class="header row">
+            <div class="headerInfoBox col" ng-controller="MainController">
+    			<table>
+				<tr>
+					<td>Current Temp: 27 C&deg; <b>|</b> </td>
+			   		<td>Current State: Heating</td>
+				</tr>
+				<tr>
+                        		<td><input placeholder="Set Point"></input></td>
+                        		<td><input placeholder="Change + Offset"></input></td>
+                        		<td><input placeholder="Change - Offset"></input></td>
+				</tr>
+			</table>
+            </div>
+
+            <!-- Header Div with info about the project, etc-->
+            <div class="headerMenuBox col">
+		<div align="center" id="dateSelection">
+            		<label>Pick a date range:</label>
+           	 	<input id="start-picker" type="text" value=""></input>
+            		<input id="end-picker" type="text" value=""></input>
+            		<button id="submit-range" value="submit">Submit</button>
+         	</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Example 2 column grid, good for graphs/larger objects being shown-->
+            <div class="col2-1 col">
+		<div class="chart" id="sensorOne" style="margin: 0 auto"></div>
+		<h2 id="sensorOneHide">Sensors were under maintainance. Charts cannot be displayed </h2>	
+	    </div>
+            <div class="col2-2 col">
+		<div class="chart" id="sensorTwo" style="margin: 0 auto"></div>
+		<h2 id="sensorTwoHide">Sensors were under maintainance. Charts cannot be displayed </h2>
+	    </div>
+        </div>
+      </section>
+      <script>
+         $(function(){
+            $('#start-picker').datepicker({
+               maxDate: new Date()
+            });
+        });
+        $(function(){
+            $('#end-picker').datepicker({
+                maxDate: new Date()
+            });
+        });
+      </script>
+    </body>
+</html>
+
