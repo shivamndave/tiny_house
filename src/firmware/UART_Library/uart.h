@@ -21,8 +21,10 @@
 //#define USART2_ENABLED 
 //#define USART3_ENABLED
 
-
-
+#define UART_RX0_BUFFER_SIZE 256
+#define UART_RX0_BUFFER_SIZE 256
+#define UART_TX1_BUFFER_SIZE 256
+#define UART_TX1_BUFFER_SIZE 256
 /* Set size of receive and transmit buffers */
 
 #ifndef UART_RX0_BUFFER_SIZE

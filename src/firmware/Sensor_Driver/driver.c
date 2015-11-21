@@ -35,11 +35,10 @@ void PrintSystemStatusString(void)
 
 bool SystemInit(void)
 {
-//    uart0_init(UART_BAUD_SELECT(BAUDRATE,F_CPU)); 
+	//enable interupts
+    sei();	
    	uart1_init(UART_BAUD_SELECT(BAUDRATE,F_CPU));
     uart0_init(UART_BAUD_SELECT(BAUDRATE,F_CPU));
-    //enable interupts
-    sei();	
 
 	RELAY_DDR = RELAY_DDR_SETTING;
 	status = (Status*)malloc(sizeof(struct Machine_Status));
