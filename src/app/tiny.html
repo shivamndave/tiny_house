@@ -12,13 +12,14 @@
         <script src="http://code.highcharts.com/modules/exporting.js"></script>
 
         <!-- Stylesheet -->
+        <link rel="stylesheet" type="text/css" href="css/jquery-ui-1.10.3.custom.css">
         <link rel="stylesheet" type="text/css" href="css/style.css">
     </head>
 
     <body>
       <section>
-        <div class="header row">
-            <div class="headerInfoBox col" ng-controller="MainController">
+        <div class="row">
+            <div class="col2-1">
     			<table>
 				<tr>
 					<td>Current Temp: 27 C&deg; <b>|</b> </td>
@@ -33,7 +34,7 @@
             </div>
 
             <!-- Header Div with info about the project, etc-->
-            <div class="headerMenuBox col">
+            <div class="col2-1">
 		<div align="center" id="dateSelection">
             		<label>Pick a date range:</label>
            	 	<input id="start-picker" type="text" value=""></input>

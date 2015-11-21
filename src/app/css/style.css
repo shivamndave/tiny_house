@@ -2,25 +2,25 @@
     box-sizing: border-box;
 }
 
-.headerMenuBox {
-    float: left;
-    width: 30%;
-    padding: 10px;
-    border: 1px solid #000000;
-    background: #87D37C;
-    font-family: sans-serif;
-    color: #FFFFFF;
-}
-
-.headerInfoBox {
-    width: 70%;
-    float: left;
-    padding: 10px;
-    border: 1px solid #000000;
-    background: #87D37C;
-    font-family: sans-serif;
-    color: #FFFFFF;
-}
+//.headerMenuBox {
+//    float: left;
+//    width: 30%;
+//    padding: 10px;
+//    border: 1px solid #000000;
+//    background: #87D37C;
+//    font-family: sans-serif;
+//    color: #FFFFFF;
+//}
+//
+//.headerInfoBox {
+//    width: 70%;
+//    float: left;
+//    padding: 10px;
+//    border: 1px solid #000000;
+//    background: #87D37C;
+//    font-family: sans-serif;
+//    color: #FFFFFF;
+//}
 
 .col2-1, .col2-2 {
     float: left;
