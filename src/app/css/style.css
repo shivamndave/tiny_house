@@ -30,6 +30,7 @@
     background: #87D37C;
     font-family: sans-serif;
     color: #FFFFFF;
+    flex: 1;
 }
 
 .col3-1, .col3-2, .col3-3 {
@@ -52,7 +53,12 @@
     color: #FFFFFF;
 }
 
-@media only screen and (max-width: 500px) {
+.row {
+  background: #87D37C;
+  display: flex;
+}
+
+@media only screen and (max-width: 1000px) {
     .headerMenuBox {
         width: 100%;
     }
@@ -71,5 +77,8 @@
 
     .col4-1, .col4-2, .col4-3, .col4-4 {
         width: 100%;
+    }
+    .row {
+       display: block;
     }
 }
