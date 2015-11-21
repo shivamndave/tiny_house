@@ -52,8 +52,11 @@ int main (void)
 		c = (uint8_t*)malloc(8);
 
 		int temp = 0;
-		for(temp = 0; uart1_available() >= 1; temp++){
-			if (temp == 8)return NULL;
+		for(temp = 0; temp < 8; temp++){
+			//if (temp == 8)return NULL;
+			if (uart1_available() < 1){
+				_delay_ms (5);
+			}
 			/* BYTE TO 2 BYTE FUNCTION
 			if (temp % 2){
 				c[temp] = c[temp] << 8;
