@@ -55,19 +55,21 @@ int main (void)
 		for(temp = 0; temp < 8; temp++){
 			//if (temp == 8)return NULL;
 			if (uart1_available() < 1){
-				_delay_ms (5);
+				_delay_ms(5);
+				//if nothing in buffer, wait 5ms.
+				if (uart1_available() < 1)return c;
+				//if still nothing available, return c.
 			}
-			/* BYTE TO 2 BYTE FUNCTION
-			if (temp % 2){
-				c[temp] = c[temp] << 8;
-				c[temp] = c[temp] | uart1_getc();
-			}*/
+
+			uint8_t temp2 = uart1_getc();
+			c[temp] = temp2;
 
 
-			c[temp] = uart1_getc();
-			uprintf(RX_TX_FUNCTION_puts, "gC() = %d - %X\n", temp, c[temp]); //testing
+//			if (c[temp] == '\0')return c;
+			uprintf(RX_TX_FUNCTION_puts, "gC() = %d - %c\n", temp, c[temp]); //testing
 			if (c[temp] == RX_DELIMITER) {
-				//c[temp] = 0xFF;
+				c[temp] = '\0';
+
 				return c;
 			}
 		}
@@ -87,15 +89,15 @@ int main (void)
 
 uint16_t ProcessCommand(void)
 {
-	uprintf(RX_TX_FUNCTION_puts, "IN PC()\n");
+	uprintf(RX_TX_FUNCTION_puts, "IN pCommand()\n");
 	uint8_t *rxByteArray;
 	rxByteArray = grabCommand();
-	uart0_putc('C');
+	//uart0_putc('C');
 	if (rxByteArray != NULL){
-		for (int i = 0; rxByteArray[i] != RX_DELIMITER; i++)
+		//for (int i = 0; rxByteArray[i] != RX_DELIMITER; i++)
 		{
-			uart0_putc((char)(rxByteArray[i] & 0x00FF));
-			uprintf(RX_TX_FUNCTION_puts, "%c", rxByteArray[i]);
+			//uart0_putc((rxByteArray[i]));
+			uprintf(RX_TX_FUNCTION_puts, "%s", rxByteArray);
 		}
 	}
 
