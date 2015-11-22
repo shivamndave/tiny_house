@@ -10,7 +10,106 @@
 #include "../One_Wire_Library/OneWire.h"
 #include "../UART_LIBRARY/uart.h"
 
+// the whole received message is checksummed and stored as a
+// 16-bit word before the null term uint16_t with the _array_checksum algorithm
+// the first 16-bits are the command, and the next bytes are the argument to that command
+/*
+/ example of packet to send
+/  rx    = | 0x0000[16 COMMAND BITS] | 8-BIT UPPER ARGUMENT + 8-BIT LOWER ARGUMENT | 16-BIT CHECKSUM | COMMAND_TERMINATION 16-BIT COMMAND ('-') = 0x002D |
+/  index =                0                                 1                              2                               3
+/ THE COMMAND -> rx = {{RECEIVE_MESSAGE_CHANGE_SETPOINT}, {0x0064}, CHECKSUM, {0x0000}} = change setpoint to 100 degrees celsius
+*/
 
+uint16_t ProcessCommand(void)
+{
+	uint8_t rxByteArray[MAX_RECEIVE_LENGTH];
+	int i = 0;
+		
+	for(i = 0; i < 8; i++){
+		if (uart1_available() < 1){
+			_delay_ms (XBEE_CHAR_MS_TIMEOUT);
+		}
+	
+		rxByteArray[i] = uart1_getc();
+		if (rxByteArray[i] == RX_DELIMITER) 
+		{
+			rxByteArray[i] = '\0';
+			break;
+		}
+	}
+	uprintf(uart0_puts, "rxByteArray: %s\n", rxByteArray);
+
+
+	
+	if ( ((i == MAX_RECEIVE_LENGTH) && (rxByteArray[i] != RX_DELIMITER)) || ((i - 1) < MIN_RECEIVE_LENGTH) ) return (TRANSMISSION_ERROR_CODE);
+//	if (rxByteArray[i - 1] != _str_checksum(rxByteArray)) return CORRUPT_PACKET_TRANSMISSION;
+
+		switch (rxByteArray[0] & EIGHT_BIT_OFFSET)
+		{
+
+
+			case ENABLE_STATE_MACHINE:
+				uart0_putc('E');
+				status->flags |= EN_BIT;
+				break;
+
+
+			case DISABLE_STATE_MACHINE:
+				uart0_putc('O');
+				status->flags &= ~(EN_BIT);
+				break;
+
+
+			case RECEIVE_MESSAGE_CHANGE_SETPOINT:
+				uart0_putc('S');
+				if (rxByteArray[1] < TEMPERATURE_MAX)
+				{
+					status->setpoint = rxByteArray[1] & EIGHT_BIT_OFFSET;
+				} else {
+					uprintf(RX_TX_FUNCTION_puts, "//%d//CHANGE_SETPOINT_ERROR//", CHANGE_SETPOINT_ERROR_CODE);
+				}
+				break;
+
+
+
+			case RECEIVE_MESSAGE_CHANGE_POSITIVE_OFFSET:
+				uart0_putc('P');
+				if (rxByteArray[1] < POSITIVE_OFFSET_MAX)
+				{
+					status->positiveOffset = rxByteArray[1] & EIGHT_BIT_OFFSET;
+				} else {
+					uprintf(RX_TX_FUNCTION_puts, "//%d//CHANGE_POSITIVE_OFFSET_ERROR//", CHANGE_POSITIVE_OFFSET_ERROR_CODE);
+				}
+				break;
+
+
+			case RECEIVE_MESSAGE_CHANGE_NEGATIVE_OFFSET:
+				uart0_putc('C');
+				if (rxByteArray[1] < NEGATIVE_OFFSET_MAX)
+				{
+					status->negativeOffset = rxByteArray[1] & EIGHT_BIT_OFFSET;
+				} else {
+					uprintf(RX_TX_FUNCTION_puts, "//%d//CHANGE_NEGATIVE_OFFSET_ERROR//", CHANGE_NEGATIVE_OFFSET_ERROR_CODE);
+				}
+				break;
+
+
+			case RECEIVE_MESSAGE_GET_SYSTEM_STATUS:
+				uart0_putc('G');
+				uprintf(RX_TX_FUNCTION_puts, "//%.2f//%d//%d//%.2f//%.2f//%.2f//%d//", getTemperatureC(), status->currentState, status->sysTime, status->setpoint, status->positiveOffset, status->negativeOffset);
+				break;
+
+
+			default:
+				uart0_putc('D');
+				uprintf(RX_TX_FUNCTION_puts, "//%d//UNKNOWN_ERROR//", UNKNOWN_ERROR_CODE);
+				break;
+		}
+
+	uart0_flush();
+	uart1_flush();
+	return PROCESS_COMMAND_SUCCESS;
+}
 
 
 void PrintSystemStatusString(void)
@@ -105,7 +204,7 @@ void _Idle(void)
 uint16_t _str_checksum(uint16_t *rxByteArray)
 {
 	uint8_t checksum = 0;
-	while (*rxByteArray != '\0') { checksum += (((*rxByteArray++) ^ 0xFF)); }
+	while (*rxByteArray != RX_DELIMITER) { checksum += (((*rxByteArray++) ^ 0xFF)); }
 	checksum %= 0x1F;
 	return checksum;
 }
