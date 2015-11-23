@@ -22,14 +22,11 @@ int main (void)
 	{
 		while(true)
 		{
-			if (uart1_available() >= 1) (ProcessCommand());
-			if (status->flags & EN_BIT)
-			{
-				PrintSystemStatusString();
-				FSM[status->currentState].Output_Func_ptr();
-				status->flags = SensorResult();
-				status->currentState = FSM[status->currentState].nextState[status->flags];
-			}
+			if (uart1_available() >= 1) (ProcessCommand());								// if commands are in the receiving buffer
+			PrintSystemStatusString();		
+			FSM[status->currentState].Output_Func_ptr();								// executes proper state function
+			status->flags = SensorResult();												// changes next state for the FSM
+			status->currentState = FSM[status->currentState].nextState[status->flags];
 		}
 	}
 	FreeMemory();
