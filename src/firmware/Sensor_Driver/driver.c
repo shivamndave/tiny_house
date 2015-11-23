@@ -55,7 +55,7 @@ uint16_t ProcessCommand(void)
 			case DISABLE_STATE_MACHINE:
 				uart0_putc('O');
 				uprintf(RX_TX_FUNCTION_puts, "DISABLED\n");
-				status->flags &= ~(EN_BIT);
+				status->flags &= 0;
 				status->currentState = IDLE_STATE;
 				break;
 
