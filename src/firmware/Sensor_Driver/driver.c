@@ -168,15 +168,14 @@ void FreeMemory(void)
 
 uint8_t SensorResult(void)
 {
-	float temp = status->currentTemp;
 	if ((status->flags & EN_BIT) != EN_BIT) return (status->flags &= 0); // not enabled
 
-	if (temp >= (status->setpoint + status->positiveOffset)) 
+	if (status->currentTemp >= (status->setpoint + status->positiveOffset)) 
 	{
 		status->flags &= 0x04;
 		return (status->flags ^ GT_BIT);
 	}
-	if (temp <= (status->setpoint - status->negativeOffset)) 
+	if (status->currentTemp <= (status->setpoint - status->negativeOffset)) 
 	{
 		status->flags &= 0x04;
 		return (status->flags ^ LT_BIT);
