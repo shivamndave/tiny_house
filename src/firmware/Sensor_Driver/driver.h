@@ -19,11 +19,11 @@
 #define DRIVER_H
 
 
-#define PROGRAM_DIE() while (1) \
+#define PROGRAM_DIE(x) while (1) \
 {RX_TX_FUNCTION_puts("--FSM ERROR--")\
 status->currentState = IDLE_STATE;\
 _RelayOff();}\
-return(0);\
+return(x)\
 
 // FSM SPECS //
 #define INITIAL_STATE 							IDLE_STATE

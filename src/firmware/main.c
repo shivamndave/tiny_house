@@ -30,7 +30,7 @@ int main (void)
 		}
 	}
 	FreeMemory();
-	PROGRAM_DIE();
+	PROGRAM_DIE(0);
 }
 
 
