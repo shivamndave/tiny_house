@@ -8,11 +8,12 @@
 #include "One_Wire_Library/OneWire.h"
 #include "UART_LIBRARY/uart.h"
 
-FSM_t FSM[] = {
-		{&_Idle, {IDLE_STATE, IDLE_STATE, IDLE_STATE, IDLE_STATE, COOLING_STATE, COOLING_STATE, HEATING_STATE, IDLE_STATE}},
-		{&_RelayOff, {IDLE_STATE, IDLE_STATE, IDLE_STATE, IDLE_STATE, IDLE_STATE, COOLING_STATE, HEATING_STATE, IDLE_STATE}},
-		{&_RelayOn, {IDLE_STATE, IDLE_STATE, IDLE_STATE, IDLE_STATE, IDLE_STATE, COOLING_STATE, HEATING_STATE, IDLE_STATE}}
-	};
+FSM_t FSM[] = 
+{
+	{&_Idle, {IDLE_STATE, IDLE_STATE, IDLE_STATE, IDLE_STATE, COOLING_STATE, COOLING_STATE, HEATING_STATE, IDLE_STATE}},
+	{&_RelayOff, {IDLE_STATE, IDLE_STATE, IDLE_STATE, IDLE_STATE, IDLE_STATE, COOLING_STATE, HEATING_STATE, IDLE_STATE}},
+	{&_RelayOn, {IDLE_STATE, IDLE_STATE, IDLE_STATE, IDLE_STATE, IDLE_STATE, COOLING_STATE, HEATING_STATE, IDLE_STATE}}
+};
 		
 
 
@@ -20,9 +21,9 @@ int main (void)
 {
 	if (SystemInit())	// DEFINED IN driver.h
 	{
-		while(true)
+		while(true)		// embedded system; does not return from main()
 		{
-			if (uart1_available() >= 1) (ProcessCommand());								// if commands are in the receiving buffer
+			if (uart1_available() >= 1) ProcessCommand();								// if commands are in the receiving buffer
 			PrintSystemStatusString();		
 			FSM[status->currentState].Output_Func_ptr();								// executes proper state function
 			status->flags = SensorResult();												// changes next state for the FSM
@@ -30,7 +31,7 @@ int main (void)
 		}
 	}
 	FreeMemory();
-	PROGRAM_DIE(0);
+	PROGRAM_DIE(0);	// if (error)
 }
 
 

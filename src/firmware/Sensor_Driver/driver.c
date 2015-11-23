@@ -163,10 +163,7 @@ bool SystemInit(void)
 
 void FreeMemory(void)
 {
-	if (!(status == NULL))
-	{
-		free(status); 
-	}
+	if (!(status == NULL)) free(status);
 }
 
 
@@ -191,17 +188,11 @@ uint8_t SensorResult(void)
 
 void _RelayOn(void)
 {
-	if (RELAY_PIN == OFF)
-	{
-		RELAY_PORT |= ON;
-	}
+	if (RELAY_PIN == OFF) RELAY_PORT |= ON;
 }
 void _RelayOff(void)
 {
-	if (RELAY_PIN == ON)
-	{
-		RELAY_PORT &= OFF;
-	}
+	if (RELAY_PIN == ON) RELAY_PORT &= OFF;
 }
 void _Idle(void)
 {

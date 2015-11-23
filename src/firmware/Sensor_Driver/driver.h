@@ -15,12 +15,22 @@
 
 
 
+/****************************************************
+      /////        //     ////     ///////
+      //  //    //   //   //  //   //
+THE/////   /////      //////  //////////////SOFTWARE/
+      //  //   //   //    ////     //
+      ////       //       //       ///////
+                   COMPANY INC.
+                    PRESENTS:
+                    DRIVER.H
+*****************************************************/
 #ifndef DRIVER_H
 #define DRIVER_H
 
-
+/* ERROR MACRO DEFINITION */
 #define PROGRAM_DIE(x) while (1) \
-{RX_TX_FUNCTION_puts("--FSM ERROR--")\
+{RX_TX_FUNCTION_puts("--FSM ERROR--");\
 status->currentState = IDLE_STATE;\
 _RelayOff();}\
 return(x)\
