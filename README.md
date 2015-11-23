@@ -14,5 +14,5 @@ The subdirectories are as follows:
     - app:
       - tiny.html	: Basic frontend html page of the web application. Allows for displays of graphs
       - js		: Holds javascript source files, including the main date parser and JSON highchart files
-	- lib		: Contains libraries used for the project, such as timepicker, for the date/time selection
+        - lib		: Contains libraries used for the project, such as timepicker, for the date/time selection
       - css		: Styling for the frontend and media queres for responsive design. Also lib/jQuery stylesheets
