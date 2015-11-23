@@ -56,6 +56,7 @@ uint16_t ProcessCommand(void)
 				uart0_putc('O');
 				uprintf(RX_TX_FUNCTION_puts, "DISABLED\n");
 				status->flags &= ~(EN_BIT);
+				status->currentState = IDLE_STATE;
 				break;
 
 
