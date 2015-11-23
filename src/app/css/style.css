@@ -1,5 +1,11 @@
 * {
     box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+li {
+    background: #87D37C;
+    color: #FFFFFF;
 }
 
 //.headerMenuBox {
@@ -28,7 +34,6 @@
     padding: 10px;
     border: 1px solid #000000;
     background: #87D37C;
-    font-family: sans-serif;
     color: #FFFFFF;
     flex: 1;
 }
@@ -39,7 +44,6 @@
     padding: 10px;
     border: 1px solid #000000;
     background: #87D37C;
-    font-family: sans-serif;
     color: #FFFFFF;
 }
 
@@ -49,7 +53,6 @@
     padding: 10px;
     border: 1px solid #000000;
     background: #87D37C;
-    font-family: sans-serif;
     color: #FFFFFF;
 }
 
