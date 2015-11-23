@@ -1,0 +1,77 @@
+<DOCTYPE html>
+  <html>
+  <!--Meta viewport tag to wrap the site on any device-->
+  <meta name="viewport" content="width=device-width", initial-scale="1", minimum-scale="1">
+  <head>
+    <!-- Load in files -->
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script src="http://code.highcharts.com/stock/highstock.js"></script>
+    <script src="http://code.highcharts.com/highcharts-more.js"></script>
+    <script src="http://code.highcharts.com/modules/data.js"></script>
+    <script src="http://code.highcharts.com/modules/exporting.js"></script>
+
+    <script src="js/dateSetter.js"></script>
+    <script src="js/powerDisplay.js"></script>
+    <script src="js/freqDisplay.js"></script>
+    <script src="js/lib/jquery.timepicker.min.js"></script>
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" type="text/css" href="css/jquery.timepicker.css">
+    <link rel="stylesheet" type="text/css" href="css/jquery-ui-1.10.3.custom.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+  </head>
+
+  <body>
+    <section>
+      <div class="row">
+        <div class="col2-1 col">
+         <table>
+          <tr>
+           <td>Current Temp: 27 C&deg; <b>|</b> </td>
+           <td>Current State: Heating</td>
+         </tr>
+         <tr>
+          <td> Current data: XX </td>
+          <td> Current frequency data: XX </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Header Div with info about the project, etc-->
+    <div class="col2-2 col">
+      <div align="center" id="dateSelection">
+        <label>Pick a day and time range:</label>
+        <input id="day-picker" type="text" value=""></input>
+        <input id="start-time-picker" type="text" value=""></input>
+        <input id="end-time-picker" type="text" value=""></input>
+        <button id="submit-range" value="submit" onclick="reload_date_range()">Submit</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Example 2 column grid, good for graphs/larger objects being shown-->
+    <div class="col2-1 col">
+      <div class="chart" id="power" style="margin: 0 auto"></div>
+      <h2 id="powerHide">Power sensors were under maintainance. Charts cannot be displayed </h2>  
+    </div>
+    <div class="col2-2 col">
+      <div class="chart" id="freq" style="margin: 0 auto"></div>
+      <h2 id="freqHide">Frequency sensors were under maintainance. Charts cannot be displayed </h2>
+    </div>
+  </div>
+</section>
+
+<script>
+$(function(){
+ $('#day-picker').datepicker({
+   dayDate: new Date()
+ });
+ $('#start-time-picker').timepicker();
+ $('#end-time-picker').timepicker();
+});
+</script>
+
+</body>
+</html>
