@@ -65,7 +65,9 @@ uint16_t ProcessCommand(void)
 				if (rxByteArray[1] < TEMPERATURE_MAX)
 				{
 					status->setpoint = rxByteArray[1] & EIGHT_BIT_OFFSET;
-				} else {
+					uprintf(RX_TX_FUNCTION_puts, "new setpoint: %f\n", status->setpoint);
+				}
+				 else {
 					uprintf(RX_TX_FUNCTION_puts, "//%d//CHANGE_SETPOINT_ERROR//", CHANGE_SETPOINT_ERROR_CODE);
 				}
 				break;
