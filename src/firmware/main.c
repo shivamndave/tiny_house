@@ -8,8 +8,11 @@
 #include "One_Wire_Library/OneWire.h"
 #include "UART_LIBRARY/uart.h"
 #include <util/delay.h>
+<<<<<<< HEAD
+=======
 uint8_t *grabCommand(void);
 ISR(TIM0_OVF_vect);
+>>>>>>> 74dac1e86eee5e4a4c8ce65e50b217a767312576
 
 FSM_t FSM[] = {
 		{&_Idle, {IDLE_STATE, IDLE_STATE, IDLE_STATE, IDLE_STATE, COOLING_STATE, COOLING_STATE, HEATING_STATE, IDLE_STATE}},
@@ -23,9 +26,18 @@ int main (void)
 {
 	if (SystemInit())	// DEFINED IN driver.h
 	{
-	//	status->flags ^= EN_BIT;
 		while(true)
 		{
+<<<<<<< HEAD
+			if (uart1_available() >= 1) (ProcessCommand());
+			if (status->flags & EN_BIT)
+			{
+				PrintSystemStatusString();
+				FSM[status->currentState].Output_Func_ptr();
+				status->flags = SensorResult();
+				status->currentState = FSM[status->currentState].nextState[status->flags];
+			}
+=======
 			//uprintf(RX_TX_FUNCTION_puts, "hello");
 			if (uart1_available() >= 1) (ProcessCommand());
 			if (status->flags & EN_BIT)
@@ -36,6 +48,7 @@ int main (void)
 				status->flags = SensorResult();
 				status->currentState = FSM[status->currentState].nextState[status->flags];
 				}
+>>>>>>> 74dac1e86eee5e4a4c8ce65e50b217a767312576
 		}
 	}
 	FreeMemory();
@@ -43,6 +56,8 @@ int main (void)
 }
 
 
+<<<<<<< HEAD
+=======
 // Takes a byte from the Xbee at uart1 and places it into variable c
 // if a valid delimiter is found, the delimiter is replaced with 0xFF
 // and c is returned.
@@ -189,3 +204,4 @@ ISR(TIM0_OVF_vect)           // every 10ms
 	}
 }
 */
+>>>>>>> 74dac1e86eee5e4a4c8ce65e50b217a767312576
