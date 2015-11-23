@@ -38,9 +38,6 @@ uint16_t ProcessCommand(void)
 		}
 	}
 	uprintf(uart0_puts, "rxByteArray: %s\n", rxByteArray);
-
-
-	
 	if ( ((i == MAX_RECEIVE_LENGTH) && (rxByteArray[i] != RX_DELIMITER)) || ((i - 1) < MIN_RECEIVE_LENGTH) ) return (TRANSMISSION_ERROR_CODE);
 //	if (rxByteArray[i - 1] != _str_checksum(rxByteArray)) return CORRUPT_PACKET_TRANSMISSION;
 
