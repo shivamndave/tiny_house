@@ -47,18 +47,21 @@ uint16_t ProcessCommand(void)
 
 			case ENABLE_STATE_MACHINE:
 				uart0_putc('E');
+				uprintf(RX_TX_FUNCTION_puts, "ENABLED\n");
 				status->flags |= EN_BIT;
 				break;
 
 
 			case DISABLE_STATE_MACHINE:
 				uart0_putc('O');
+				uprintf(RX_TX_FUNCTION_puts, "DISABLED\n");
 				status->flags &= ~(EN_BIT);
 				break;
 
 
 			case RECEIVE_MESSAGE_CHANGE_SETPOINT:
 				uart0_putc('S');
+				uprintf(RX_TX_FUNCTION_puts, "CHANGE SETPOINT\n");
 				if (rxByteArray[1] < TEMPERATURE_MAX)
 				{
 					status->setpoint = rxByteArray[1] & EIGHT_BIT_OFFSET;
@@ -71,6 +74,7 @@ uint16_t ProcessCommand(void)
 
 			case RECEIVE_MESSAGE_CHANGE_POSITIVE_OFFSET:
 				uart0_putc('P');
+				uprintf(RX_TX_FUNCTION_puts, "CHANGE POSITIVE OFFSET\n");
 				if (rxByteArray[1] < POSITIVE_OFFSET_MAX)
 				{
 					status->positiveOffset = rxByteArray[1] & EIGHT_BIT_OFFSET;
@@ -82,6 +86,7 @@ uint16_t ProcessCommand(void)
 
 			case RECEIVE_MESSAGE_CHANGE_NEGATIVE_OFFSET:
 				uart0_putc('C');
+				uprintf(RX_TX_FUNCTION_puts, "CHANGE NEGATIVE OFFSET\n");
 				if (rxByteArray[1] < NEGATIVE_OFFSET_MAX)
 				{
 					status->negativeOffset = rxByteArray[1] & EIGHT_BIT_OFFSET;
@@ -93,6 +98,7 @@ uint16_t ProcessCommand(void)
 
 			case RECEIVE_MESSAGE_GET_SYSTEM_STATUS:
 				uart0_putc('G');
+				uprintf(RX_TX_FUNCTION_puts, "GET SYSTEM STATUS\n");
 				uprintf(RX_TX_FUNCTION_puts, "//%.2f//%d//%d//%.2f//%.2f//%.2f//%d//", getTemperatureC(), status->currentState, status->sysTime, status->setpoint, status->positiveOffset, status->negativeOffset);
 				break;
 
