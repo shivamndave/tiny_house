@@ -5,89 +5,117 @@
 * GITHUB.COM/SARGISYONAN -- SARGISY@GMAIL.COM
 */
 
+
 #include "driver.h"
 #include "../One_Wire_Library/OneWire.h"
 #include "../UART_LIBRARY/uart.h"
 
+// the whole received message is checksummed and stored as a
+// 16-bit word before the null term uint16_t with the _array_checksum algorithm
+// the first 16-bits are the command, and the next bytes are the argument to that command
+/*
+/ example of packet to send
+/  rx    = | 0x0000[16 COMMAND BITS] | 8-BIT UPPER ARGUMENT + 8-BIT LOWER ARGUMENT | 16-BIT CHECKSUM | COMMAND_TERMINATION 16-BIT COMMAND ('-') = 0x002D |
+/  index =                0                                 1                              2                               3
+/ THE COMMAND -> rx = {{RECEIVE_MESSAGE_CHANGE_SETPOINT}, {0x0064}, CHECKSUM, {0x0000}} = change setpoint to 100 degrees celsius
+*/
 
-#define INITIAL_STATE IDLE_STATE
-
-void _RelayOn(void);
-void _RelayOff(void);
-void _Idle(void);
-
-uint8_t _str_checksum(char *rxByteArray);
-uint8_t _uint_checksum(uint8_t rxByte);
-
-FSM_t FSM[] = {
-		{&_Idle, {IDLE_STATE, IDLE_STATE, IDLE_STATE, IDLE_STATE, COOLING_STATE, COOLING_STATE, COOLING_STATE, COOLING_STATE}},
-		{&_RelayOff, {IDLE_STATE, IDLE_STATE, IDLE_STATE, IDLE_STATE, COOLING_STATE, HEATING_STATE, COOLING_STATE, COOLING_STATE}},
-		{&_RelayOn, {IDLE_STATE, IDLE_STATE, IDLE_STATE, IDLE_STATE, HEATING_STATE, HEATING_STATE, COOLING_STATE, HEATING_STATE}}
-	};
+uint16_t ProcessCommand(void)
+{
+	uint8_t rxByteArray[MAX_RECEIVE_LENGTH];
+	int i = 0;
 		
-
-
-int main (void)
-{
-	if (SystemInit())
-	{
-	//enable for tests
-	status->flags ^= EN_BIT;
-		while(true)
+	for(i = 0; i < 8; i++){
+		if (uart1_available() < 1){
+			_delay_ms (XBEE_CHAR_MS_TIMEOUT);
+		}
+	
+		rxByteArray[i] = uart1_getc();
+		if (rxByteArray[i] == RX_DELIMITER) 
 		{
-		//	ProcessCommand();
-			PrintSystemStatusString();
-			FSM[status->currentState].Output_Func_ptr();
-			status->flags = SensorResult();
-			status->currentState = FSM[status->currentState].nextState[status->flags];
+			rxByteArray[i] = '\0';
+			break;
 		}
 	}
-	FreeMemory();
-	return FSM_ERROR;
-}
+	uprintf(uart0_puts, "rxByteArray: %s\n", rxByteArray);
+	if ( ((i == MAX_RECEIVE_LENGTH) && (rxByteArray[i] != RX_DELIMITER)) || ((i - 1) < MIN_RECEIVE_LENGTH) ) return (TRANSMISSION_ERROR_CODE);
+//	if (rxByteArray[i - 1] != _str_checksum(rxByteArray)) return CORRUPT_PACKET_TRANSMISSION;
 
-void ProcessCommand(void)
-{
-	uint8_t rxByte = (uint8_t)uartReceiveByte();
-	uint8_t receivedChecksum = (uint8_t)uartReceiveByte();
-	char str[MAX_SEND_MESSAGE_LENGTH];
-
-
-	if (!(receivedChecksum != _uint_checksum(rxByte)))
-	{
-		uartTransmitByte((unsigned char)RECEIVE_ERROR);
-		return;
-	}
-
-
-	if ( (rxByte & ENABLE_MESSAGE) && (!(status->flags & EN_BIT)) )
-	{
-		status->flags ^= EN_BIT;
-		return;
-	}
-	if ((rxByte & RECEIVE_MESSAGE_CHANGE_SETPOINT) == RECEIVE_MESSAGE_CHANGE_SETPOINT)
-	{	if ((rxByte & ~(RECEIVE_MESSAGE_CHANGE_SETPOINT)) >= T_ABSOLUTE_MAX) 
+		switch (rxByteArray[0] & EIGHT_BIT_OFFSET)
 		{
-			uartTransmitByte((unsigned char)TEMPERATURE_MAX_ERROR);
-			return;
+
+
+			case ENABLE_STATE_MACHINE:
+				uart0_putc('E');
+				uprintf(RX_TX_FUNCTION_puts, "ENABLED\n");
+				status->flags |= EN_BIT;
+				break;
+
+
+			case DISABLE_STATE_MACHINE:
+				uart0_putc('O');
+				uprintf(RX_TX_FUNCTION_puts, "DISABLED\n");
+				status->flags &= ~(EN_BIT);
+				break;
+
+
+			case RECEIVE_MESSAGE_CHANGE_SETPOINT:
+				uart0_putc('S');
+				uprintf(RX_TX_FUNCTION_puts, "CHANGE SETPOINT\n");
+				if (rxByteArray[1] < TEMPERATURE_MAX)
+				{
+					status->setpoint = rxByteArray[1] & EIGHT_BIT_OFFSET;
+					uprintf(RX_TX_FUNCTION_puts, "new setpoint: %f\n", status->setpoint);
+				}
+				 else {
+					uprintf(RX_TX_FUNCTION_puts, "//%d//CHANGE_SETPOINT_ERROR//", CHANGE_SETPOINT_ERROR_CODE);
+				}
+				break;
+
+
+
+			case RECEIVE_MESSAGE_CHANGE_POSITIVE_OFFSET:
+				uart0_putc('P');
+				uprintf(RX_TX_FUNCTION_puts, "CHANGE POSITIVE OFFSET\n");
+				if (rxByteArray[1] < POSITIVE_OFFSET_MAX)
+				{
+					status->positiveOffset = rxByteArray[1] & EIGHT_BIT_OFFSET;
+				} else {
+					uprintf(RX_TX_FUNCTION_puts, "//%d//CHANGE_POSITIVE_OFFSET_ERROR//", CHANGE_POSITIVE_OFFSET_ERROR_CODE);
+				}
+				break;
+
+
+			case RECEIVE_MESSAGE_CHANGE_NEGATIVE_OFFSET:
+				uart0_putc('C');
+				uprintf(RX_TX_FUNCTION_puts, "CHANGE NEGATIVE OFFSET\n");
+				if (rxByteArray[1] < NEGATIVE_OFFSET_MAX)
+				{
+					status->negativeOffset = rxByteArray[1] & EIGHT_BIT_OFFSET;
+				} else {
+					uprintf(RX_TX_FUNCTION_puts, "//%d//CHANGE_NEGATIVE_OFFSET_ERROR//", CHANGE_NEGATIVE_OFFSET_ERROR_CODE);
+				}
+				break;
+
+
+			case RECEIVE_MESSAGE_GET_SYSTEM_STATUS:
+				uart0_putc('G');
+				uprintf(RX_TX_FUNCTION_puts, "GET SYSTEM STATUS\n");
+				uprintf(RX_TX_FUNCTION_puts, "//%.2f//%d//%d//%.2f//%.2f//%.2f//%d//", getTemperatureC(), status->currentState, status->sysTime, status->setpoint, status->positiveOffset, status->negativeOffset);
+				break;
+
+
+			default:
+				uart0_putc('D');
+				uprintf(RX_TX_FUNCTION_puts, "//%d//UNKNOWN_ERROR//", UNKNOWN_ERROR_CODE);
+				break;
 		}
-		status->setpoint = rxByte & (~(RECEIVE_MESSAGE_CHANGE_SETPOINT));
-		return;
-	}
-	if ((rxByte & RECEIVE_MESSAGE_CHANGE_OFFSET) == RECEIVE_MESSAGE_CHANGE_OFFSET)
-	{
-		status->offset = rxByte & (!(RECEIVE_MESSAGE_CHANGE_OFFSET));
-		return;
-	}
-	if ((rxByte & SEND_MESSAGE) == SEND_MESSAGE)
-	{
-		memset(str, '\0', MAX_SEND_MESSAGE_LENGTH);
-		sprintf(str, "%.2f/%zu/%d/%.2f/%.2f",getTemperatureC(), (size_t)status->sysTime, status->currentState, status->setpoint, status->offset);
-		uartPutString(str);	// send system status
-		uartTransmitByte(_str_checksum(str));
-		return;
-	}
+
+	uart0_flush();
+	uart1_flush();
+	return PROCESS_COMMAND_SUCCESS;
 }
+
 
 void PrintSystemStatusString(void)
 {
@@ -98,27 +126,36 @@ void PrintSystemStatusString(void)
 	}
 	if (lastState != status->currentState)
 	{
-		uprintf("\n---------SYSTEM STATUS---------\nTEMPERATURE (C): %.2f\nFLAGS: %d\nCURRENT STATE: %d\nSETPOINT: %.2f\nOFFSET: %.2f\n-------------------------------",getTemperatureC(), status->flags, status->currentState, status->setpoint, status->offset);
+		// print to debug channel
+		uprintf(uart1_puts, "\n---SYSTEM STATUS---\nTEMPERATURE (C): %.2f\nFLAGS: %d\nCURRENT STATE: %d\nSETPOINT: %.2f\nOFFSET: %.2f\n-------------------------------",getTemperatureC(), status->flags, status->currentState, status->setpoint, status->positiveOffset);
+		uprintf(uart0_puts, "%.2f\n",getTemperatureC());
 		lastState = status->currentState;
 	} else {
-		uprintf("TEMPERATURE (C): %.2f\n",getTemperatureC());
+		uprintf(uart1_puts, "%.2f\n",getTemperatureC());
+		uprintf(uart0_puts, "%.2f\n",getTemperatureC());
 
 	}
 }
 
 bool SystemInit(void)
 {
-	uartInit(BAUDRATE);
+	//enable interupts
+    sei();	
+   	uart1_init(UART_BAUD_SELECT(BAUDRATE,F_CPU));
+    uart0_init(UART_BAUD_SELECT(BAUDRATE,F_CPU));
+
 	RELAY_DDR = RELAY_DDR_SETTING;
 	status = (Status*)malloc(sizeof(struct Machine_Status));
 	if (status != NULL)
 	{
 		status->flags = 0x00;
 		status->setpoint = T_SETPOINT_DEFAULT;
-		status->offset = T_OFFSET_DEFAULT;
+		status->positiveOffset = T_OFFSET_DEFAULT;
+		status->negativeOffset = T_OFFSET_DEFAULT;
 		status->currentState = INITIAL_STATE;
-		status->initialized = true;
 		status->sysTime = 0;
+		uprintf(RX_TX_FUNCTION_puts, "//%d//SYSTEM INITIALIZED//", SYSTEM_INITIALIZED);
+
 		return FSM_SUCCESS;
 	}
 	return FSM_ERROR;
@@ -136,24 +173,18 @@ void FreeMemory(void)
 uint8_t SensorResult(void)
 {
 	float temp = getTemperatureC();
-	status->flags &= 0x04;
-	//1
-	if (temp >= (status->setpoint + status->offset)) 
+	if ((status->flags & EN_BIT) != EN_BIT) return (status->flags &= 0); // not enabled
+
+	if (temp >= (status->setpoint + status->positiveOffset)) 
 	{
-			uprintf("\nSUB:1\n");
+		status->flags &= 0x04;
 		return (status->flags ^ GT_BIT);
 	}
-
-	//2
-	if (temp <= (status->setpoint - status->offset)) 
+	if (temp <= (status->setpoint - status->negativeOffset)) 
 	{
-			uprintf("\nSUB:2\n");
-
+		status->flags &= 0x04;
 		return (status->flags ^ LT_BIT);
 	}
-//3
-			uprintf("\nSUB:3\n");
-
 	return status->flags;
 }
 
@@ -177,18 +208,15 @@ void _Idle(void)
 	_RelayOff();
 }
 
-uint8_t _str_checksum(char *rxByteArray)
+uint16_t _str_checksum(uint16_t *rxByteArray)
 {
 	uint8_t checksum = 0;
-	while (*rxByteArray != '\0') { checksum += (((*rxByteArray++) ^ 0xFF)); }
-	checksum %= 0xFF;
+	while (*rxByteArray != RX_DELIMITER) { checksum += (((*rxByteArray++) ^ 0xFF)); }
+	checksum %= 0x1F;
 	return checksum;
 }
 
-uint8_t _uint_checksum(uint8_t rxByte)
+float _getPositiveOffsetMax(void)
 {
-	return (rxByte ^ 0xFF);
+	return (50 - status->setpoint);
 }
-
-
-

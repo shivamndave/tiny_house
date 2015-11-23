@@ -1,0 +1,43 @@
+// direct cache hasher
+
+#include <stdio.h>
+int main (void)
+{
+	int *cache[];
+	int i =0;
+	int addr = 0;
+	int lines = 0;
+	int bytesPerLine = 0;
+	int instruction = 0;
+
+	puts("\nENTER NUMBER OF CACHE LINES >>");
+	scanf("%d", &lines);
+	puts("\nENTER BYTES IN A LINE >>");
+	scanf("%d", &bytesPerLine);
+
+	cache = (int**)malloc(lines);
+	for (i = 0; i < lines; i++)
+	{
+		cache[i] = (int*)calloc(-1, bytesPerLine);
+	}
+
+
+	while(1){
+	puts("\nENTER A BASE-10 INSTRUCTION ADDRESS >>");
+	scanf("%d", &addr);
+	puts("\nENTER LINE NUMBER OF INSTRUCTION >>");
+	scanf("%d", &instruction);
+	cache[num % lines] = instruction;
+
+	for (i = 0; i < lines; i++)
+	{
+		printf("\nLINE: %d", i);
+		for (j = 0; j < bytesPerLine; j++)
+		{
+			printf("BYTE: %d = %d ||  ", j, cache[i][j]);
+		}
+	}
+	}
+	return 1;
+}
+
