@@ -24,7 +24,7 @@ uint16_t ProcessCommand(void)
 {
 	uint8_t rxByteArray[MAX_RECEIVE_LENGTH];
 	int i = 0;
-		
+
 	for(i = 0; i < MAX_RECEIVE_LENGTH; i++){
 		if (uart1_available() < 1){
 			_delay_ms (XBEE_CHAR_MS_TIMEOUT);
@@ -100,7 +100,7 @@ uint16_t ProcessCommand(void)
 			case RECEIVE_MESSAGE_GET_SYSTEM_STATUS:
 				uart0_putc('G');
 				uprintf(RX_TX_FUNCTION_puts, "GET SYSTEM STATUS\n");
-				uprintf(RX_TX_FUNCTION_puts, "//%.2f//%d//%d//%.2f//%.2f//%.2f//%d//", getTemperatureC(), status->currentState, status->sysTime, status->setpoint, status->positiveOffset, status->negativeOffset);
+				uprintf(RX_TX_FUNCTION_puts, "//%.2f//%d//%.2f//%.2f//%.2f//%d//", status->currentTemp, status->currentState, status->setpoint, status->positiveOffset, status->negativeOffset);
 				break;
 
 
@@ -126,12 +126,12 @@ void PrintSystemStatusString(void)
 	if (lastState != status->currentState)
 	{
 		// print to debug channel
-		uprintf(uart1_puts, "\n---SYSTEM STATUS---\nTEMPERATURE (C): %.2f\nFLAGS: %d\nCURRENT STATE: %d\nSETPOINT: %.2f\nOFFSET: %.2f\n-------------------------------",getTemperatureC(), status->flags, status->currentState, status->setpoint, status->positiveOffset);
-		uprintf(uart0_puts, "%.2f\n",getTemperatureC());
+		uprintf(uart1_puts, "\n---SYSTEM STATUS---\nTEMPERATURE (C): %.2f\nFLAGS: %d\nCURRENT STATE: %d\nSETPOINT: %.2f\nOFFSET: %.2f\n-------------------------------",status->currentTemp, status->flags, status->currentState, status->setpoint, status->positiveOffset);
+		uprintf(uart0_puts, "%.2f\n",status->currentTemp);
 		lastState = status->currentState;
 	} else {
-		uprintf(uart1_puts, "%.2f\n",getTemperatureC());
-		uprintf(uart0_puts, "%.2f\n",getTemperatureC());
+		uprintf(uart1_puts, "%.2f\n",status->currentTemp);
+		uprintf(uart0_puts, "%.2f\n",status->currentTemp);
 
 	}
 }
@@ -168,7 +168,7 @@ void FreeMemory(void)
 
 uint8_t SensorResult(void)
 {
-	float temp = getTemperatureC();
+	float temp = status->currentTemp;
 	if ((status->flags & EN_BIT) != EN_BIT) return (status->flags &= 0); // not enabled
 
 	if (temp >= (status->setpoint + status->positiveOffset)) 

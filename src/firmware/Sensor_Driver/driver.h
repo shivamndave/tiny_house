@@ -14,17 +14,6 @@
 #include <util/delay.h>
 
 
-
-/****************************************************
-      /////        //     ////     ///////
-      //  //    //   //   //  //   //
-THE/////   /////      //////  //////////////SOFTWARE/
-      //  //   //   //    ////     //
-      ////       //       //       ///////
-                   COMPANY INC.
-                    PRESENTS:
-                    DRIVER.H
-*****************************************************/
 #ifndef DRIVER_H
 #define DRIVER_H
 
@@ -165,7 +154,7 @@ struct Machine_Status
 {
 	uint8_t currentState;	// HOLDS CURRENT STATE
 	uint8_t flags;
-	uint32_t sysTime;
+	float currentTemp;
 	float setpoint;
 	float negativeOffset;
 	float positiveOffset;
