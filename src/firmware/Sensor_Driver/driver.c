@@ -25,7 +25,7 @@ uint16_t ProcessCommand(void)
 	uint8_t rxByteArray[MAX_RECEIVE_LENGTH];
 	int i = 0;
 		
-	for(i = 0; i < 8; i++){
+	for(i = 0; i < MAX_RECEIVE_LENGTH; i++){
 		if (uart1_available() < 1){
 			_delay_ms (XBEE_CHAR_MS_TIMEOUT);
 		}
@@ -38,7 +38,6 @@ uint16_t ProcessCommand(void)
 		}
 	}
 	uprintf(uart0_puts, "rxByteArray: %s\n", rxByteArray);
-	if ( ((i == MAX_RECEIVE_LENGTH) && (rxByteArray[i] != RX_DELIMITER)) || ((i - 1) < MIN_RECEIVE_LENGTH) ) return (TRANSMISSION_ERROR_CODE);
 //	if (rxByteArray[i - 1] != _str_checksum(rxByteArray)) return CORRUPT_PACKET_TRANSMISSION;
 
 		switch (rxByteArray[0] & EIGHT_BIT_OFFSET)
