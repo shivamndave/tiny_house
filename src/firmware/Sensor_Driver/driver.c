@@ -55,8 +55,7 @@ uint16_t ProcessCommand(void)
 			case DISABLE_STATE_MACHINE:
 				uart0_putc('O');
 				uprintf(RX_TX_FUNCTION_puts, "DISABLED\n");
-				status->flags &= 0;
-				status->currentState = IDLE_STATE;
+				status->flags &= ~(EN_BIT);
 				break;
 
 
@@ -174,6 +173,8 @@ void FreeMemory(void)
 uint8_t SensorResult(void)
 {
 	float temp = getTemperatureC();
+	if ((status->flags & EN_BIT) != EN_BIT) return (status->flags &= 0); // not enabled
+
 	if (temp >= (status->setpoint + status->positiveOffset)) 
 	{
 		status->flags &= 0x04;
