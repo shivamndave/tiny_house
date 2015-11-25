@@ -90,17 +90,22 @@ bool SystemInit(void);
 uint16_t ProcessCommand(void);	// DEFINED IN ../main.c
 
 
-void FreeMemory(void);	// FREES SYSTEM STRUCTURE MEMORY
-uint8_t SensorResult(void);	// DETERMINES WHAT THE OUTPUT OF THE SENSOR MEANS TO THE SYSTEM
-void PrintSystemStatusString(void);	// DEBUGGING PRINT FUNCTION
-
-float _getPositiveOffsetMax(void);	// PRIVATE FUNCTION TO DETERMINE +OFFSET
-
+// RELAY COMMANDS //
 /* PRIVATE FUNCTIONS THAT DEFINE REAL-WORLD OUTPUT */
 void _RelayOn(void);		// TURNS ON RELAY PIN
 void _RelayOff(void);		// TURNS OFF RELAY PIN
 void _Idle(void);			// AN EMPTY NO-OP
+////////////////////
+// FSM SPECIFIC COMMANDS TO GET MAX OFFSET //
+float _getPositiveOffsetMax(void);	// PRIVATE FUNCTION TO DETERMINE +OFFSET
+/////////////////////////////////////////////
+
+uint8_t SensorResult(void);	// DETERMINES WHAT THE OUTPUT OF THE SENSOR MEANS TO THE SYSTEM
+void PrintSystemStatusString(void);	// DEBUGGING PRINT FUNCTION
 uint16_t _str_checksum(uint16_t *rxByteArray);	// CALCULATES THE CHECKSUM OF AN ARRAY
+
+
+void FreeMemory(void);	// FREES SYSTEM STRUCTURE MEMORY
 
 #endif
 

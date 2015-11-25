@@ -12,25 +12,17 @@
 
 
 #define INITIAL_STATE 							IDLE_STATE
-
-
-// FSM SPECS //
-
+// FSM SPECS ///////
 #define FSM_SUCCESS								true
 #define FSM_ERROR 								false
-
-
+////////////////////
 #define GT_BIT 									0x01		
 #define LT_BIT 									0x02		
 #define EN_BIT 									0x04
-
 // STATE DEFINITIONS
 #define IDLE_STATE 								0
 #define COOLING_STATE 							1
 #define HEATING_STATE 							2
-
-
-
 
 /** 
  * ==============
@@ -51,8 +43,6 @@ struct FSM_STRUCTURE
 	uint8_t nextState[8];	// NEXT STATE LOGIC
 };
 typedef const struct FSM_STRUCTURE FSM_t;
-
-
 
 /** 
  * ==============
@@ -83,9 +73,6 @@ struct Machine_Status
 
 typedef struct Machine_Status Status;
 Status *status;	// allocated within ControllerInit()
-
-
-
 
 
 FSM_t FSM[] = 
