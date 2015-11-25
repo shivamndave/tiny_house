@@ -69,7 +69,7 @@ bool SystemInit(void);
  * ------------
  * DESCRIPTION : This function allows the system status (setpoint, offsets, and state) to be configured
  *               via a list of possible commands (above). This function requires an array of the form:
- *               | 16-BIT COMMAND | 16-BIT ARGUMENT | 16-BIT CHECKSUM | 0x0000 |    =
+ *               | 16-BIT COMMAND | 16-BIT ARGUMENT | 16-BIT CHECKSUM | 0x00DA |    =
  *                       0                1                 2             3         =
  *               {{RECEIVE_MESSAGE_CHANGE_SETPOINT}, {0x0064}, CHECKSUM, {0x0000}} = change setpoint to 100 degrees celsius
  * ------------
