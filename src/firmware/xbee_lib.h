@@ -9,6 +9,9 @@
 
 // XBEE SPECIFIC DELIMITER, DELAY, BAUDRATE, FUNCTIONS, LENGTHS
 
+#ifndef XBEE_LIB_H
+#define XBEE_LIB_H
+
 
 #define RX_DELIMITER 							0x2D
 #define XBEE_CHAR_MS_TIMEOUT					5
@@ -23,3 +26,6 @@
 
 #define MAX_RECEIVE_LENGTH						10
 #define MIN_RECEIVE_LENGTH						3
+
+
+#endif
