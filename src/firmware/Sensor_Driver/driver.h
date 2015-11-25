@@ -16,9 +16,9 @@
 #include "../RX_TX/commands.h"
 #include "../RX_TX/xbee_lib.h"
 
+
 #ifndef DRIVER_H
 #define DRIVER_H
-
 
 /*
 //\\//\\//\\//\\//\\//\\//\\
@@ -29,7 +29,7 @@
 #define T_OFFSET_DEFAULT 						0.25
 
 // WATER HEATER SPECS //
-#define TEMPERATURE_MAX							48.8889
+#define TEMPERATURE_MAX							48
 #define POSITIVE_OFFSET_MAX						_getPositiveOffsetMax()
 #define NEGATIVE_OFFSET_MAX						1
 
@@ -93,7 +93,6 @@ float _getPositiveOffsetMax(void);	// PRIVATE FUNCTION TO DETERMINE +OFFSET
 /////////////////////////////////////////////
 
 uint8_t SensorResult(void);	// DETERMINES WHAT THE OUTPUT OF THE SENSOR MEANS TO THE SYSTEM
-void PrintSystemStatusString(void);	// DEBUGGING PRINT FUNCTION
 uint16_t _str_checksum(uint16_t *rxByteArray);	// CALCULATES THE CHECKSUM OF AN ARRAY
 
 

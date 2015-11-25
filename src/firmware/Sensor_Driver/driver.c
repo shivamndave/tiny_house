@@ -13,16 +13,11 @@
 #include "../UART_LIBRARY/uart.h"
 
 
-
-
-
 bool SystemInit(void)
 {
 	//enable interupts
     sei();	
-   	uart1_init(UART_BAUD_SELECT(BAUDRATE,F_CPU));
-    uart0_init(UART_BAUD_SELECT(BAUDRATE,F_CPU));
-
+   	RX_TX_FUNCTION_init(UART_BAUD_SELECT(BAUDRATE,F_CPU));
 	RELAY_DDR = RELAY_DDR_SETTING;
 	status = (Status*)malloc(sizeof(struct Machine_Status));
 	if (status != NULL)
@@ -55,13 +50,12 @@ bool SystemInit(void)
 uint16_t ProcessCommand(void)
 {
 	uint8_t rxByteArray[MAX_RECEIVE_LENGTH];
-	int i = 0;
-
-	for(i = 0; i < MAX_RECEIVE_LENGTH; i++){
-		if (RX_TX_FUNCTION_available() < 1){
-			_delay_ms (XBEE_CHAR_MS_TIMEOUT);
+	for(int i = 0; i < MAX_RECEIVE_LENGTH; i++)
+	{
+		if (RX_TX_FUNCTION_available() < 1)
+		{
+			_delay_ms(XBEE_CHAR_MS_TIMEOUT);
 		}
-	
 		rxByteArray[i] = RX_TX_FUNCTION_getc();
 		if (rxByteArray[i] == RX_DELIMITER) 
 		{
@@ -69,8 +63,6 @@ uint16_t ProcessCommand(void)
 			break;
 		}
 	}
-	uprintf(uart0_puts, "rxByteArray: %s\n", rxByteArray);
-//	if (rxByteArray[i - 1] != _str_checksum(rxByteArray)) return CORRUPT_PACKET_TRANSMISSION;
 
 		switch (rxByteArray[0] & EIGHT_BIT_OFFSET)
 		{
