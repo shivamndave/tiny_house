@@ -41,11 +41,11 @@
 #define RELAY_STATUS 							(PINB & PIN_STATUS_BIT) 
 #define RELAY_PORT 								PORTB
 #define ON 										0x80
-#define OFF 									0x00
+#define OFF 				    				0x00
 
 
 
-
+                        
 /** 
  * ==============
  * NAME        : SystemInit -- System Initialization
