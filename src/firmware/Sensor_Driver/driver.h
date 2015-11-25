@@ -6,9 +6,6 @@
 */
 
 
-#include "../RX_TX/commands.h"
-#include "../RX_TX/xbee_lib.h"
-#include "../FSM/fsm.h"
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -16,16 +13,11 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
+#include "../RX_TX/commands.h"
+#include "../RX_TX/xbee_lib.h"
 
 #ifndef DRIVER_H
 #define DRIVER_H
-
-/* ERROR MACRO DEFINITION */
-#define PROGRAM_DIE(x) while (1) \
-{RX_TX_FUNCTION_puts("--FSM ERROR--");\
-status->currentState = IDLE_STATE;\
-_RelayOff();}\
-return(x)\
 
 
 /*

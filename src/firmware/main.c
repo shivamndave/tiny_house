@@ -4,13 +4,11 @@
 * GITHUB.COM/SARGISYONAN -- SARGISY@GMAIL.COM
 */
 
-#include "Sensor_Driver/driver.h"
-#include "FSM/fsm.h"
 #include "One_Wire_Library/OneWire.h"
 #include "UART_LIBRARY/uart.h"
-		
+#include "Sensor_Driver/driver.h"
+#include "Sensor_Driver/fsm.h"
 
-		
 int main (void)
 {
 	if (SystemInit())	// DEFINED IN driver.h

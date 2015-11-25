@@ -6,9 +6,41 @@
 */
 
 
+
 #include "driver.h"
+#include "fsm.h"
 #include "../One_Wire_Library/OneWire.h"
 #include "../UART_LIBRARY/uart.h"
+
+
+
+
+
+bool SystemInit(void)
+{
+	//enable interupts
+    sei();	
+   	uart1_init(UART_BAUD_SELECT(BAUDRATE,F_CPU));
+    uart0_init(UART_BAUD_SELECT(BAUDRATE,F_CPU));
+
+	RELAY_DDR = RELAY_DDR_SETTING;
+	status = (Status*)malloc(sizeof(struct Machine_Status));
+	if (status != NULL)
+	{
+		status->flags = 0x00;
+		status->setpoint = T_SETPOINT_DEFAULT;
+		status->positiveOffset = T_OFFSET_DEFAULT;
+		status->negativeOffset = T_OFFSET_DEFAULT;
+		status->currentState = INITIAL_STATE;
+		uprintf(RX_TX_FUNCTION_puts, "//%d//SYSTEM INITIALIZED//", SYSTEM_INITIALIZED);
+
+		return FSM_SUCCESS;
+	}
+	return FSM_ERROR;
+}
+
+
+
 
 // the whole received message is checksummed and stored as a
 // 16-bit word before the null term uint16_t with the _array_checksum algorithm
@@ -134,30 +166,6 @@ void PrintSystemStatusString(void)
 		uprintf(uart0_puts, "%.2f\n",status->currentTemp);
 
 	}
-}
-
-bool SystemInit(void)
-{
-	//enable interupts
-    sei();	
-   	uart1_init(UART_BAUD_SELECT(BAUDRATE,F_CPU));
-    uart0_init(UART_BAUD_SELECT(BAUDRATE,F_CPU));
-
-	RELAY_DDR = RELAY_DDR_SETTING;
-	status = (Status*)malloc(sizeof(struct Machine_Status));
-	if (status != NULL)
-	{
-		status->flags = 0x00;
-		status->setpoint = T_SETPOINT_DEFAULT;
-		status->positiveOffset = T_OFFSET_DEFAULT;
-		status->negativeOffset = T_OFFSET_DEFAULT;
-		status->currentState = INITIAL_STATE;
-		status->sysTime = 0;
-		uprintf(RX_TX_FUNCTION_puts, "//%d//SYSTEM INITIALIZED//", SYSTEM_INITIALIZED);
-
-		return FSM_SUCCESS;
-	}
-	return FSM_ERROR;
 }
 
 void FreeMemory(void)

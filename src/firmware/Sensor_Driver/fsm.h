@@ -6,10 +6,11 @@
 * USED FOR A MICRO GRID TEST BED PROJECT
 * GITHUB.COM/SARGISYONAN
 */
+#include <stdint.h>
+#include "driver.h"
 
 #ifndef FSM_H
 #define FSM_H
-
 
 #define INITIAL_STATE 							IDLE_STATE
 // FSM SPECS ///////
