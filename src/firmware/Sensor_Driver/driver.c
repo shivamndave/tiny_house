@@ -63,66 +63,65 @@ uint16_t ProcessCommand(void)
 			break;
 		}
 	}
-
-		switch (rxByteArray[0] & EIGHT_BIT_OFFSET)
-		{
-			case ENABLE_STATE_MACHINE:
-				uprintf(RX_TX_FUNCTION_puts, "%d", STATE_MACHINE_ENABLE_SUCCESS);
-				status->flags |= EN_BIT;
-				break;
-
-
-			case DISABLE_STATE_MACHINE:
-				uprintf(RX_TX_FUNCTION_puts, "%d", STATE_MACHINE_DISABLE_SUCCESS);
-				status->flags &= ~(EN_BIT);
-				break;
+	switch (rxByteArray[0])
+	{
+		case ENABLE_STATE_MACHINE:
+			uprintf(RX_TX_FUNCTION_puts, "%d", STATE_MACHINE_ENABLE_SUCCESS);
+			status->flags |= EN_BIT;
+			break;
 
 
-			case RECEIVE_MESSAGE_CHANGE_SETPOINT:
-				if (rxByteArray[1] < TEMPERATURE_MAX)
-				{
-					status->setpoint = rxByteArray[1] & EIGHT_BIT_OFFSET;
-					uprintf(RX_TX_FUNCTION_puts, "%d", CHANGE_SETPOINT_SUCCESS_CODE);
-				} else {
-					uprintf(RX_TX_FUNCTION_puts, "%d", CHANGE_SETPOINT_ERROR_CODE);
-				}
-				break;
+		case DISABLE_STATE_MACHINE:
+			uprintf(RX_TX_FUNCTION_puts, "%d", STATE_MACHINE_DISABLE_SUCCESS);
+			status->flags &= ~(EN_BIT);
+			break;
 
 
-			case RECEIVE_MESSAGE_CHANGE_POSITIVE_OFFSET:
-				if (rxByteArray[1] < POSITIVE_OFFSET_MAX)
-				{
-					status->positiveOffset = rxByteArray[1] & EIGHT_BIT_OFFSET;
-					uprintf(RX_TX_FUNCTION_puts, "%d", CHANGE_POSITIVE_OFFSET_SUCCESS_CODE);
-				} else {
-					uprintf(RX_TX_FUNCTION_puts, "%d", CHANGE_POSITIVE_OFFSET_ERROR_CODE);
-				}
-				break;
+		case RECEIVE_MESSAGE_CHANGE_SETPOINT:
+			if (rxByteArray[1] < TEMPERATURE_MAX)
+			{
+				status->setpoint = rxByteArray[1] & EIGHT_BIT_OFFSET;
+				uprintf(RX_TX_FUNCTION_puts, "%d", CHANGE_SETPOINT_SUCCESS_CODE);
+			} else {
+				uprintf(RX_TX_FUNCTION_puts, "%d", CHANGE_SETPOINT_ERROR_CODE);
+			}
+			break;
 
 
-			case RECEIVE_MESSAGE_CHANGE_NEGATIVE_OFFSET:
-				if (rxByteArray[1] < NEGATIVE_OFFSET_MAX)
-				{
-					status->negativeOffset = rxByteArray[1] & EIGHT_BIT_OFFSET;
-					uprintf(RX_TX_FUNCTION_puts, "%d", CHANGE_NEGATIVE_OFFSET_SUCCESS_CODE);
-				} else {
-					uprintf(RX_TX_FUNCTION_puts, "%d", CHANGE_NEGATIVE_OFFSET_ERROR_CODE);
-				}
-				break;
+		case RECEIVE_MESSAGE_CHANGE_POSITIVE_OFFSET:
+			if (rxByteArray[1] < POSITIVE_OFFSET_MAX)
+			{
+				status->positiveOffset = rxByteArray[1] & EIGHT_BIT_OFFSET;
+				uprintf(RX_TX_FUNCTION_puts, "%d", CHANGE_POSITIVE_OFFSET_SUCCESS_CODE);
+			} else {
+				uprintf(RX_TX_FUNCTION_puts, "%d", CHANGE_POSITIVE_OFFSET_ERROR_CODE);
+			}
+			break;
 
 
-			case RECEIVE_MESSAGE_GET_SYSTEM_STATUS:
-				uprintf(RX_TX_FUNCTION_puts, "/%.2f/%d/%.2f/%.2f/%.2f/%d/", status->currentTemp, status->currentState, status->setpoint, status->positiveOffset, status->negativeOffset);
-				break;
+		case RECEIVE_MESSAGE_CHANGE_NEGATIVE_OFFSET:
+			if (rxByteArray[1] < NEGATIVE_OFFSET_MAX)
+			{
+				status->negativeOffset = rxByteArray[1] & EIGHT_BIT_OFFSET;
+				uprintf(RX_TX_FUNCTION_puts, "%d", CHANGE_NEGATIVE_OFFSET_SUCCESS_CODE);
+			} else {
+				uprintf(RX_TX_FUNCTION_puts, "%d", CHANGE_NEGATIVE_OFFSET_ERROR_CODE);
+			}
+			break;
 
 
-			default:
-				uprintf(RX_TX_FUNCTION_puts, "%d", INVALID_COMMAND_ERROR_CODE);
-				break;
-		}
+		case RECEIVE_MESSAGE_GET_SYSTEM_STATUS:
+			uprintf(RX_TX_FUNCTION_puts, "/%.2f/%d/%.2f/%.2f/%.2f/%d/", status->currentTemp, status->currentState, status->setpoint, status->positiveOffset, status->negativeOffset);
+			break;
 
-	RX_TX_FUNCTION_flush();
-	return PROCESS_COMMAND_SUCCESS;
+
+		default:
+			uprintf(RX_TX_FUNCTION_puts, "%d", INVALID_COMMAND_ERROR_CODE);
+			break;
+	}
+
+RX_TX_FUNCTION_flush();
+return PROCESS_COMMAND_SUCCESS;
 }
 
 void FreeMemory(void)

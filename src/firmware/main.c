@@ -23,7 +23,7 @@ int main (void)
 	if (SystemInit())	// DEFINED IN driver.h
 	{
 		while(true)		// embedded system; does not return from main()
-		{
+		{	
 			status->currentTemp = getTemperatureC();
 			if (RX_TX_FUNCTION_available() >= 1) ProcessCommand();						// if commands are in the receiving buffer
 			FSM[status->currentState].Output_Func_ptr();								// executes proper state function
