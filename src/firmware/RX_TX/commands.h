@@ -8,6 +8,11 @@
 
 // LIST OF ALL POSSIBLE BINARY TRANSMISSION CODES
 
+
+#ifndef COMMANDS_H
+#define COMMANDS_H
+
+
 // SUCCESS/ERROR CODES //
 #define PROCESS_COMMAND_SUCCESS					0x01
 #define STATE_MACHINE_ENABLE_SUCCESS			0xDA
@@ -37,3 +42,4 @@
 
 ////////////////////
 
+#endif
