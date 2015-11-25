@@ -6,8 +6,8 @@
 */
 
 
-#include "rx_tx/commands.h"
-#include "rx_tx/xbee_lib.h"
+#include "RX_TX/commands.h"
+#include "RX_TX/xbee_lib.h"
 #include "FSM/fsm.h"
 #include <stdlib.h>
 #include <stdbool.h>
