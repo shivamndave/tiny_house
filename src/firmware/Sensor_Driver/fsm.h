@@ -6,16 +6,19 @@
 * USED FOR A MICRO GRID TEST BED PROJECT
 * GITHUB.COM/SARGISYONAN
 */
-#include <stdint.h>
-#include "driver.h"
-
-#ifndef FSM_H
-#define FSM_H
 
 #define INITIAL_STATE 							IDLE_STATE
 // FSM SPECS ///////
 #define FSM_SUCCESS								true
 #define FSM_ERROR 								false
+
+/* ERROR MACRO DEFINITION */
+#define PROGRAM_DIE(x) while (1) \
+{RX_TX_FUNCTION_puts("--FSM ERROR--");\
+status->currentState = IDLE_STATE;\
+_RelayOff();}\
+return(x)\
+
 ////////////////////
 #define GT_BIT 									0x01		
 #define LT_BIT 									0x02		
@@ -74,21 +77,5 @@ struct Machine_Status
 
 typedef struct Machine_Status Status;
 Status *status;	// allocated within ControllerInit()
-
-
-FSM_t FSM[] = 
-{
-	{&_Idle, {IDLE_STATE, IDLE_STATE, IDLE_STATE, IDLE_STATE, COOLING_STATE, COOLING_STATE, HEATING_STATE, IDLE_STATE}},
-	{&_RelayOff, {IDLE_STATE, IDLE_STATE, IDLE_STATE, IDLE_STATE, IDLE_STATE, COOLING_STATE, HEATING_STATE, IDLE_STATE}},
-	{&_RelayOn, {IDLE_STATE, IDLE_STATE, IDLE_STATE, IDLE_STATE, IDLE_STATE, COOLING_STATE, HEATING_STATE, IDLE_STATE}}
-};
-
-
-
-
-#endif
-
-
-
 
 

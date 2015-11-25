@@ -9,6 +9,18 @@
 #include "Sensor_Driver/driver.h"
 #include "Sensor_Driver/fsm.h"
 
+
+FSM_t FSM[] = 
+{
+	{&_Idle, {IDLE_STATE, IDLE_STATE, IDLE_STATE, IDLE_STATE, COOLING_STATE, COOLING_STATE, HEATING_STATE, IDLE_STATE}},
+	{&_RelayOff, {IDLE_STATE, IDLE_STATE, IDLE_STATE, IDLE_STATE, IDLE_STATE, COOLING_STATE, HEATING_STATE, IDLE_STATE}},
+	{&_RelayOn, {IDLE_STATE, IDLE_STATE, IDLE_STATE, IDLE_STATE, IDLE_STATE, COOLING_STATE, HEATING_STATE, IDLE_STATE}}
+};
+
+
+
+
+
 int main (void)
 {
 	if (SystemInit())	// DEFINED IN driver.h
