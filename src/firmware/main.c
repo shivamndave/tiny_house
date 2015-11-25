@@ -18,9 +18,6 @@ FSM_t FSM[] =
 };
 
 
-
-
-
 int main (void)
 {
 	if (SystemInit())	// DEFINED IN driver.h
