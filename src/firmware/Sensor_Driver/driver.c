@@ -12,10 +12,39 @@
 #include "../One_Wire_Library/OneWire.h"
 #include "../UART_LIBRARY/uart.h"
 
+static void uprintf (char* input_string, ...);
+
+
+//* CREATED BY SARGIS S YONAN - 12 OCT. 2015 */
+//* A FUNCTION THAT MIMICS <stdio.h>'s PRINTF FUNCTION */
+//* FOR THE AVR MICROCONTROLLER */
+
+void uprintf (char* input_string, ...)
+{
+    va_list valist;
+    char* newString;
+    uint8_t stringLength = 0;
+    
+    va_start(valist, input_string);
+    
+    for (stringLength = 0; input_string[stringLength] != '\0'; ++stringLength) { }
+    
+    newString = (char*)malloc(stringLength *  STRING_MULTIPLIER);
+    vsprintf(newString, input_string, valist);
+    
+    // WRITING TO UART STREAM //
+    
+    RX_TX_FUNCTION_puts(newString);
+    free(newString);
+    va_end(valist);
+}
+
+
+
 
 bool SystemInit(void)
 {
-	//enable interupts
+	//enable interrupts
     sei();	
    	RX_TX_FUNCTION_init(UART_BAUD_SELECT(BAUDRATE,F_CPU));
 	RELAY_DDR = RELAY_DDR_SETTING;
@@ -27,7 +56,7 @@ bool SystemInit(void)
 		status->positiveOffset = T_OFFSET_DEFAULT;
 		status->negativeOffset = T_OFFSET_DEFAULT;
 		status->currentState = INITIAL_STATE;
-		uprintf(RX_TX_FUNCTION_puts, "//%d//SYSTEM INITIALIZED//", SYSTEM_INITIALIZED);
+		uprintf("/%d/", SYSTEM_INITIALIZED);
 
 		return FSM_SUCCESS;
 	}
@@ -47,9 +76,10 @@ bool SystemInit(void)
 / THE COMMAND -> rx = {{RECEIVE_MESSAGE_CHANGE_SETPOINT}, {0x0064}, CHECKSUM, {0x0000}} = change setpoint to 100 degrees celsius
 */
 
-uint16_t ProcessCommand(void)
+void ProcessCommand(void)
 {
 	uint8_t rxByteArray[MAX_RECEIVE_LENGTH];
+	
 	for(int i = 0; i < MAX_RECEIVE_LENGTH; i++)
 	{
 		if (RX_TX_FUNCTION_available() < 1)
@@ -63,16 +93,19 @@ uint16_t ProcessCommand(void)
 			break;
 		}
 	}
+	
+
+
 	switch (rxByteArray[0])
 	{
 		case ENABLE_STATE_MACHINE:
-			uprintf(RX_TX_FUNCTION_puts, "%d", STATE_MACHINE_ENABLE_SUCCESS);
+			uprintf("%d", STATE_MACHINE_ENABLE_SUCCESS);
 			status->flags |= EN_BIT;
 			break;
 
 
 		case DISABLE_STATE_MACHINE:
-			uprintf(RX_TX_FUNCTION_puts, "%d", STATE_MACHINE_DISABLE_SUCCESS);
+			uprintf("%d", STATE_MACHINE_DISABLE_SUCCESS);
 			status->flags &= ~(EN_BIT);
 			break;
 
@@ -81,9 +114,9 @@ uint16_t ProcessCommand(void)
 			if (rxByteArray[1] < TEMPERATURE_MAX)
 			{
 				status->setpoint = rxByteArray[1] & EIGHT_BIT_OFFSET;
-				uprintf(RX_TX_FUNCTION_puts, "%d", CHANGE_SETPOINT_SUCCESS_CODE);
+				uprintf("%d", CHANGE_SETPOINT_SUCCESS_CODE);
 			} else {
-				uprintf(RX_TX_FUNCTION_puts, "%d", CHANGE_SETPOINT_ERROR_CODE);
+				uprintf("%d", CHANGE_SETPOINT_ERROR_CODE);
 			}
 			break;
 
@@ -92,9 +125,9 @@ uint16_t ProcessCommand(void)
 			if (rxByteArray[1] < POSITIVE_OFFSET_MAX)
 			{
 				status->positiveOffset = rxByteArray[1] & EIGHT_BIT_OFFSET;
-				uprintf(RX_TX_FUNCTION_puts, "%d", CHANGE_POSITIVE_OFFSET_SUCCESS_CODE);
+				uprintf("%d", CHANGE_POSITIVE_OFFSET_SUCCESS_CODE);
 			} else {
-				uprintf(RX_TX_FUNCTION_puts, "%d", CHANGE_POSITIVE_OFFSET_ERROR_CODE);
+				uprintf("%d", CHANGE_POSITIVE_OFFSET_ERROR_CODE);
 			}
 			break;
 
@@ -103,25 +136,24 @@ uint16_t ProcessCommand(void)
 			if (rxByteArray[1] < NEGATIVE_OFFSET_MAX)
 			{
 				status->negativeOffset = rxByteArray[1] & EIGHT_BIT_OFFSET;
-				uprintf(RX_TX_FUNCTION_puts, "%d", CHANGE_NEGATIVE_OFFSET_SUCCESS_CODE);
+				uprintf("%d", CHANGE_NEGATIVE_OFFSET_SUCCESS_CODE);
 			} else {
-				uprintf(RX_TX_FUNCTION_puts, "%d", CHANGE_NEGATIVE_OFFSET_ERROR_CODE);
+				uprintf("%d", CHANGE_NEGATIVE_OFFSET_ERROR_CODE);
 			}
 			break;
 
 
 		case RECEIVE_MESSAGE_GET_SYSTEM_STATUS:
-			uprintf(RX_TX_FUNCTION_puts, "/%.2f/%d/%.2f/%.2f/%.2f/%d/", status->currentTemp, status->currentState, status->setpoint, status->positiveOffset, status->negativeOffset);
+			uprintf("/%.2f/%d/%.2f/%.2f/%.2f/%d/", status->currentTemp, status->currentState, status->setpoint, status->positiveOffset, status->negativeOffset);
 			break;
 
 
 		default:
-			uprintf(RX_TX_FUNCTION_puts, "%d", INVALID_COMMAND_ERROR_CODE);
+			uprintf("%d", INVALID_COMMAND_ERROR_CODE);
 			break;
 	}
 
-RX_TX_FUNCTION_flush();
-return PROCESS_COMMAND_SUCCESS;
+	RX_TX_FUNCTION_flush();
 }
 
 void FreeMemory(void)
@@ -155,18 +187,6 @@ void _RelayOn(void)
 void _RelayOff(void)
 {
 	if (RELAY_PIN == ON) RELAY_PORT &= OFF;
-}
-void _Idle(void)
-{
-	_RelayOff();
-}
-
-uint16_t _str_checksum(uint16_t *rxByteArray)
-{
-	uint8_t checksum = 0;
-	while (*rxByteArray != RX_DELIMITER) { checksum += (((*rxByteArray++) ^ 0xFF)); }
-	checksum %= 0x1F;
-	return checksum;
 }
 
 float _getPositiveOffsetMax(void)

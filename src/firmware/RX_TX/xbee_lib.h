@@ -21,8 +21,8 @@
 
 #define EIGHT_BIT_OFFSET						0x00FF
 
-#define MAX_RECEIVE_LENGTH						10
-#define MIN_RECEIVE_LENGTH						3
+#define MAX_RECEIVE_LENGTH						3
+#define MIN_RECEIVE_LENGTH						2
 
 
 #endif
