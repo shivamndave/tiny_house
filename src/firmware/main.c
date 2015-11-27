@@ -24,24 +24,10 @@ __attribute__ ((OS_main)) void main(void)
 	{
 		do 
 		{	
-			status->current = getTemperatureC();
+			temperature->current = getTemperatureC();
 			if (RX_TX_FUNCTION_available() >= 1) ProcessCommand();						// if commands are in the receiving buffer
 			FSM[status->currentState].Output_Func_ptr();								// executes proper state function
-
-			//status->flags = SensorResult();	// changes next state for the FSM
-			if ((status->flags & EN_BIT) != EN_BIT) status->flags &= 0; // not enabled
-
-			if (status->current >= (status->setpoint + status->positiveOffset)) 
-			{
-				status->flags &= 0x04;
-				status->flags ^= GT_BIT;
-			}
-			if (status->current <= (status->setpoint - status->negativeOffset)) 
-			{
-				status->flags &= 0x04;
-				status->flags ^= LT_BIT;
-			}
-			status->currentState = FSM[status->currentState].nextState[status->flags];
+			status->flags = SensorResult();	// changes next state for the FSM
 		} 
 		while(FSM_SUCCESS);		// embedded system; does not return from main()
 	}

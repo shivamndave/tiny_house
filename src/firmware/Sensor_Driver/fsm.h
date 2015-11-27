@@ -51,12 +51,7 @@ typedef const struct FSM_STRUCTURE FSM_t;
  * NAME         : Machine_Status Structure -- A Complex Data Type that contains the machine status variables
  * -------------
  * MEMBERS      : currentState    - holds the current state of the FSM
- *              : flags           - holds the flags set by the sensor drivers
- *              : sysTime         - holds a 32-bit counter of seconds past since system initialization
- *              : setpoint        - contains the machines' current temperature setpoint
- *              : negativeOffset  - the deadband's lower limit = setpoint - negativeOffset
- *              : poitiveOffset   - the deadband's upper limit = setpoint + positiveOffset
- *               
+ *              : flags           - holds the flags set by the sensor drivers               
  * -------------
  * TYPE-DEFINED : Status
  * ------------
@@ -67,19 +62,23 @@ struct Machine_Status
 {
 	uint8_t currentState;	// HOLDS CURRENT STATE
 	uint8_t flags;
-    float current;
-    float setpoint;
-    float negativeOffset;
-    float positiveOffset;
 };
 
 typedef struct Machine_Status Status;
 Status *status;	// allocated within ControllerInit()
 
-//struct TemperatureControl 
-//{
-
-//};
-//typedef struct TemperatureControl Temperature;
-//Temperature *temperature;
+/*              : setpoint        - contains the machines' current temperature setpoint
+ *              : negativeOffset  - the deadband's lower limit = setpoint - negativeOffset
+ *              : poitiveOffset   - the deadband's upper limit = setpoint + positiveOffset
+ *              : current         - holds the current temperature
+ */
+struct TemperatureControl 
+{
+    float current;
+    float setpoint;
+    float negativeOffset;
+    float positiveOffset;
+};
+typedef struct TemperatureControl Temperature;
+Temperature *temperature;
 

@@ -30,7 +30,7 @@
 
 // WATER HEATER SPECS //
 #define TEMPERATURE_MAX							48
-#define POSITIVE_OFFSET_MAX						(50 - status->setpoint)
+#define POSITIVE_OFFSET_MAX						(50 - temperature->setpoint)
 #define NEGATIVE_OFFSET_MAX						1
 
 ///////// RELAY I/O ////////
@@ -89,7 +89,7 @@ void _RelayOff(void);		// TURNS OFF RELAY PIN
 ////////////////////
 // FSM SPECIFIC COMMANDS TO GET MAX OFFSET //
 /////////////////////////////////////////////
-//uint8_t SensorResult(void);	// DETERMINES WHAT THE OUTPUT OF THE SENSOR MEANS TO THE SYSTEM
+uint8_t SensorResult(void);	// DETERMINES WHAT THE OUTPUT OF THE SENSOR MEANS TO THE SYSTEM
 //void FreeMemory(void);	// FREES SYSTEM STRUCTURE MEMORY
 
 #endif
