@@ -13,11 +13,9 @@
 #define FSM_ERROR 								false
 
 /* ERROR MACRO DEFINITION */
-#define PROGRAM_DIE(x) while (1) \
+#define PROGRAM_DIE() for(;;) \
 {RX_TX_FUNCTION_puts("--FSM ERROR--");\
-status->currentState = IDLE_STATE;\
 _RelayOff();}\
-return(x)\
 
 ////////////////////
 #define GT_BIT 									0x01		
@@ -69,13 +67,19 @@ struct Machine_Status
 {
 	uint8_t currentState;	// HOLDS CURRENT STATE
 	uint8_t flags;
-	float currentTemp;
-	float setpoint;
-	float negativeOffset;
-	float positiveOffset;
+    float current;
+    float setpoint;
+    float negativeOffset;
+    float positiveOffset;
 };
 
 typedef struct Machine_Status Status;
 Status *status;	// allocated within ControllerInit()
 
+//struct TemperatureControl 
+//{
+
+//};
+//typedef struct TemperatureControl Temperature;
+//Temperature *temperature;
 

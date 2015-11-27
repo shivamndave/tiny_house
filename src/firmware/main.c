@@ -18,21 +18,34 @@ FSM_t FSM[] =
 };
 
 
-int main (void)
+__attribute__ ((OS_main)) void main(void)
 {
 	if (SystemInit())	// DEFINED IN driver.h
 	{
-		while(FSM_SUCCESS)		// embedded system; does not return from main()
+		do 
 		{	
-			status->currentTemp = getTemperatureC();
+			status->current = getTemperatureC();
 			if (RX_TX_FUNCTION_available() >= 1) ProcessCommand();						// if commands are in the receiving buffer
 			FSM[status->currentState].Output_Func_ptr();								// executes proper state function
-			status->flags = SensorResult();												// changes next state for the FSM
-			status->currentState = FSM[status->currentState].nextState[status->flags];
-		}
-	}
-	FreeMemory();
-	PROGRAM_DIE(0);	// if (error)
-}
 
+			//status->flags = SensorResult();	// changes next state for the FSM
+			if ((status->flags & EN_BIT) != EN_BIT) status->flags &= 0; // not enabled
+
+			if (status->current >= (status->setpoint + status->positiveOffset)) 
+			{
+				status->flags &= 0x04;
+				status->flags ^= GT_BIT;
+			}
+			if (status->current <= (status->setpoint - status->negativeOffset)) 
+			{
+				status->flags &= 0x04;
+				status->flags ^= LT_BIT;
+			}
+			status->currentState = FSM[status->currentState].nextState[status->flags];
+		} 
+		while(FSM_SUCCESS);		// embedded system; does not return from main()
+	}
+	//PROGRAM_DIE();	// if (error)
+	//FreeMemory();
+}
 

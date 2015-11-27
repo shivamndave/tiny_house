@@ -414,12 +414,12 @@ float DTtof(DALLAS_TEMPERATURE dt)
   	return (d);
 }
 
-
+/*
 float CelsiusToFahrenheit(float celsius) 
 {
     return (celsius * 9 / 5 + 32);
 }
-
+*/
 
 float getTemperatureC(void)
 {
@@ -440,12 +440,6 @@ float getTemperatureC(void)
 		}
 		return -9999.99;
 }
-
-float getTemperatureF(void)
-{
-	return CelsiusToFahrenheit(getTemperatureC());
-}
-
 
 
 

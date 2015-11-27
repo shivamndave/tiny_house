@@ -26,7 +26,7 @@ clean:
 push:
 	git push -u origin master
 eight:
-	${CC} -Os -mmcu=atmega88p -DF_CPU=16000000UL ${CFLAGS} -c ${CSOURCE}
+	${CC} -fno-tree-scev-cprop -ffunction-sections -fdata-sections -ffreestanding -Os -mmcu=atmega88p -DF_CPU=16000000UL ${CFLAGS} -c ${CSOURCE}
 	${CC} -mmcu=atmega88p -Wl,-u,vfprintf -lprintf_flt -lm -o${EXECUTABLE}.elf ${OBJECTS}
 	${OBJECT_COPY} -j .text -j .data -O ihex ${EXECUTABLE}.elf ${EXECUTABLE}.hex
 	${BURNER} -p m88p -c usbasp -e -b ${BAUDRATE} -U flash:w:${EXECUTABLE}.hex 

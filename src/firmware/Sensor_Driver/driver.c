@@ -52,12 +52,11 @@ bool SystemInit(void)
 	if (status != NULL)
 	{
 		status->flags = 0x00;
+		status->currentState = INITIAL_STATE;
 		status->setpoint = T_SETPOINT_DEFAULT;
 		status->positiveOffset = T_OFFSET_DEFAULT;
 		status->negativeOffset = T_OFFSET_DEFAULT;
-		status->currentState = INITIAL_STATE;
 		uprintf("/%d/", SYSTEM_INITIALIZED);
-
 		return FSM_SUCCESS;
 	}
 	return FSM_ERROR;
@@ -113,7 +112,7 @@ void ProcessCommand(void)
 		case RECEIVE_MESSAGE_CHANGE_SETPOINT:
 			if (rxByteArray[1] < TEMPERATURE_MAX)
 			{
-				status->setpoint = rxByteArray[1] & EIGHT_BIT_OFFSET;
+				status->setpoint = rxByteArray[1];
 				uprintf("%d", CHANGE_SETPOINT_SUCCESS_CODE);
 			} else {
 				uprintf("%d", CHANGE_SETPOINT_ERROR_CODE);
@@ -124,7 +123,7 @@ void ProcessCommand(void)
 		case RECEIVE_MESSAGE_CHANGE_POSITIVE_OFFSET:
 			if (rxByteArray[1] < POSITIVE_OFFSET_MAX)
 			{
-				status->positiveOffset = rxByteArray[1] & EIGHT_BIT_OFFSET;
+				status->positiveOffset = rxByteArray[1];
 				uprintf("%d", CHANGE_POSITIVE_OFFSET_SUCCESS_CODE);
 			} else {
 				uprintf("%d", CHANGE_POSITIVE_OFFSET_ERROR_CODE);
@@ -135,7 +134,7 @@ void ProcessCommand(void)
 		case RECEIVE_MESSAGE_CHANGE_NEGATIVE_OFFSET:
 			if (rxByteArray[1] < NEGATIVE_OFFSET_MAX)
 			{
-				status->negativeOffset = rxByteArray[1] & EIGHT_BIT_OFFSET;
+				status->negativeOffset = rxByteArray[1];
 				uprintf("%d", CHANGE_NEGATIVE_OFFSET_SUCCESS_CODE);
 			} else {
 				uprintf("%d", CHANGE_NEGATIVE_OFFSET_ERROR_CODE);
@@ -144,7 +143,7 @@ void ProcessCommand(void)
 
 
 		case RECEIVE_MESSAGE_GET_SYSTEM_STATUS:
-			uprintf("/%.2f/%d/%.2f/%.2f/%.2f/%d/", status->currentTemp, status->currentState, status->setpoint, status->positiveOffset, status->negativeOffset);
+			uprintf("/%.2f/%d/%.2f/%.2f/%.2f/%d/", status->current, status->currentState, status->setpoint, status->positiveOffset, status->negativeOffset);
 			break;
 
 
@@ -155,30 +154,32 @@ void ProcessCommand(void)
 
 	RX_TX_FUNCTION_flush();
 }
-
+/*
 void FreeMemory(void)
 {
 	if (!(status == NULL)) free(status);
+	if (!(temperature == NULL)) free(temperature);
 }
+*/
 
-
+/*
 uint8_t SensorResult(void)
 {
 	if ((status->flags & EN_BIT) != EN_BIT) return (status->flags &= 0); // not enabled
 
-	if (status->currentTemp >= (status->setpoint + status->positiveOffset)) 
+	if (temperature->current >= (temperature->setpoint + temperature->positiveOffset)) 
 	{
 		status->flags &= 0x04;
 		return (status->flags ^ GT_BIT);
 	}
-	if (status->currentTemp <= (status->setpoint - status->negativeOffset)) 
+	if (temperature->current <= (temperature->setpoint - temperature->negativeOffset)) 
 	{
 		status->flags &= 0x04;
 		return (status->flags ^ LT_BIT);
 	}
 	return status->flags;
 }
-
+*/
 
 void _RelayOn(void)
 {
@@ -187,9 +188,4 @@ void _RelayOn(void)
 void _RelayOff(void)
 {
 	if (RELAY_PIN == ON) RELAY_PORT &= OFF;
-}
-
-float _getPositiveOffsetMax(void)
-{
-	return (50 - status->setpoint);
 }
