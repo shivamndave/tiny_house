@@ -18,7 +18,7 @@ FSM_t FSM[] =
 };
 
 
-__attribute__ ((OS_main)) void main(void)
+int main(void)
 {
 	if (SystemInit())	// DEFINED IN driver.h
 	{
@@ -28,10 +28,11 @@ __attribute__ ((OS_main)) void main(void)
 			if (RX_TX_FUNCTION_available() >= 1) ProcessCommand();						// if commands are in the receiving buffer
 			FSM[status->currentState].Output_Func_ptr();								// executes proper state function
 			status->flags = SensorResult();	// changes next state for the FSM
+			status->currentState = FSM[status->currentState].nextState[status->flags];
 		} 
 		while(FSM_SUCCESS);		// embedded system; does not return from main()
 	}
-	//PROGRAM_DIE();	// if (error)
+	PROGRAM_DIE();	// if (error)
 	//FreeMemory();
 }
 
