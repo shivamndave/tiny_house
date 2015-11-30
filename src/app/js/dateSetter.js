@@ -155,11 +155,11 @@ function notEmpty(dataArray) {
 }
 
 function setupCharts () {
-   console.log("SETUP CHART(S) HERE");
-   setup_power();
+   setup_temp();
    setup_freq();
 }
 
 function updateCharts (data, initial) {
-   console.log("UPDATE CHART(S) HERE");
+   freqStatus.series[0].setData(data.frequency, true);
+   tempStatus.series[0].setData(data.temperature, true);
 }
