@@ -9,7 +9,6 @@ function reload_date_range() {
    var getURL = dateParser($( "#day-picker" ).datepicker( "getDate" ).toISOString(),
                            $( "#start-time-picker" ).val(),
                            $( "#end-time-picker" ).val());
-   console.log("URL:" + getURL);
    init = false;
    hideList = [];
    showList = [];
@@ -45,11 +44,10 @@ function dateParser(day, start, end) {
        parStart = getTime(start),
        parEnd = getTime(end);
 
-   console.log("day: " + parDay);
-   console.log("str time: " + parStart);
-   console.log("end time: " + parEnd);
+   console.log("day: " + parDay + " | str time: " + parStart + " | end time: " + parEnd);
    if (day && parStart && parEnd) {
       tempURL += "&day=" + parDay + "&start=" + parStart + "&end=" + parEnd;
+      console.log("API call URL: " + tempURL);
    }
 
    return tempURL
@@ -65,8 +63,9 @@ function getDate(date) {
 // Gets only the time from the timepicker
 // and formats it from 00:11:22 into 00h11m22s
 function getTime(time) {
+   var tempTime;
    tempTime = replaceAt(time, 2, "h");
-   tempTime = replaceAt(time, 5, "m");
+   tempTime = replaceAt(tempTime, 5, "m");
    tempTime += "s";
    return tempTime;
 }
