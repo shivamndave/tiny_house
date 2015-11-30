@@ -22,6 +22,8 @@ function reload_date_range() {
 function initial_date_range(day, start, end) {
    var getURL = dateParser(day, start, end);
    init = true;
+   hideList = [];
+   showList = [];
    setupCharts();
    $.getJSON(getURL, function(data) {
       checkData(data);
@@ -54,9 +56,8 @@ function getDate(date) {
 }
 
 function getTime(time) {
-   var tempTime = time.slice(11, time.length - 5);
-   tempTime = replaceAt(tempTime, 2, "h");
-   tempTime = replaceAt(tempTime, 5, "m");
+   tempTime = replaceAt(time, 2, "h");
+   tempTime = replaceAt(time, 5, "m");
    tempTime += "s";
    return tempTime;
 }
@@ -75,28 +76,26 @@ function resetLists(){
 // the display is shown or hidden, and the
 // message is hidden or shown.
 function toggleDisplays(showList, hideList) {
-   if(showObj(showList, hideList, "power")) {
-      $("#power").show();
-      $("#powerHide").hide();
+   if(showObj(showList, hideList, "temperature")) {
+      $("#tempstatus").show();
+      $("#temphide").hide();
    } else {
-      $("#power").hide();
-      $("#powerHide").show();
+      $("#tempstatus").hide();
+      $("#temphide").show();
    }
-   if(showObj(showList, hideList, "freq")) {
-      $("#freq").show();
-      $("#freqHide").hide();
+   if(showObj(showList, hideList, "frequency")) {
+      $("#freqstatus").show();
+      $("#freqhide").hide();
    } else {
-      $("#freq").hide();
-      $("#freqHide").show();
+      $("#freqstatus").hide();
+      $("#freqhide").show();
    }
 }
 
 // Returns whether or not a name is contained
 // within the show or hide arrays.
 function showObj(hideArr, showArr, name) {
-   if(hideArr.indexOf(name) > -1) {
-      return false;
-   } else if(showArr.indexOf(name) > -1) {
+   if(showArr.indexOf(name) > -1) {
       return true;
    }
    return false;
