@@ -17,14 +17,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 #include <avr/pgmspace.h>
 #include <stdio.h>
 #include <util/delay.h>
-
-
 #include <avr/io.h>
-
 #include <util/atomic.h>
 
 // Defines //
@@ -36,10 +32,6 @@
  *so 0010 means: 0.0625x2 on fractional part.
  */
 #define PRECISION 625
-
-
-
-
 
 // Pin defines
 
@@ -62,9 +54,6 @@
 #define CONVERT_TEMP__COMMAND 		0x44
 #define READ_SCRATCHPAD_COMMAND 	0xBE
 
-
-//Paku - add timing constants to be used across lib
-
 //timing details in uS
 #define DALLAS_TIME_FRAME 		120 //target at least 60us
 #define DALLAS_TIME_ONE   		5 	//target not more then 15us
@@ -75,10 +64,7 @@
 
 #define DALLAS_TIME_COMMAND_REST 1  //let bus stabilize after each byte sent.
 
-
-
 // Structures //
-
 
 typedef struct {
 	uint8_t identifier[DALLAS_NUM_IDENTIFIER_BITS / 8];
@@ -155,10 +141,7 @@ void search_bus();
 // converts a dallas temperature type to float for the avr
 float DTtof(DALLAS_TEMPERATURE dt);
 
-float CelsiusToFahrenheit(float celsius);
-
 //returns temperature in celsius
 float getTemperatureC(void);
-float getTemperatureF(void);
 
 #endif

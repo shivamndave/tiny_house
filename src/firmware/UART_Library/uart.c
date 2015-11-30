@@ -31,11 +31,6 @@ NOTES:
 */
 
 
-
-#define DEBUG_CHANNEL uart0
-
-
-
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
@@ -189,8 +184,8 @@ NOTES:
     #define UART0_UDRIE    UDRIE
 #elif defined(__AVR_ATmega48__) ||defined(__AVR_ATmega88__) || defined(__AVR_ATmega168__) || \
       defined(__AVR_ATmega48P__) ||defined(__AVR_ATmega88P__) || defined(__AVR_ATmega168P__) || \
-      defined(__AVR_ATmega328P__) 
-    /* TLS-Added 48P/88P/168P/328P */
+      defined(__AVR_ATmega328P__) || defined(__AVR_ATmega88PA__)
+    /* TLS-Added 48P/88P/168P/328P/88PA */
     /* ATmega with one USART */
     #define ATMEGA_USART0
     #define UART0_RECEIVE_INTERRUPT   USART_RX_vect
@@ -379,33 +374,6 @@ NOTES:
 
     #endif
 #endif
-
-
-//* CREATED BY SARGIS S YONAN - 12 OCT. 2015 */
-//* A FUNCTION THAT MIMICS <stdio.h>'s PRINTF FUNCTION */
-//* FOR THE AVR ATMEGA 2560 MICROCONTROLLER */
-
-void uprintf (void (*OUTPUT_FUNCTION)(const char*), char* input_string, ...)
-{
-    va_list valist;
-    char* newString;
-    int stringLength = 0;
-    
-    va_start(valist, input_string);
-    
-    for (stringLength = 0; input_string[stringLength] != '\0'; ++stringLength) { }
-    
-    newString = (char*)malloc(stringLength *  STRING_MULTIPLIER);
-    vsprintf(newString, input_string, valist);
-    
-    // WRITING TO UART STREAM //
-    
-    OUTPUT_FUNCTION(newString);
-    free(newString);
-    va_end(valist);
-}
-
-
 
 
 

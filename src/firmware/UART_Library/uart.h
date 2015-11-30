@@ -17,7 +17,7 @@
 
 /* Enable USART 1, 2, 3 as required */
 #define USART0_ENABLED
-#define USART1_ENABLED
+//#define USART1_ENABLED
 //#define USART2_ENABLED 
 //#define USART3_ENABLED
 
@@ -325,7 +325,6 @@ extern uint16_t uart3_available(void);
 /** @brief   Flush bytes waiting in receive buffer */
 extern void uart3_flush(void);
 
-void uprintf (void (*OUTPUT_FUNCTION)(const char*), char* input_string, ...);
 
 
 
