@@ -27,7 +27,7 @@ void uprintf (char* input_string, ...)
     
     va_start(valist, input_string);
     
-    for (stringLength = 0; input_string[stringLength] != '\0'; ++stringLength) { }
+    for (stringLength = 0; input_string[stringLength] != '\0'; ++stringLength) {}
     
     newString = (char*)malloc(stringLength *  STRING_MULTIPLIER);
     vsprintf(newString, input_string, valist);
