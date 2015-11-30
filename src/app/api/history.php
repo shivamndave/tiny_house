@@ -7,6 +7,7 @@ date_default_timezone_set('UTC');
 header("Content-type: application/json");
 include('db_credentials.php');
 
+
 // Gets the start and end time in addition to
 // the day these times will occur
 $start_date_UTC = $_GET['start'];
@@ -28,24 +29,28 @@ if (isset($date_UTC)) {
    $end_ts .= substr($end_UTC, 0, -1);
 }
 
-ChromePhp::log($start_ts);
-ChromePhp::log($end_ts);
+ChromePhp::log("Start " . $start_ts);
+ChromePhp::log("End " . $end_ts);
 
 // Checks if the start and end time are within a range that can be gotten
 // and if not it it will get the entire database
 if (isset($start_ts)) {
    if (isset($end_ts)){
-        $t_data = "SELECT * FROM `t_data` WHERE timestamp >= '" . $start_ts . "' and timestamp <= '" . $end_ts . "' ORDER BY timestamp asc";
+        $t_data_freq = "SELECT * FROM `t_data` WHERE timestamp >= '" . $start_ts . "' and timestamp <= '" . $end_ts . "' and info_id = 1 ORDER BY timestamp asc";
+        $t_data_temp = "SELECT * FROM `t_data` WHERE timestamp >= '" . $start_ts . "' and timestamp <= '" . $end_ts . "' and info_id = 2 ORDER BY timestamp asc";
    }
    else {
-      $t_data = "SELECT * FROM `t_data` WHERE timestamp >= '" . $start_ts . "' ORDER BY timestamp asc";
+      $t_data_freq = "SELECT * FROM `t_data` WHERE timestamp >= '" . $start_ts . "' and info_id = 1 ORDER BY timestamp asc";
+      $t_data_temp = "SELECT * FROM `t_data` WHERE timestamp >= '" . $start_ts . "' and info_id = 2 ORDER BY timestamp asc";
    }
 }
 else {
-   $t_data = "SELECT * FROM `t_data`";
+   $t_data_freq = "SELECT * FROM `t_data`" . " WHERE info_id = 1 ORDER BY timestamp asc";
+   $t_data_temp = "SELECT * FROM `t_data`" . " WHERE info_id = 2 ORDER BY timestamp asc";
 }
 
-ChromePhp::log($t_data);
+ChromePhp::log($t_data_freq);
+ChromePhp::log($t_data_temp);
 
 $json['temperature'] = array();
 $json['frequency'] = array();
@@ -56,11 +61,17 @@ mysql_select_db($db, $conn) or die('No Luck: ' . mysql_error() . "\n");
 
 // Queries the database and contructs arrays for the temperature and frequency based on
 // the float temp/freq paired with a unix formatted time.
-$resp = mysql_query($t_data);
-while ($row = mysql_fetch_assoc($resp)) {
+$resp_freq = mysql_query($t_data_freq);
+while ($row = mysql_fetch_assoc($resp_freq)) {
+   if ($row['value'] != 999) {
+   array_push($json['frequency'], array(strtotime($row['timestamp'])*1000, (float) ($row['value'])));
+  }
+}
+
+$resp_temp = mysql_query($t_data_temp);
+while ($row = mysql_fetch_assoc($resp_temp)) {
    if ($row['value'] != 999) {
    array_push($json['temperature'], array(strtotime($row['timestamp'])*1000, (float) ($row['value'])));
-   array_push($json['frequency'], array(strtotime($row['timestamp'])*1000, (float) ($row['value'])));
   }
 }
 

@@ -1,7 +1,7 @@
 // Power display JSON Chart
 function setup_temp() {
-		// Create the chart
-		$('#tempstatus').highcharts('StockChart', {
+    // Create the chart
+    $('#tempstatus').highcharts('StockChart', {
          plotOptions : {
             line : {
                marker : {
@@ -37,7 +37,7 @@ function setup_temp() {
             ]
          },
          title : {
-           text : 'Temperature'
+           text : 'Temperature Set Points'
         },
         xAxis : {
          type: 'datetime'
@@ -50,9 +50,14 @@ function setup_temp() {
       series : [{
         name : 'Temperature Fahrenheit',
         data : [[]],
+        lineWidth : 0,
+        enableMouseTracking: false,
+        marker : {
+            enabled : true,
+            radius : 5
+        },
         tooltip: {
-          valueDecimals: 2,
-          valueSuffix: ' F',
+          enabled : false
        }
     }]
  });
