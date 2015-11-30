@@ -1,7 +1,7 @@
 // Power display JSON Chart
-function setup_power() {
+function setup_temp() {
 		// Create the chart
-		$('#powerstats').highcharts('StockChart', {
+		$('#tempstatus').highcharts('StockChart', {
          plotOptions : {
             line : {
                marker : {
@@ -37,24 +37,24 @@ function setup_power() {
             ]
          },
          title : {
-           text : 'Power'
+           text : 'Temperature'
         },
         xAxis : {
-         type: 'time'
+         type: 'datetime'
       },
       yAxis : {
          title: {
-            text: 'Watts'
+            text: 'Fahrenheit'
          }
       },
       series : [{
-        name : 'power watts',
+        name : 'Temperature Fahrenheit',
         data : [[]],
         tooltip: {
           valueDecimals: 2,
-          valueSuffix: ' W',
+          valueSuffix: ' F',
        }
     }]
  });
-batteryStatus = $('#powerstatus').highcharts();
+tempStatus = $('#tempstatus').highcharts();
 }

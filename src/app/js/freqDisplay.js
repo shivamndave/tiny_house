@@ -20,7 +20,7 @@ function setup_freq() {
             {
                type: 'second',
                count: 1,
-               text: '1d'
+               text: '1s'
             }, {
                type: 'minute',
                count: 1,
@@ -28,7 +28,7 @@ function setup_freq() {
             }, {
                type: 'hour',
                count: 3,
-               text: '3m'
+               text: '1h'
             }, {
                type: 'day',
                count: 1,
@@ -40,7 +40,7 @@ function setup_freq() {
             text : 'Frequency'
          },
          xAxis : {
-            type: 'time'
+            type: 'datetime'
          },
          yAxis : {
             title: {
@@ -48,7 +48,7 @@ function setup_freq() {
             }
          },
          series : [{
-            name : 'freq hertz',
+            name : 'Frequency Hertz',
             data : [[]],
             tooltip: {
                valueDecimals: 2,
@@ -56,5 +56,5 @@ function setup_freq() {
             }
          }]
       });
-batteryStatus = $('#freqstatus').highcharts();
+freqStatus = $('#freqstatus').highcharts();
 }
