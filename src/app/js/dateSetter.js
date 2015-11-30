@@ -1,14 +1,16 @@
-var GETURL ="api/", // Base link to the date
-hideList = [],
-showList = [],
-init;
+var GETURL ="api/history.php?",
+    hideList = [],
+    showList = [],
+    init;
 
 function reload_date_range() {
    var getURL = dateParser($( "#day-picker" ).datepicker( "getDate" ).toISOString(),
-                           $( "#start-time-picker" ).timepicker('getTime').toISOString(),
-                           $( "#end-time-picker" ).timepicker('getTime').toISOString());
+                           $( "#start-time-picker" ).val(),
+                           $( "#end-time-picker" ).val());
    console.log("URL:" + getURL);
    init = false;
+   hideList = [];
+   showList = [];
    $.getJSON(getURL, function(data) {
       checkData(data);
       console.log("Charts Shown: " + showList);
