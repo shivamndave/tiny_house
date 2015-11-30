@@ -7,10 +7,13 @@ date_default_timezone_set('UTC');
 header("Content-type: application/json");
 include('db_credentials.php');
 
+// Gets the start and end time in addition to
+// the day these times will occur
 $start_date_UTC = $_GET['start'];
 $end_date_UTC   = $_GET['end'];
 $date_UTC      = $_GET['day'];
 
+// Parses the day and the time from the URL Gets
 if (isset($date_UTC)) {
    $date_UTC      .= " ";
    $final_start_UTC = substr_replace($start_date_UTC,":", 2, 1);
@@ -28,6 +31,8 @@ if (isset($date_UTC)) {
 ChromePhp::log($start_ts);
 ChromePhp::log($end_ts);
 
+// Checks if the start and end time are within a range that can be gotten
+// and if not it it will get the entire database
 if (isset($start_ts)) {
    if (isset($end_ts)){
         $t_data = "SELECT * FROM `t_data` WHERE timestamp >= '" . $start_ts . "' and timestamp <= '" . $end_ts . "' ORDER BY timestamp asc";
@@ -49,6 +54,8 @@ $json['frequency'] = array();
 $conn = mysql_connect($host, $user, $pw) or die('Could not connect: ' . mysql_error());
 mysql_select_db($db, $conn) or die('No Luck: ' . mysql_error() . "\n");
 
+// Queries the database and contructs arrays for the temperature and frequency based on
+// the float temp/freq paired with a unix formatted time.
 $resp = mysql_query($t_data);
 while ($row = mysql_fetch_assoc($resp)) {
    if ($row['value'] != 999) {
@@ -57,5 +64,6 @@ while ($row = mysql_fetch_assoc($resp)) {
   }
 }
 
+// Writes to the page
 echo json_encode($json);
 ?>

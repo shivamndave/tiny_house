@@ -3,6 +3,8 @@ var GETURL ="api/history.php?",
     showList = [],
     init;
 
+// Reloads the date range when submitting the date range through the
+// entry area
 function reload_date_range() {
    var getURL = dateParser($( "#day-picker" ).datepicker( "getDate" ).toISOString(),
                            $( "#start-time-picker" ).val(),
@@ -19,6 +21,8 @@ function reload_date_range() {
    });
 }
 
+// Inital chart loading using passed in default time
+// period
 function initial_date_range(day, start, end) {
    var getURL = dateParser(day, start, end);
    init = true;
@@ -33,6 +37,8 @@ function initial_date_range(day, start, end) {
    })
 }
 
+// Contstructs the url using the gotten
+// date information
 function dateParser(day, start, end) {
    var tempURL = GETURL,
        parDay = getDate(day),
@@ -49,12 +55,15 @@ function dateParser(day, start, end) {
    return tempURL
 }
 
+// Gets only the date from the datepicker
 function getDate(date) {
    var tempDate = date.slice(0, 10);
    return tempDate;
 
 }
 
+// Gets only the time from the timepicker
+// and formats it from 00:11:22 into 00h11m22s
 function getTime(time) {
    tempTime = replaceAt(time, 2, "h");
    tempTime = replaceAt(time, 5, "m");
@@ -62,13 +71,9 @@ function getTime(time) {
    return tempTime;
 }
 
+// Replaces at a specified character
 function replaceAt (str, ind, charac) {
     return str.substr(0, ind) + charac + str.substr(ind + charac.length);
-}
-
-function resetLists(){
-   hideList = [];
-   showList = [];
 }
 
 // Checks if an object name is in either
