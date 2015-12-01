@@ -25,6 +25,9 @@ int main(void)
 		do 
 		{	
 			temperature->current = getTemperatureC();
+
+			if (status->debugMode == DEBUG_ON)	uprintf("TEMP: %f\n", temperature->current);
+			
 			if (RX_TX_FUNCTION_available() >= 1) ProcessCommand();						// if commands are in the receiving buffer
 			FSM[status->currentState].Output_Func_ptr();								// executes proper state function
 			status->flags = SensorResult();	// changes next state for the FSM
