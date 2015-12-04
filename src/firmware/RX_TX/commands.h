@@ -28,6 +28,10 @@
 #define INVALID_COMMAND_ERROR_CODE				0xF8
 #define CHANGE_NEGATIVE_OFFSET_ERROR_CODE		0xFA
 
+// DEBUG MODE //
+#define DEBUG_ON 10
+#define DEBUG_OFF 0
+#define RECEIVE_MESSAGE_GET_SYSTEM_STATUS       0x15
 /////////////////////////
 
 // RX/TX COMMANDS //
