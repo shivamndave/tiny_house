@@ -8,7 +8,7 @@
 #include "UART_LIBRARY/uart.h"
 #include "Sensor_Driver/driver.h"
 #include "Sensor_Driver/fsm.h"
-
+///////////////////////////////////////
 
 FSM_t FSM[] = 
 {
