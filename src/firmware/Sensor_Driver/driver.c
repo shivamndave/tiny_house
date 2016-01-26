@@ -155,7 +155,15 @@ void ProcessCommand(void)
 			uprintf("/%.2f/%d/%.2f/%.2f/%.2f/%d/", temperature->current, status->currentState, temperature->setpoint, temperature->positiveOffset, temperature->negativeOffset);
 			break;
 
-
+		case RECEIVE_DEBUG_SWITCH_COMMAND:
+			if (status->debugMode == DEBUG_ON)
+			{
+				status->debugMode = DEBUG_OFF;
+			} else {
+				status->debugMode = DEBUG_ON;
+			}	
+			break;
+			
 		default:
 			uprintf("%d", INVALID_COMMAND_ERROR_CODE);
 			break;

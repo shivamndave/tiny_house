@@ -62,6 +62,7 @@ struct Machine_Status
 {
 	uint8_t currentState;	// HOLDS CURRENT STATE
 	uint8_t flags;
+    uint8_t debugMode;      // if TRUE, the machine prints the current temp every itr.
 };
 
 typedef struct Machine_Status Status;
