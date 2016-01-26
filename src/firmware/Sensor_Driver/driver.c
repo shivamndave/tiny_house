@@ -12,7 +12,6 @@
 #include "../One_Wire_Library/OneWire.h"
 #include "../UART_LIBRARY/uart.h"
 
-static void uprintf (char* input_string, ...);
 
 
 //* CREATED BY SARGIS S YONAN - 12 OCT. 2015 */
@@ -155,15 +154,7 @@ void ProcessCommand(void)
 			uprintf("/%.2f/%d/%.2f/%.2f/%.2f/%d/", temperature->current, status->currentState, temperature->setpoint, temperature->positiveOffset, temperature->negativeOffset);
 			break;
 
-		case RECEIVE_DEBUG_SWITCH_COMMAND:
-			if (status->debugMode == DEBUG_ON)
-			{
-				status->debugMode = DEBUG_OFF;
-			} else {
-				status->debugMode = DEBUG_ON;
-			}	
-			break;
-			
+
 		default:
 			uprintf("%d", INVALID_COMMAND_ERROR_CODE);
 			break;
