@@ -44,7 +44,7 @@
 #define OFF 				    				0x00
 
 
-static void uprintf (char* input_string, ...);
+void uprintf (char* input_string, ...);
 
                         
 /** 
