@@ -72,14 +72,14 @@ bool SystemInit(void);
                  the whole received message is checksummed and stored as a
                  16-bit word before the null term uint16_t with the _array_checksum algorithm
                  the first 16-bits are the command, and the next bytes are the argument to that command
-/*
+*
 / example of packet to send
 /  Rx    = | 0xXX 8-BIT COMMAND | 8-BIT UPPER ARGUMENT | 8-BIT DELIMITER ('-') = 0x002D |
 /  index =                0                                 1                              2                               3
 / THE COMMAND -> Rx = {{RECEIVE_MESSAGE_CHANGE_SETPOINT}, {0x2D}} = changes the set point to 100 degrees Celsius
 */
 
- * ------------
+/* ------------
  * PARAMETERS  : void
  * ------------
  * RETURNS     : void
