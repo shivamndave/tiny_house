@@ -95,7 +95,13 @@ void ProcessCommand(void)
 			break;
 		}
 	}
-	
+	/* TEST THIS */
+	if (rxByteArray[MAX_RECEIVE_LENGTH - 1] != RX_DELIMITER) 
+	{
+
+		RX_TX_FUNCTION_flush();
+		return;
+	}
 
 
 	switch (rxByteArray[0])
