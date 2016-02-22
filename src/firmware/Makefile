@@ -6,7 +6,7 @@ CSOURCE						 = main.c One_Wire_Library/OneWire.c UART_Library/uart.c Sensor_Dri
 #${CSOURCE:.c=.o}
 OBJECTS  					 = main.o OneWire.o uart.o driver.o
 EXECUTABLE					 = main
-COMPILER_PATH				 = /dev/tty.usbmodemFA131
+COMPILER_PATH				 = /dev/tty.usbmodem1421
 #cu.usbmodemfd121
 COMPILER  					 = stk500v2
 BAUDRATE					 = 115200
