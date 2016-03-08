@@ -12,7 +12,6 @@
 #include "../One_Wire_Library/OneWire.h"
 #include "../UART_LIBRARY/uart.h"
 
-static void uprintf (char* input_string, ...);
 
 
 //* CREATED BY SARGIS S YONAN - 12 OCT. 2015 */
@@ -44,8 +43,7 @@ void uprintf (char* input_string, ...)
 
 bool SystemInit(void)
 {
-	//enable interrupts
-    sei();	
+    sei();				/* enables AVR interrupts */
    	RX_TX_FUNCTION_init(UART_BAUD_SELECT(BAUDRATE,F_CPU));
 	RELAY_DDR = RELAY_DDR_SETTING;
 	status = (Status*)malloc(sizeof(struct Machine_Status));
@@ -74,9 +72,9 @@ bool SystemInit(void)
 // the first 16-bits are the command, and the next bytes are the argument to that command
 /*
 / example of packet to send
-/  rx    = | 0x0000[16 COMMAND BITS] | 8-BIT UPPER ARGUMENT + 8-BIT LOWER ARGUMENT | 16-BIT CHECKSUM | COMMAND_TERMINATION 16-BIT COMMAND ('-') = 0x002D |
+/  Rx    = | 0xXX 8-BIT COMMAND | 8-BIT UPPER ARGUMENT | 8-BIT DELIMITER ('-') = 0x002D |
 /  index =                0                                 1                              2                               3
-/ THE COMMAND -> rx = {{RECEIVE_MESSAGE_CHANGE_SETPOINT}, {0x0064}, CHECKSUM, {0x0000}} = change setpoint to 100 degrees celsius
+/ THE COMMAND -> Rx = {{RECEIVE_MESSAGE_CHANGE_SETPOINT}, {0x2D}} = changes the set point to 100 degrees Celsius
 */
 
 void ProcessCommand(void)
@@ -96,8 +94,6 @@ void ProcessCommand(void)
 			break;
 		}
 	}
-	
-
 
 	switch (rxByteArray[0])
 	{
