@@ -49,40 +49,34 @@ if (!empty($live)) {
       $json = array('info' => fetch_info($t_data_info_query), 'equip' => fetch_equi($t_data_equip_query), 'values' => fetch_data($t_data_query));
 
    } else {
-      $t_data_equip_query = "SELECT * FROM `t_equipment`";
+      $t_sensor_info_query = "SELECT * FROM `t_sensor_info`";
 
-      ChromePhp::log($t_data_equip_query);
+      ChromePhp::log($t_sensor_info_query);
 
       //Connect to database and execute query
       $conn = mysql_connect($host, $user, $pw) or die('Could not connect: ' . mysql_error());
       mysql_select_db($db, $conn) or die('No Luck: ' . mysql_error() . "\n");
 
-      $resp = mysql_query($t_data_equip_query);
+      $resp = mysql_query($t_sensor_info_query);
       $json = array();
       while ($row = mysql_fetch_assoc($resp)) {
          $json_temp = array();
-         $info = $row['id'];
-         ChromePhp::log($info);
+         $sensor_id = $row['id'];
+         $equipment_id = $row['equipment_id'];
 
-         $t_data_query = "SELECT * FROM `t_data` WHERE info_id = " . $info . " ORDER BY timestamp ASC ";
+	 $t_equipment_query =  "SELECT * FROM `t_equipment` WHERE id= " . $equipment_id;
+	 $t_actuator_query = "SELECT * FROM `t_actuator_info` WHERE id= " . $sensor_id;
+         
+         $t_data_query = "SELECT * FROM `t_data` WHERE info_id = " . $sensor_id;
          if (!empty($late)) {
             $t_data_query = $t_data_query .  "LIMIT 0, " . $late;
          }
-         // ChromePhp::log($t_data_query);
 
-         $t_data_info_query = "SELECT * FROM `t_data_info` WHERE id = " . $info;
-
-         // ChromePhp::log($t_data_info_query);
-
-         $t_data_equip_query = "SELECT * FROM `t_equipment` WHERE id = " . $info;
-
-         // ChromePhp::log($t_data_equip_query);
-
-         // //Connect to database and execute query
-         // $conn = mysql_connect($host, $user, $pw) or die('Could not connect: ' . mysql_error());
-         // mysql_select_db($db, $conn) or die('No Luck: ' . mysql_error() . "\n");
-
-         $json_temp = array('info' => fetch_info($t_data_info_query), 'equip' => fetch_equi($t_data_equip_query), 'values' => fetch_data($t_data_query));
+         $t_sensor_info_result = fetch_sensor_info($row);
+         $t_equipment_result = fetch_equipment($t_equipment_query);
+         //$t_actuator_result
+         //$t_data_result
+         $json_temp = array('sensor_info' => $t_sensor_info_result, 'equipment' => $t_equipment_result, 'values' => fetch_data($t_data_query));
          ChromePhp::log($json_temp);
          array_push($json, $json_temp);
       }
@@ -110,27 +104,18 @@ function fetch_data($t_data) {
    return $data_json;
 }
 
-function fetch_info($t_data) {
-   $info_json['info'] = array();
-   $resp = mysql_query($t_data);
-   if($row = mysql_fetch_assoc($resp)) {
-      return array('name' => $row['name'], 'unit' => $row['unit'], 'longunit' => $row['longunit'], 'mType' => $row['mType']);
-   }
+function fetch_sensor_info($row) {
+    if($row) {
+	return array('name' => $row['name'], 'unit' => $row['unit'], 'longunit' => $row['longunit'], 'info' => $row['info']);
+    }
 }
 
-function fetch_equi($t_data) {
-   $resp = mysql_query($t_data);
+function fetch_equipment($t_query) {
+   $resp = mysql_query($t_query);
    if($row = mysql_fetch_assoc($resp)) {
       return array('name' => $row['name'], 'location' => $row['location'], 'info' => $row['info']);
    }
 }
-
-// function get_name($row) {
-//    if ($row['name'] != 999) {
-//       $name = $row['name']; 
-//    }
-//    return $name;
-// }
 
 // Writes to the page
 echo json_encode($json);
