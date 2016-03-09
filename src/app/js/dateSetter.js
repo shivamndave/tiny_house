@@ -96,7 +96,7 @@ function addChartRow(statusID, currentData) {
 
      document.getElementById('content').appendChild(chartDiv);
      $("#" + statusID + "-msg").hide();
-     if(currentData.values.actuator.length > 0){
+     if(currentData.values.actuator.length > 0 || currentData.values.sensor.length > 0){
         $("#setpt-" + statusID).text("Loading...");
         $("#setpt-" + statusID).css("font-weight","Bold");
      }
@@ -258,7 +258,7 @@ function updateCharts (dataType, status, statusID, setpointValue) {
        t_set = " equal to ";
     }
     var textVal = lateVal + " " + dataType.sensor_info.longunit;
-    var text = "Latest value " + textVal + " is currently " + t_set + "the setpoint of " + setpointValue.toString();
+    var text = "Latest value " + textVal + " is currently " + t_set + "the setpoint of " + setpointValue.toString() + " " + dataType.sensor_info.longunit;
     $(statusID).text(text);
     $(statusID).css("font-weight","Bold");
     status.series[0].setData(dataType.values.sensor, true);
@@ -292,5 +292,11 @@ function updateCharts (dataType, status, statusID, setpointValue) {
    } else {
     console.log("dataType sensor");
     status.series[0].setData(dataType.values.sensor, true);
+    var lateVal = dataType.values.sensor[dataType.values.sensor.length - 1][1],
+	textVal = lateVal + " " + dataType.sensor_info.longunit,
+	text = "Latest value: " + textVal;
+    $(statusID).text(text);
+    $(statusID).css("font-weight","Bold");
+ 
    }
 }
