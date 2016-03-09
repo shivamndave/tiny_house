@@ -81,20 +81,26 @@ function addChartRow(statusID, currentData) {
 
     chartDiv.innerHTML = '<div>\
         <div class="col-md-6 chart" id=' + statusID + ' style="margin: 0 auto;">\
-        </div></div>';
-//        <h2 id=' + statusID + '-msg style:"visibility: hidden;"> was under maintainance. Charts cannot be displayed </h2>\
-//        <div class="col-md-6">\
-//        <p>' + 'Name: ' + currentData.equip.name + '</p>' + 
-//        '<p>' + 'Type: ' + currentData.info.name + '</p>' + 
-//        '<p>' + 'Units: ' + currentData.info.longunit + '</p>' + 
-//        '<p>' + 'Location: ' + currentData.equip.location + '</p>' + 
-//        '<p>' + 'Info: ' + currentData.equip.info + '</p>' + 
-//        '<p>' + 'mType: ' + currentData.info.mType + '</p>' + 
-//        '<p id=setpt-' + statusID + '>' + '</p>' + 
-//        '</div>\
-//        </div>';
+        </div>\
+        <h2 id=' + statusID + '-msg> was under maintainance. Charts cannot be displayed </h2>\
+        </div>\
+        <div class="col-md-6">\
+        <p>' + 'Sensor Name: ' + currentData.sensor_info.name + '</p>' + 
+        '<p>' + 'Sensor Info: ' + currentData.sensor_info.info + '</p>' + 
+        '<p>' + 'Equipment Name: ' + currentData.equipment.name + '</p>' + 
+        '<p>' + 'Eq Info: ' + currentData.equipment.info + '</p>' + 
+        '<p>' + 'Location: ' + currentData.equipment.location + '</p>' + 
+        '<p id=setpt-' + statusID + '>' + '</p>' + 
+        '</div>\
+        </div>';
 
      document.getElementById('content').appendChild(chartDiv);
+     $("#" + statusID + "-msg").hide();
+     if(currentData.values.actuator.length > 0){
+        $("#setpt-" + statusID).text("Loading...");
+        $("#setpt-" + statusID).css("font-weight","Bold");
+     }
+ 
 }
 
 // Contstructs the url using the gotten
@@ -241,7 +247,9 @@ function updateCharts (dataType, status, statusID, setpointValue) {
     console.log("dataType setpoint");
     var lateVal = dataType.values.sensor[dataType.values.sensor.length - 1][1],
         t_set = "",
-        diff = Math.abs(setpointValue - lateVal).toString() + " " + dataType.sensor_info.longunit;
+        val = Math.abs(setpointValue - lateVal),
+        roundVal = Number(Math.round(val+'e2') + 'e-2'),
+        diff = roundVal.toString() + " " + dataType.sensor_info.longunit;
     if(lateVal > setpointValue){
       t_set = diff + " over ";
     } else if (lateVal < setpointValue){
@@ -252,6 +260,7 @@ function updateCharts (dataType, status, statusID, setpointValue) {
     var textVal = lateVal + " " + dataType.sensor_info.longunit;
     var text = "Latest value " + textVal + " is currently " + t_set + "the setpoint of " + setpointValue.toString();
     $(statusID).text(text);
+    $(statusID).css("font-weight","Bold");
     status.series[0].setData(dataType.values.sensor, true);
     console.log("ADDING PLOT LINE");
     if(status.yAxis.length == 0) {
