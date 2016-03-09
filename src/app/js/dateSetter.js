@@ -1,39 +1,99 @@
 var GETURL ="api/history.php?",
+    LIVEURL ="api/live.php?",
     hideList = [],
     showList = [],
     init;
 
 // Reloads the date range when submitting the date range through the
 // entry area
-function reload_date_range() {
-   var getURL = dateParser($( "#day-picker" ).datepicker( "getDate" ).toISOString(),
-                           $( "#start-time-picker" ).val(),
-                           $( "#end-time-picker" ).val());
-   init = false;
-   hideList = [];
-   showList = [];
-   $.getJSON(getURL, function(data) {
-      checkData(data);
-      console.log("Charts Shown: " + showList);
-      updateCharts(data, init);
-      toggleDisplays(hideList, showList);
-   });
-}
+// function reload_date_range() {
+//    var getURL = dateParser($( "#day-picker" ).datepicker( "getDate" ).toISOString(),
+//                            $( "#start-time-picker" ).val(),
+//                            $( "#end-time-picker" ).val());
+//    init = false;
+//    hideList = [];
+//    showList = [];
+//     $.getJSON(getURL, function(data) {
+//       checkData(data);
+//       // console.log("Charts Shown: " + showList);
+//       updateCharts(data, init);
+//       toggleDisplays(hideList, showList);
+//       setTimeout(reload_date_range, 1000);
+//     });
+// }
 
-// Inital chart loading using passed in default time
-// period
-function initial_date_range(day, start, end) {
-   var getURL = dateParser(day, start, end);
+// Gets live data and displays it initially
+function get_latest_data(latest) {
+   var getURL = liveParser(0, latest);
    init = true;
    hideList = [];
    showList = [];
-   setupCharts();
+   console.log(getURL);
    $.getJSON(getURL, function(data) {
-      checkData(data);
-      console.log("Charts Shown: " + showList);
-      updateCharts(data, init);
-      toggleDisplays(hideList, showList);
-   })
+     console.log("data")
+     console.log(data)
+     var list_of_charts = [];
+     for(iter_i = 0; iter_i < data.length; iter_i++) {
+       var parseDOM = 'device-' + iter_i.toString(),
+           currentData = data[iter_i];
+       if(currentData.actuator_info && currentData.values.sensor.length > 0 && currentData.values.actuator.length > 0) {
+        addChartRow(parseDOM, currentData);
+        var temp = setup_setpoint_chart('#' + parseDOM, currentData, 0);
+        list_of_charts.push(temp);
+       } else {
+        addChartRow(parseDOM, currentData);
+        var temp = setup_sensor_chart('#' + parseDOM, currentData);
+        list_of_charts.push(temp);
+       }
+     }
+     // console.log("list_")
+     // console.log(list_of_charts)
+     // tempStatus = setup_sensor_chart('#tempstatus', data[0]);
+     // freqStatus = setup_sensor_chart('#freqstatus', data[1]);
+     setInterval(function() {
+       $.getJSON(getURL, function(updateData) {
+          // checkData(data[0].values);
+          // checkData(data[1].values);
+          // console.log("Charts Shown: " + showList);
+          // updateCharts(data[0], tempStatus);
+          // updateCharts(data[1], freqStatus);
+          for (iter_i = 0; iter_i < list_of_charts.length; iter_i++) {
+            var setpointValue = 0;
+            var showChart = checkData(data[iter_i]);
+            var parseDOM = 'device-' + iter_i.toString();
+            console.log(iter_i);
+            if(updateData[iter_i].values.actuator.length > 0){
+              var setpointValue = updateData[iter_i].values.actuator[updateData[iter_i].values.actuator.length - 1][1];
+            }
+            updateCharts(updateData[iter_i], list_of_charts[iter_i], "#setpt-" + parseDOM, setpointValue);
+            toggleDisplays(showChart, parseDOM);
+          }
+       });
+     }, 5000);
+   });
+}
+
+function addChartRow(statusID, currentData) {
+    var chartDiv = document.createElement('div');
+
+    chartDiv.className = 'row';
+
+    chartDiv.innerHTML = '<div>\
+        <div class="col-md-6 chart" id=' + statusID + ' style="margin: 0 auto;">\
+        </div></div>';
+//        <h2 id=' + statusID + '-msg style:"visibility: hidden;"> was under maintainance. Charts cannot be displayed </h2>\
+//        <div class="col-md-6">\
+//        <p>' + 'Name: ' + currentData.equip.name + '</p>' + 
+//        '<p>' + 'Type: ' + currentData.info.name + '</p>' + 
+//        '<p>' + 'Units: ' + currentData.info.longunit + '</p>' + 
+//        '<p>' + 'Location: ' + currentData.equip.location + '</p>' + 
+//        '<p>' + 'Info: ' + currentData.equip.info + '</p>' + 
+//        '<p>' + 'mType: ' + currentData.info.mType + '</p>' + 
+//        '<p id=setpt-' + statusID + '>' + '</p>' + 
+//        '</div>\
+//        </div>';
+
+     document.getElementById('content').appendChild(chartDiv);
 }
 
 // Contstructs the url using the gotten
@@ -51,6 +111,16 @@ function dateParser(day, start, end) {
    }
 
    return tempURL
+}
+
+function liveParser(id, latest) {
+   var tempURL = LIVEURL + "live=1&info_id=" + id.toString();
+
+   if(latest > 5) {
+      tempURL += "&latest=" + latest.toString();
+   }
+
+   return tempURL;
 }
 
 // Gets only the date from the datepicker
@@ -79,20 +149,32 @@ function replaceAt (str, ind, charac) {
 // the hide or show lists, based on that
 // the display is shown or hidden, and the
 // message is hidden or shown.
-function toggleDisplays(showList, hideList) {
-   if(showObj(showList, hideList, "temperature")) {
-      $("#tempstatus").show();
-      $("#temphide").hide();
+// function toggleDisplays(showList, hideList) {
+//    if(showObj(showList, hideList, "temperature")) {
+//       $("#tempstatus").show();
+//       $("#temphide").hide();
+//    } else {
+//       $("#tempstatus").hide();
+//       $("#temphide").show();
+//    }
+//    if(showObj(showList, hideList, "frequency")) {
+//       $("#freqstatus").show();
+//       $("#freqhide").hide();
+//    } else {
+//       $("#freqstatus").hide();
+//       $("#freqhide").show();
+//    }
+// }
+
+function toggleDisplays(show, dom) {
+   if(show) {
+      console.log("SHO " + dom);
+      $("#" + dom).show();
+      $("#" + dom + "-msg").hide();
    } else {
-      $("#tempstatus").hide();
-      $("#temphide").show();
-   }
-   if(showObj(showList, hideList, "frequency")) {
-      $("#freqstatus").show();
-      $("#freqhide").hide();
-   } else {
-      $("#freqstatus").hide();
-      $("#freqhide").show();
+      console.log("HID " + dom);
+      $("#" + dom).hide();
+      $("#" + dom + "-msg").show();
    }
 }
 
@@ -101,23 +183,20 @@ function toggleDisplays(showList, hideList) {
 function showObj(hideArr, showArr, name) {
    if(showArr.indexOf(name) > -1) {
       return true;
-   }
-   return false;
+   } else {
+    return false;
+  }
 }
 
 // Calls iterateData to get information
 // on if object contains data. Based on
 // response, if it has data, adds to a list
-function checkData(data) {
-   var dataObj;
-   for (var prop in data) {
-      dataObj = data[prop];
-      if(iterateData(dataObj)){
-         showList.push(prop)
-      } else {
-         hideList.push(prop);
-      }
-   }
+function checkData(dataValues) {
+  if (iterateData(dataValues.values.sensor)){
+    return true;
+  } else {
+    return false;
+  } 
 }
 
 // Recursively iterates through
@@ -126,16 +205,7 @@ function checkData(data) {
 // nonzero array is found (returns true) otherwise
 // returns false.
 function iterateData(data) {
-   var dataObj;
-   for (var prop in data) {
-      dataObj = data[prop];
-      if (isNonzeroArray(dataObj)) {
-         return true;
-      } else if (!(Array.isArray(dataObj))) {
-         return iterateData(data);
-      }
-   }
-   return false;
+  return isNonzeroArray(data);
 }
 
 // Checks if passed in data is an array, 
@@ -159,12 +229,58 @@ function notEmpty(dataArray) {
   return false;
 }
 
-function setupCharts () {
-   setup_temp();
-   setup_freq();
-}
+// function setupCharts (data) {
+//    setup_sensor_chart('#freqstatus', data[0]);
+//    setup_sensor_chart('#tempstatus', data[1]);
+// }
 
-function updateCharts (data, initial) {
-   freqStatus.series[0].setData(data.frequency, true);
-   tempStatus.series[0].setData(data.temperature, true);
+function updateCharts (dataType, status, statusID, setpointValue) {
+   console.log(dataType.values.sensor);
+   if(dataType.actuator_info && dataType.values.sensor.length > 0 && dataType.values.actuator.length > 0) {
+    console.log("dataType setpoint");
+    var lateVal = dataType.values.sensor[dataType.values.sensor.length - 1][1],
+        t_set = "",
+        diff = Math.abs(setpointValue - lateVal).toString() + " " + dataType.sensor_info.longunit;
+    if(lateVal > setpointValue){
+      t_set = diff + " over ";
+    } else if (lateVal < setpointValue){
+      t_set = diff + " under ";
+    } else {
+       t_set = " equal to ";
+    }
+    var textVal = lateVal + " " + dataType.sensor_info.longunit;
+    var text = "Latest value " + textVal + " is currently " + t_set + "the setpoint of " + setpointValue.toString();
+    $(statusID).text(text);
+    status.series[0].setData(dataType.values.sensor, true);
+    console.log("ADDING PLOT LINE");
+    if(status.yAxis.length == 0) {
+      status.yAxis[0].addPlotLine({
+          value: setpointValue,
+          color: 'red',
+          width: 2,
+          id: 'plot-line-1',
+          color: 'red',
+          dashStyle: 'shortdash',
+          label: {
+            text: 'Setpoint'
+          }
+      });
+    } else {
+      status.yAxis[0].removePlotLine('plot-line-1');
+      status.yAxis[0].addPlotLine({
+        value: setpointValue,
+        color: 'red',
+        width: 2,
+        id: 'plot-line-1',
+        color: 'red',
+        dashStyle: 'shortdash',
+        label: {
+          text: 'Setpoint'
+        }
+    });
+    }
+   } else {
+    console.log("dataType sensor");
+    status.series[0].setData(dataType.values.sensor, true);
+   }
 }
