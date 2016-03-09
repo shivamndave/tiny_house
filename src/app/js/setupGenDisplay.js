@@ -4,7 +4,7 @@ function setup_sensor_chart(jqDOM, dataType) {
           dataEquipment = dataType.equipment,
           dataSensorValues = [[]];
 
-          if (dataType.values.sensor.len > 0) {
+          if (dataType.values.sensor.length > 0) {
              dataSensorValues = dataType.values.sensor;
           }
           console.log(dataSensorValues);
