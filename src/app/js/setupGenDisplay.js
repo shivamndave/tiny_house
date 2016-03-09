@@ -1,7 +1,13 @@
 // Power display JSON Chart
 function setup_sensor_chart(jqDOM, dataType) {
       var dataSensorInfo = dataType.sensor_info,
-          dataEquipment = dataType.equipment;
+          dataEquipment = dataType.equipment,
+          dataSensorValues = [[]];
+
+          if (dataType.values.sensor.len > 0) {
+             dataSensorValues = dataType.values.sensor;
+          }
+          console.log(dataSensorValues);
 
       // Create the chart
       $(jqDOM).highcharts('StockChart', {
@@ -55,7 +61,7 @@ function setup_sensor_chart(jqDOM, dataType) {
          },
          series : [{
             name : dataSensorInfo.longunit,
-            data : [[]],
+            data : dataSensorValues,
             tooltip: {
                valueDecimals: 2,
                valueSuffix: " " + dataSensorInfo.unit,

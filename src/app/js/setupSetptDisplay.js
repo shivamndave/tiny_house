@@ -1,7 +1,13 @@
 // Power display JSON Chart
-function setup_setpoint_chart(jqDOM, dataType, setpoint) {
+function setup_setpoint_chart(jqDOM, dataType, setpointValue) {
       var dataSensorInfo = dataType.sensor_info,
-          dataEquipment = dataType.equipment;
+          dataEquipment = dataType.equipment,
+          dataSensorValues = [[]];
+
+          if(dataType.values.sensor.length > 0){
+             dataSensorValues = dataType.values.sensor;
+          }
+          console.log(dataSensorValues);
 
       // Create the chart
       $(jqDOM).highcharts('StockChart', {
@@ -53,18 +59,20 @@ function setup_setpoint_chart(jqDOM, dataType, setpoint) {
                text: dataSensorInfo.longunit
             },
             plotLines: [{
-              value: setpoint,
-              color: 'red',
-              dashStyle: 'shortdash',
-              width: 2,
-              label: {
+	       value: setpointValue,
+               color: 'red',
+               width: 2,
+               id: 'plot-line-1',
+               color: 'red',
+               dashStyle: 'shortdash',
+	       label: {
                   text: 'Setpoint'
-              }
+               }
           }]
          },
          series : [{
             name : dataSensorInfo.longunit,
-            data : [[]],
+            data : dataSensorValues,
             tooltip: {
                valueDecimals: 2,
                valueSuffix: " " + dataSensorInfo.unit,

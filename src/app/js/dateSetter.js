@@ -38,7 +38,8 @@ function get_latest_data(latest) {
            currentData = data[iter_i];
        if(currentData.actuator_info && currentData.values.sensor.length > 0 && currentData.values.actuator.length > 0) {
         addChartRow(parseDOM, currentData);
-        var temp = setup_setpoint_chart('#' + parseDOM, currentData, 0);
+        var setpointValue = currentData.values.actuator[currentData.values.actuator.length - 1][1];
+        var temp = setup_setpoint_chart('#' + parseDOM, currentData, setpointValue);
         list_of_charts.push(temp);
        } else {
         addChartRow(parseDOM, currentData);

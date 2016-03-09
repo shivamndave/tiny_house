@@ -40,7 +40,7 @@ function setup_temp() {
            text : 'Temperature Set Points'
         },
         xAxis : {
-         type: 'datetime'
+         type: 'date'
       },
       yAxis : {
          title: {
