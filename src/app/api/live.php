@@ -65,7 +65,7 @@ if (!empty($live)) {
          $equipment_id = $row['equipment_id'];
 
 	 $t_equipment_query =  "SELECT * FROM `t_equipment` WHERE id= " . $equipment_id;
-	 $t_actuator_query = "SELECT * FROM `t_actuator_info` WHERE sensor_id= " . $sensor_id;  
+	 $t_actuator_query = "SELECT * FROM `t_actuator_info` WHERE id= " . $sensor_id;  
 
          $t_sensor_info_result = fetch_sensor_info($row);
          $t_equipment_result = fetch_equipment($t_equipment_query);
