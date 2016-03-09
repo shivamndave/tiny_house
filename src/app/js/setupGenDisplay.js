@@ -24,13 +24,9 @@ function setup_sensor_chart(jqDOM, dataType) {
          },
          rangeSelector : {
             enabled : true,
-            selected : 0,
+            selected : 4,
             buttons: [
             {
-               type: 'second',
-               count: 1,
-               text: '1s'
-            }, {
                type: 'minute',
                count: 1,
                text: '1m'
@@ -42,7 +38,11 @@ function setup_sensor_chart(jqDOM, dataType) {
                type: 'day',
                count: 1,
                text: '1d'
-            }
+            },
+            {
+	       type: 'all',
+	       text: 'All'
+	    }
             ]
          },
          title : {
