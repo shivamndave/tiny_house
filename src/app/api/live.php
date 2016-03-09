@@ -107,12 +107,12 @@ function fetch_data($t_sensor_query, $t_actuator_query) {
    $resp_actuator = mysql_query($t_actuator_query);
    while ($row = mysql_fetch_assoc($resp_sensor)) {
       if ($row['value'] != 999) {
-         $data_sensor_arr = array(strtotime($row['timestamp'])*1000, (float) ($row['value']));
+         array_push($data_sensor_arr, array(strtotime($row['timestamp'])*1000, (float) ($row['value'])));
       }
    }
    while ($row = mysql_fetch_assoc($resp_actuator)) {
       if ($row['value'] != 999) {
-         $data_actuator_arr = array(strtotime($row['timestamp'])*1000, (float) ($row['value']));        
+         array_push($data_actuator_arr, array(strtotime($row['timestamp'])*1000, (float) ($row['value'])));
       }
    }
    return array('sensor' => $data_sensor_arr,  'actuator' => $data_actuator_arr);
