@@ -1,5 +1,6 @@
 // Power display JSON Chart
 function setup_sensor_chart(jqDOM, dataType) {
+      var clientWidth = document.documentElement.clientWidth;
       var dataSensorInfo = dataType.sensor_info,
           dataEquipment = dataType.equipment,
           dataSensorValues = [[]];
@@ -19,7 +20,6 @@ function setup_sensor_chart(jqDOM, dataType) {
             }
          },
          chart: {
-            width : 500,
             height : 300
          },
          rangeSelector : {
