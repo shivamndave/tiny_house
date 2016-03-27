@@ -67,7 +67,10 @@ if (!empty($live)) {
 	 $t_equipment_query =  "SELECT * FROM `t_equipment` WHERE id= " . $equipment_id;
 	 $t_actuator_query = "SELECT * FROM `t_actuator_info` WHERE sensor_id= " . $sensor_id;  
 
-         $t_sensor_info_result = fetch_sensor_info($row);
+         $t_sensor_status_query = "SELECT * FROM `t_data` WHERE sensor_id = " . $sensor_id  . " ORDER BY `timestamp` DESC" . " LIMIT 0, 1";
+         $t_data_status = fetch_data_for_status($t_sensor_status_query);
+
+         $t_sensor_info_result = fetch_sensor_info($row, $t_data_status);
          $t_equipment_result = fetch_equipment($t_equipment_query);
          $t_actuator_result = fetch_actuator_info($t_actuator_query);
          $temp_actuator_id = fetch_actuator_id($t_actuator_query);
