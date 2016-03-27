@@ -1,5 +1,5 @@
-var GETURL ="api/history.php?",
-    LIVEURL ="api/live.php?",
+var GETURL ="../../api/history.php?",
+    LIVEURL ="../../api/live.php?",
     hideList = [],
     showList = [],
     init;

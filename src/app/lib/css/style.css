@@ -1,0 +1,50 @@
+* {
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+.row {
+  background: #A9CDD9;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+}
+
+.row-nrm {
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+}
+
+@media screen and (max-width: 550px) {
+    #chart-container {
+	width: 100%;
+    }
+}
+
+@media screen and (min-width: 551px) {
+    #chart-container {
+	width: 500px;
+    }
+}
+
+//.rx-ish {
+//    background: #000000;
+//}
+//.back-sensor {
+//    background: #F5D76E;
+//}
+
+//.back-equip {
+//    background: #F5D76E;
+//}
+
+//.back-actua {
+//    background: #F5D76E;
+//}
+
+//.back-ts {
+//    background: #EB9532;
+//}
+
+//.back-set {
+//    background: #EBAC65;
+//}
