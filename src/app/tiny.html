@@ -34,10 +34,10 @@
   </head>
 
   <body>
-    <section>
+    <section id="content">
       <div class="row">
-        <div class="col2-1 col">
-<!--          <table>
+<!--        <div class="col-md-6">
+          <table>
           <tr>
            <td>Current Temp: 27 C&deg; <b>|</b> </td>
            <td>Current State: Heating</td>
@@ -46,32 +46,40 @@
           <td> Current data: XX </td>
           <td> Current frequency data: XX </td>
         </tr>
-      </table> -->
-    </div>
+      </table> 
+    </div>-->
 
     <!-- Header Div with info about the project, etc-->
-    <div class="col2-2 col">
-      <div align="center" id="dateSelection">
-        <label>Pick a day and time range:</label>
-        <input id="day-picker" type="text" value=""></input>
-        <input id="start-time-picker" type="text" value=""></input>
-        <input id="end-time-picker" type="text" value=""></input>
+    <div class="col-sm-12">
+      <!-- <div align="center" id="dateSelection"> -->
+        <div class="col-sm-2">
+          <label>Pick a day and time range:</label>
+        </div>
+        <div class="col-sm-9">
+          <input id="day-picker" type="text" value=""></input>
+          <input id="start-time-picker" type="text" value=""></input>
+          <input id="end-time-picker" type="text" value=""></input>
+        </div>
+        <div class="col-sm-1">
         <button id="submit-range" value="submit" onclick="reload_date_range()">Submit</button>
+        </div>
       </div>
-    </div>
+    <!-- </div> -->
   </div>
 
-  <div class="row">
-    <!-- Example 2 column grid, good for graphs/larger objects being shown-->
-    <div class="col2-1 col">
+  <!-- <div class="row">
+    Example 2 column grid, good for graphs/larger objects being shown
+    <div class="col-lg-6">
       <div class="chart" id="tempstatus" style="margin: 0 auto"></div>
-      <h2 id="temphide">Temperature sensors were under maintainance. Charts cannot be displayed </h2>  
-    </div>
-    <div class="col2-2 col">
-      <div class="chart" id="freqstatus" style="margin: 0 auto"></div>
-      <h2 id="freqhide">Frequency sensors were under maintainance. Charts cannot be displayed </h2>
+      <!-- <h2 id="temphide">Temperature sensors were under maintainance. Charts cannot be displayed </h2>
     </div>
   </div>
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="chart" id="freqstatus" style="margin: 0 auto"></div>
+      <!-- <h2 id="freqhide">Frequency sensors were under maintainance. Charts cannot be displayed </h2>
+    </div>
+  </div> -->
 </section>
 
 <script>
