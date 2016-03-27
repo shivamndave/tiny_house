@@ -78,12 +78,20 @@ if (!empty($live)) {
          $t_sensor_data_query = "SELECT * FROM `t_data` WHERE sensor_id = " . $sensor_id; 
          $t_actuator_data_query = "SELECT * FROM `t_data` WHERE actuator_id = " . $temp_actuator_id;
          if (!empty($late)) {
-            $t_sensor_data_query = $t_sensor_data_query .  "LIMIT 0, " . $late;
+            $t_sensor_data_query = $t_sensor_data_query . " LIMIT 0, " . $late;
          }
+       //  else {
+//	    $t_sensor_data_query = $t_sensor_data_query . " LIMIT 0, 500";
+//         }
+
+
+
          ChromePhp::log($t_sensor_data_query);
          ChromePhp::log($t_actuator_data_query);
+         ChromePhp::log($t_sensor_status_query);
 
          $t_data_result = fetch_data($t_sensor_data_query, $t_actuator_data_query);
+
 
          $json_temp = array('sensor_info' => $t_sensor_info_result, 'actuator_info' => $t_actuator_result,
 			    'equipment' => $t_equipment_result, 'values' => $t_data_result);
@@ -109,21 +117,38 @@ function fetch_data($t_sensor_query, $t_actuator_query) {
    $resp_sensor = mysql_query($t_sensor_query);
    $resp_actuator = mysql_query($t_actuator_query);
    while ($row = mysql_fetch_assoc($resp_sensor)) {
-      if ($row['value'] != 999) {
+      if ($row['value'] != 9999) {
          array_push($data_sensor_arr, array(strtotime($row['timestamp'])*1000, (float) ($row['value'])));
       }
    }
    while ($row = mysql_fetch_assoc($resp_actuator)) {
-      if ($row['value'] != 999) {
+      if ($row['value'] != 9999) {
          array_push($data_actuator_arr, array(strtotime($row['timestamp'])*1000, (float) ($row['value'])));
       }
    }
    return array('sensor' => $data_sensor_arr,  'actuator' => $data_actuator_arr);
 }
 
-function fetch_sensor_info($row) {
+
+function fetch_data_for_status($t_sensor_query) {
+   $data_sensor_arr = -1;
+   $resp_sensor = mysql_query($t_sensor_query);
+    ChromePhp::log("STATUS");
+	
+   if ($row = mysql_fetch_assoc($resp_sensor)) {
+    ChromePhp::log((float) $row['value']);
+      if ((float) $row['value'] != 9999) {
+         $data_sensor_arr = 1;
+      } else if ((float) $row['value'] == 9999) {
+	 $data_sensor_arr = 0;
+      }
+   }
+  return $data_sensor_arr;
+}
+
+function fetch_sensor_info($row, $status) {
     if($row) {
-	return array('name' => $row['name'], 'unit' => $row['unit'], 'longunit' => $row['longunit'], 'info' => $row['info']);
+	return array('name' => $row['name'], 'unit' => $row['unit'], 'longunit' => $row['longunit'], 'info' => $row['info'], 'status' => $status);
     }
 }
 
