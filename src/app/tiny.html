@@ -99,8 +99,10 @@ $(function(){
     format:'H:i:s'
   });
 });
-
-initial_date_range("2015-11-22T07:00:00.000Z", "21:00:00", "21:30:00");
+   var id = 1,
+       latest = 0
+   get_latest_data(latest);
+// initial_date_range("2015-11-22T07:00:00.000Z", "21:00:00", "21:30:00");
 </script>
 
 </body>
