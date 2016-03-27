@@ -19,7 +19,6 @@ function setup_setpoint_chart(jqDOM, dataType, setpointValue) {
             }
          },
          chart: {
-            width : 500,
             height : 300
          },
          rangeSelector : {
