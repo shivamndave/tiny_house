@@ -8,12 +8,12 @@ mysql_select_db($db, $conn) or die('No Luck: ' . mysql_error() . "\n");
 
 $resp = mysql_query($t_sensor_info_query);
 ```
-Query used to obtain sensor information. This is where we are able to go through each sensor and also setup a connection to the database based on the db_credential's file credentials. Either you will be able to connect to the database or the desiganted arror will be returned.
+Query used to obtain sensor information. This is where we are able to go through each sensor and also setup a connection to the database based on the db_credential's file credentials. Either you will be able to connect to the database or the designated error will be returned.
 
 ```php
 while ($row = mysql_fetch_assoc($resp)) { ...
 ```
-Based on the sensor information query, each row in the t_sensor_info table is iterated through. As a result we are given the information regarding each sensor, one at a time during the loop until all sensors have been iterated through. This allows us to get the relative data and information regarding the sensor during each loop,  populating the dasboard basedon how many sensors are available to display.
+Based on the sensor information query, each row in the t_sensor_info table is iterated through. As a result we are given the information regarding each sensor, one at a time during the loop until all sensors have been iterated through. This allows us to get the relative data and information regarding the sensor during each loop, populating the dashboard based on how many sensors are available to display.
 
 ```php
 $t_equipment_query =  "SELECT * FROM `t_equipment` WHERE id= " . $equipment_id;
