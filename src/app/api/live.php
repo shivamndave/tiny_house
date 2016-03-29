@@ -103,12 +103,15 @@ if (!empty($live)) {
 
          $t_actuator_data_query = "SELECT * FROM `t_data` WHERE actuator_id = " . $temp_actuator_id;
          ChromePhp::log($t_actuator_data_query);
-
+         
+         // If a latest data GET parameter is used, then latest data is returned in a limited
+         // amount
          if (!empty($late)) {
             $t_sensor_data_query = $t_sensor_data_query . " LIMIT 0, " . $late;
          }
-
-
+         
+         // Hold's sensor and actuator json arrays, gotten from fetching data using sensor
+         // and actuator queries
          $t_data_result = fetch_data($t_sensor_data_query, $t_actuator_data_query);
 
          // Creates final JSON for sensor, and then pushes that onto array of sensors (so each
@@ -124,25 +127,37 @@ if (!empty($live)) {
 ChromePhp::log("FINAL JSON");
 ChromePhp::log($json);
 
+// Fetches data based on sensor and actuator information,
+// Returns both sensor measurements and actuator setpoints
+// If one or either is given
 function fetch_data($t_sensor_query, $t_actuator_query) {
+   // Sensor data array created
    $data_sensor_arr = array();
-   $data_actuator_arr = array();
    $resp_sensor = mysql_query($t_sensor_query);
-   $resp_actuator = mysql_query($t_actuator_query);
+   
    while ($row = mysql_fetch_assoc($resp_sensor)) {
       if ($row['value'] != 9999) {
          array_push($data_sensor_arr, array(strtotime($row['timestamp'])*1000, (float) ($row['value'])));
       }
    }
+   
+   // Actuator data array created
+   $data_actuator_arr = array();
+   $resp_actuator = mysql_query($t_actuator_query);
+   
    while ($row = mysql_fetch_assoc($resp_actuator)) {
       if ($row['value'] != 9999) {
          array_push($data_actuator_arr, array(strtotime($row['timestamp'])*1000, (float) ($row['value'])));
       }
    }
+   
+   // Both arrays returned using dictionary
    return array('sensor' => $data_sensor_arr,  'actuator' => $data_actuator_arr);
 }
 
-
+// Uses sensor query to get latest value, to show status
+// If latest value is 9999, then the sensor's status is off, otherwise
+// the sensor is on because the latest data value is an actual value
 function fetch_data_for_status($t_sensor_query) {
    $data_sensor_arr = -1;
    $resp_sensor = mysql_query($t_sensor_query);
@@ -159,12 +174,13 @@ function fetch_data_for_status($t_sensor_query) {
   return $data_sensor_arr;
 }
 
+// Fetches sensor information
 function fetch_sensor_info($row, $status) {
     if($row) {
 	return array('name' => $row['name'], 'unit' => $row['unit'], 'longunit' => $row['longunit'], 'info' => $row['info'], 'status' => $status);
     }
 }
-
+// Fetches the sensor's equipment information
 function fetch_equipment($t_query) {
    $resp = mysql_query($t_query);
    if($row = mysql_fetch_assoc($resp)) {
@@ -172,6 +188,7 @@ function fetch_equipment($t_query) {
    }
 }
 
+// Fetches the sensor's actuator information
 function fetch_actuator_info($t_query) {
    $resp = mysql_query($t_query);
    if($row = mysql_fetch_assoc($resp)) {
@@ -179,6 +196,8 @@ function fetch_actuator_info($t_query) {
    }
 }
 
+// Helper fetch function used to get the sensor's actuator id,
+// which allows fetching of actuator information and data
 function fetch_actuator_id($t_query) {
    $resp = mysql_query($t_query);
    if($row = mysql_fetch_assoc($resp)) {
