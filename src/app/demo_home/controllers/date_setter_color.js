@@ -22,50 +22,71 @@ var GETURL ="../../api/history.php?",
 //     });
 // }
 
-// Gets live data and displays it initially
+// Gets and sets up live data charts/displays
+// This is what is initially loaded onto the page
 function get_latest_data(latest) {
+   // Initial variables involving the parsed URL and what
+   // displays will be hidden and shown
    var getURL = liveParser(0, latest);
    init = true;
    hideList = [];
    showList = [];
    console.log(getURL);
+   
+   // JQuery call occurs here to GET the latest data from the database
+   // through the PHP API
    $.getJSON(getURL, function(data) {
      console.log("data")
      console.log(data)
+     
+     // Outlines which charts are being displayed
      var list_of_charts = [];
+     
+     // Iterates through the data received from the GET request
+     // which is an array of all sensors with JSON objects associated with
+     // each. This array of sensors is stored in data
      for(iter_i = 0; iter_i < data.length; iter_i++) {
        var parseDOM = 'device-' + iter_i.toString(),
            currentData = data[iter_i];
+       
+       // Checks if the sensor is also an actuator, if actuator information is associated
+       // with the sensor, then its display is slightly altered with a setpoint chart
        if(currentData.actuator_info && currentData.values.sensor.length > 0 && currentData.values.actuator.length > 0) {
         addChartRow(parseDOM, currentData);
         var setpointValue = currentData.values.actuator[currentData.values.actuator.length - 1][1];
         var temp = setup_setpoint_chart('#' + parseDOM, currentData, setpointValue);
         list_of_charts.push(temp);
-       } else {
+       }
+       
+       // If the sensor has no actuator information, than it is displayed as a measurement data chart
+       else {
         addChartRow(parseDOM, currentData);
         var temp = setup_sensor_chart('#' + parseDOM, currentData);
         list_of_charts.push(temp);
        }
      }
-     // console.log("list_")
-     // console.log(list_of_charts)
-     // tempStatus = setup_sensor_chart('#tempstatus', data[0]);
-     // freqStatus = setup_sensor_chart('#freqstatus', data[1]);
+     
+     // setInterval is used to refresh the chart every 5 seconds
      setInterval(function() {
+     	
+       // Another JQuery call is used to consistently get the updated data/information
        $.getJSON(getURL, function(updateData) {
-          // checkData(data[0].values);
-          // checkData(data[1].values);
-          // console.log("Charts Shown: " + showList);
-          // updateCharts(data[0], tempStatus);
-          // updateCharts(data[1], freqStatus);
+       	
+       	  // Similar to above, the updateData is iterated through, to get information
+       	  // & data for each sensor
           for (iter_i = 0; iter_i < list_of_charts.length; iter_i++) {
             var setpointValue = 0;
             var showChart = checkData(data[iter_i]);
             var parseDOM = 'device-' + iter_i.toString();
             console.log(iter_i);
+            
+            // If an actuator value is set for the measurement, than the latest one is used as the
+            // setpoint value
             if(updateData[iter_i].values.actuator.length > 0){
               var setpointValue = updateData[iter_i].values.actuator[updateData[iter_i].values.actuator.length - 1][1];
             }
+            
+            // The sensor's chart is updated or toggled based on if it should be shown
             updateCharts(updateData[iter_i], list_of_charts[iter_i], parseDOM, setpointValue);
             toggleDisplays(showChart, parseDOM);
           }
@@ -74,21 +95,23 @@ function get_latest_data(latest) {
    });
 }
 
+// During initialization of charts, based on how many sensors exist
+// within the fetched data object (from API) a display is made for each
 function addChartRow(statusID, currentData) {
     var chartDiv = document.createElement("div"),
 	actuatorDiv = "";
 
     chartDiv.className = "row";
 
-
+    // Actuator infomration is displayed if needed, otherwise a placeholder is shown
     if (currentData.actuator_info != null) {
 	actuatorDiv = "<p>Actuator Name: " + currentData.actuator_info.name + "</p>" +
 		      "<p>Actuator Info: " + currentData.actuator_info.info + "</p>";
-	
     } else {
 	actuatorDiv = "<p>No actuator attached to this sensor</p>";
     }
 
+    // Display div that holds the chart and 3 (sensor, actuator, and equipment) information panels
     chartDiv.innerHTML = "<div class='rx-ish'>"+
 	"<div class='col-md-6 chart chart-container' id=" + statusID + 
 	" style='margin: 0 auto;'> </div> <h2 id=" + statusID + "-msg> was under maintainance. Charts cannot be displayed </h2>"+
@@ -124,7 +147,11 @@ function addChartRow(statusID, currentData) {
 
         "</div></div>";
 
+     // The div is appended to the page
      document.getElementById('content').appendChild(chartDiv);
+     
+     // Actuator or sensor info message is set to be loading
+     // prior to being updated with latest information
      $("#" + statusID + "-msg").hide();
      if(currentData.values.actuator.length > 0 || currentData.values.sensor.length > 0){
         $("#setpt-" + statusID).text("Loading...");
@@ -133,8 +160,7 @@ function addChartRow(statusID, currentData) {
  
 }
 
-// Contstructs the url using the gotten
-// date information
+// Contstructs a date url using the gotten date information, for history.php API (history.php usage)
 function dateParser(day, start, end) {
    var tempURL = GETURL,
        parDay = getDate(day),
@@ -150,6 +176,8 @@ function dateParser(day, start, end) {
    return tempURL
 }
 
+// Parses the URL for the GET Request to the API, see API
+// for example/description of this line. (history.php usage)
 function liveParser(id, latest) {
    var tempURL = LIVEURL + "live=1&info_id=" + id.toString();
 
@@ -160,7 +188,7 @@ function liveParser(id, latest) {
    return tempURL;
 }
 
-// Gets only the date from the datepicker
+// Gets only the date from the datepicker (history.php usage)
 function getDate(date) {
    var tempDate = date.slice(0, 10);
    return tempDate;
@@ -168,7 +196,7 @@ function getDate(date) {
 }
 
 // Gets only the time from the timepicker
-// and formats it from 00:11:22 into 00h11m22s
+// and formats it from 00:11:22 into 00h11m22s (history.php usage)
 function getTime(time) {
    var tempTime;
    tempTime = replaceAt(time, 2, "h");
@@ -181,27 +209,6 @@ function getTime(time) {
 function replaceAt (str, ind, charac) {
     return str.substr(0, ind) + charac + str.substr(ind + charac.length);
 }
-
-// Checks if an object name is in either
-// the hide or show lists, based on that
-// the display is shown or hidden, and the
-// message is hidden or shown.
-// function toggleDisplays(showList, hideList) {
-//    if(showObj(showList, hideList, "temperature")) {
-//       $("#tempstatus").show();
-//       $("#temphide").hide();
-//    } else {
-//       $("#tempstatus").hide();
-//       $("#temphide").show();
-//    }
-//    if(showObj(showList, hideList, "frequency")) {
-//       $("#freqstatus").show();
-//       $("#freqhide").hide();
-//    } else {
-//       $("#freqstatus").hide();
-//       $("#freqhide").show();
-//    }
-// }
 
 function toggleDisplays(show, dom) {
    if(show) {
@@ -265,11 +272,6 @@ function notEmpty(dataArray) {
   }
   return false;
 }
-
-// function setupCharts (data) {
-//    setup_sensor_chart('#freqstatus', data[0]);
-//    setup_sensor_chart('#tempstatus', data[1]);
-// }
 
 function updateCharts (dataType, status, statusID, setpointValue) {
     var setptStatusID = "#setpt-" + statusID,
@@ -349,12 +351,14 @@ function updateCharts (dataType, status, statusID, setpointValue) {
    }
 }
 
+// Displays the time of the latest piece of data
 function getLatestTime(dataType) {
     var latestTimeVal = dataType.values.sensor[dataType.values.sensor.length - 1][0],
 	latestTimeConv = new Date(latestTimeVal);
     return "Latest time: " + String(latestTimeConv);
 }
 
+// Used for the status message and formatting of it
 function getLatestStat(dataType) {
     var latestStatVal = dataType.sensor_info.status,
 	statusText = "";
