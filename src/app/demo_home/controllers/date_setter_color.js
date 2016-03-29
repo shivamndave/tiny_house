@@ -273,18 +273,27 @@ function notEmpty(dataArray) {
   return false;
 }
 
+// Updates display charts and information using JQuery
 function updateCharts (dataType, status, statusID, setpointValue) {
     var setptStatusID = "#setpt-" + statusID,
 	latestdtStatusID = "#latestdt-" + statusID,
 	lateststatStatusID = "#lateststat-" + statusID;
+	
     console.log(dataType.values.sensor);
+    
+    // If an actuator exists for the sensor
     if(dataType.actuator_info && dataType.values.sensor.length > 0 && dataType.values.actuator.length > 0) {
 	console.log("dataType setpoint");
+	
+	// Get the latest setpoint value, round it, and append it to a message
 	var lateVal = dataType.values.sensor[dataType.values.sensor.length - 1][1],
-        t_set = "",
+            t_set = "",
         val = Math.abs(setpointValue - lateVal),
         roundVal = Number(Math.round(val+'e2') + 'e-2'),
         diff = roundVal.toString() + " " + dataType.sensor_info.longunit;
+    
+    // Compare the setpoint to the latest data measurement and depending on how it relates to it,
+    // show a message stating if the setpoint is over, under, or equal to the data measurement 
     if(lateVal > setpointValue){
 	t_set = diff + " over ";
 	$(setptStatusID).css("color","#1630F2");
@@ -299,13 +308,17 @@ function updateCharts (dataType, status, statusID, setpointValue) {
 	text = "Latest value " + textVal + " is currently " + t_set + "the setpoint of " + setpointValue.toString() + " " + dataType.sensor_info.longunit,
 	latestTimeText = getLatestTime(dataType),
 	latestStatText = getLatestStat(dataType);
-
+	
+    // Apply formatting to the setpoint information message
     $(setptStatusID).text(text);
     $(setptStatusID).css("font-weight","Bold");
-
+    
+    // Insert text generated for the setpoint and status
     $(latestdtStatusID).text(latestTimeText);
     $(lateststatStatusID).text(latestStatText);
-
+    
+    // Inserts/updates the chart with the sensor data measurements and also update the setpoint line
+    // Either a new line is added or the old one is removed, then the new one is added
     status.series[0].setData(dataType.values.sensor, true);
     console.log("ADDING PLOT LINE");
     if(status.yAxis.length == 0) {
@@ -332,20 +345,30 @@ function updateCharts (dataType, status, statusID, setpointValue) {
         label: {
           text: 'Setpoint'
         }
-    });
+     });
     }
-   } else {
+   }
+   // If no actuator information is found, then the sensor's measurements are only displayed
+   else {
     console.log("dataType sensor");
+    
+    // Updates data shown on chart
     status.series[0].setData(dataType.values.sensor, true);
+    
+    // Instead of an actuator message, the latest time, status, and data value is displayed
     var lateVal = dataType.values.sensor[dataType.values.sensor.length - 1][1],
 	textVal = lateVal + " " + dataType.sensor_info.longunit,
 	text = "Latest value: " + textVal,
 	latestTimeText = getLatestTime(dataType),
-	latestStatText = getLatestStat(dataType);;
+	latestStatText = getLatestStat(dataType);
 
+    // Inserts the setpoint text (which is just the latest data
+    // value since no setpoint) into the display and formats it
     $(setptStatusID).text(text);
     $(setptStatusID).css("font-weight","Bold");
     $(setptStatusID).css("color","#000000");
+    
+    // Inserts the status and latest time text
     $(latestdtStatusID).text(latestTimeText);
     $(lateststatStatusID).text(latestStatText);
    }
