@@ -1,4 +1,4 @@
-// Power display JSON Chart
+// Sensor with an actuator display JSON Chart
 function setup_setpoint_chart(jqDOM, dataType, setpointValue) {
       var dataSensorInfo = dataType.sensor_info,
           dataEquipment = dataType.equipment,
@@ -9,7 +9,7 @@ function setup_setpoint_chart(jqDOM, dataType, setpointValue) {
           }
           console.log(dataSensorValues);
 
-      // Create the chart
+      // Creates the chart
       $(jqDOM).highcharts('StockChart', {
          plotOptions : {
             line : {
