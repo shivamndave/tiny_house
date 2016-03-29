@@ -17,7 +17,7 @@ The PHP API is used to query the phpMyAdmin database. Currently all queries are 
 ###Files
 The API is primarily used with two files (__live.php__ and __db\_credentials.php__), an additional history.php file also has been used in the past, however it has not been updated because of the prioritization of live data and the ability of highcharts to showcase historical data easily
 
-#####live.php
+#####live.php (Go to [README_livephp](./docs/README_livephp.md) for a code overview)
 The live.php file parses and sends queries in sql for the database based on GET requests made by the frontend (dashboard). Essentially it parses a URL request, performs queries, and then formats the data gotten in JSON arrays. 
 
 #####db\_credentials.php (or db\_credentials_sample.php)
