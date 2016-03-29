@@ -1,4 +1,4 @@
-// Power display JSON Chart
+// Sensor with no actuator display JSON Chart
 function setup_sensor_chart(jqDOM, dataType) {
       var clientWidth = document.documentElement.clientWidth;
       var dataSensorInfo = dataType.sensor_info,
@@ -10,7 +10,7 @@ function setup_sensor_chart(jqDOM, dataType) {
           }
           console.log(dataSensorValues);
 
-      // Create the chart
+      // Creates the chart
       $(jqDOM).highcharts('StockChart', {
          plotOptions : {
             line : {
