@@ -1,5 +1,5 @@
-# Overview of [live.php](/live.php)
-### Major functions and areas of the [live.php](/live.php) file are broken down below 
+# Overview of [live.php](./live.php)
+### Major functions and areas of the [live.php](./live.php) file are broken down below 
 
 
 Query used to obtain sensor information. This is where we are able to go through each sensor and also setup a connection to the database based on the db_credential's file credentials. Either you will be able to connect to the database or the desiganted arror will be returned.
