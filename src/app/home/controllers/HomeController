@@ -1,0 +1,5 @@
+    var homeController = angular.module('app', []);
+
+    homeController.controller('HomeController', function($scope) {
+        $scope.message = 'Home Page Here';
+    });
