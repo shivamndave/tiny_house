@@ -12,7 +12,7 @@
   "dependencies": {
     "angular": "^1.5.3",
     "angular-route": "^1.5.3",
-    "bootstrap": "^3.3.6",
-    "jQuery-Timepicker-Addon": "https://github.com/trentrichardson/jQuery-Timepicker-Addon"
+    "jQuery-Timepicker-Addon": "https://github.com/trentrichardson/jQuery-Timepicker-Addon",
+    "jquery": "^2.2.2"
   }
 }
