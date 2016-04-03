@@ -1,5 +1,5 @@
 <DOCTYPE html>
-  <html>
+  <html lang="en" ng-app="app">
   <!--Meta viewport tag to wrap the site on any device-->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <head>
@@ -27,8 +27,10 @@
     <script src="bower_components/angular/angular.min.js"></script>
 
     <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="app.js"></script>
+    <script src="controller.js"></script>
   </head>
-
-  <div ng-view></div>
-
+  <body>
+    <div ng-view></div>
+  </body>
 </html>
