@@ -1,5 +1,12 @@
 <div ng-controller="HomeController">
-  <div class="row">
-    {{message}}
+  <div class="container">
+  	<div class="row">
+    	{{message}}
+  	</div>
+  	<div ng-repeat="n in [1, 2, 3] track by $index">
+  			{{n}}
+  			<mg-display></mg-display>
+
+	</div>
   </div>
 </div>
