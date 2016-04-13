@@ -1,0 +1,21 @@
+* {
+  box-sizing: border-box;
+  font-family: sans-serif; }
+
+.row {
+  background: #a9cdd9;
+  margin-bottom: 10px;
+  padding-bottom: 10px; }
+
+.row-nrm {
+  margin-bottom: 0;
+  padding-bottom: 0; }
+
+@media screen and (max-width: 550px) {
+  #chart-container {
+    width: 100%; } }
+@media screen and (min-width: 551px) {
+  #chart-container {
+    width: 500px; } }
+
+/*# sourceMappingURL=screen.css.map */

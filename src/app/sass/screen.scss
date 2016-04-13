@@ -1,0 +1,60 @@
+//colors
+$color_jungle_mist_approx: #a9cdd9;
+$black: #000000;
+$color_goldenrod_approx: #f5d76e;
+$color_fire_bush_approx: #eb9532;
+$color_porsche_approx: #ebac65;
+
+//fonts
+$font_0: sans-serif;
+
+* {
+	//Instead of the line below you could use @include box-sizing($bs)
+	box-sizing: border-box;
+	font-family: $font_0;
+}
+.row {
+	background: $color_jungle_mist_approx;
+	margin-bottom: 10px;
+	padding-bottom: 10px;
+}
+.row-nrm {
+	margin-bottom: 0;
+	padding-bottom: 0;
+}
+@media screen and(max-width: 550px) {
+	#chart-container {
+		width: 100%;
+	}
+}
+@media screen and(min-width: 551px) {
+	#chart-container {
+		width: 500px;
+	}
+}
+// {
+	//&.rx-ish {
+		// background: $black;
+		//: ;
+	//}
+	//&.back-sensor {
+		// background: $color_goldenrod_approx;
+		//: ;
+	//}
+	//&.back-equip {
+		// background: $color_goldenrod_approx;
+		//: ;
+	//}
+	//&.back-actua {
+		// background: $color_goldenrod_approx;
+		//: ;
+	//}
+	//&.back-ts {
+		// background: $color_fire_bush_approx;
+		//: ;
+	//}
+	//&.back-set {
+		// background: $color_porsche_approx;
+		//: ;
+	//}
+//}
