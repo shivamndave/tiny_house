@@ -1,4 +1,4 @@
-var homeController = angular.module('appController', []),
+var homeController = angular.module('appController'),
     GETURL = "api/history.php?",
     LIVEURL = "api/live.php?",
     NEWURL = "api/sensors",
