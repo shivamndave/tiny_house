@@ -23,7 +23,7 @@ mysql.init_app(app)
 def index():
     return render_template('index.html')
 
-@app.route("/api", methods=['GET'])
+@app.route("/api/sensors", methods=['GET'])
 def all():
     json = []
 
