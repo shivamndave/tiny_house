@@ -1,6 +1,7 @@
 var homeController = angular.module('appController', []),
     GETURL = "api/history.php?",
     LIVEURL = "api/live.php?",
+    NEWURL = "api",
     hideList = [],
     showList = [],
     init;
@@ -12,7 +13,7 @@ homeController.service('urlParser', function() {
             tempURL += "&latest=" + latest.toString();
         }
 
-        return tempURL;
+        return NEWURL;
     }
 
     this.getHist = function(id, latest) {
@@ -58,7 +59,7 @@ homeController.service('getDataService', function($http, urlParser) {
             console.log("data")
             console.log(response.data)
 
-            return response.data;
+            return response.data.all;
         });
 
         return request;
@@ -88,7 +89,7 @@ homeController.directive('mgDisplay', function($interval, getDataService, charte
             status: '@'
         },
         link: link,
-        templateUrl: './home/templates/display.html'
+        templateUrl: 'static/home/templates/display.html'
     }
 
     function link(scope, element, attrs) {
