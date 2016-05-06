@@ -73,7 +73,7 @@ def all():
         query_data_status = '''SELECT * FROM `t_data` WHERE sensor_id=''' + str(sensor_id) + ''' ORDER BY timestamp DESC LIMIT 0, 1'''
         dict_cursor.execute(query_data_status)
         status = dict_cursor.fetchone()
-        app.logger.info(status['value'])
+        #app.logger.info(status['value'])
         status_dict = {}
         if status['value'] == 9999:
             status_dict = {"status": 0}
@@ -87,7 +87,29 @@ def all():
 
     return jsonify(all=json)
 
+@app.route("/api/rooms", methods=['GET'])
+def rooms():
+    cursor = mysql.connection.cursor()
+    dict_cursor = mysql.connection.cursor(cursorclass=DictCursor)
 
+    dict_cursor.execute('''SELECT * FROM `t_room`''')
+    rms = dict_cursor.fetchall()
+
+    for room in rms:
+        query_eqrm = '''SELECT * FROM `t_equipment` WHERE room_id=''' + str(room['id'])
+        dict_cursor.execute(query_eqrm)
+        equipment_rooms = dict_cursor.fetchall()
+        # app.logger.info(equipment_rooms)
+        sensors = []
+        for eqrm in equipment_rooms:
+            query_snrm = '''SELECT * FROM `t_sensor_info` WHERE equipment_id=''' + str(eqrm['id'])
+            dict_cursor.execute(query_snrm)
+            sensors.append(dict_cursor.fetchall())
+        app.logger.info(sensors)
+        temp = {"sensors": sensors}
+        room.update(temp)
+    dict_cursor.close()
+    return jsonify(rooms=rms)
 
 if __name__ == "__main__":
     app.run("0.0.0.0", debug=True)

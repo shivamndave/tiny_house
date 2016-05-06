@@ -1,7 +1,8 @@
 var homeController = angular.module('appController', []),
     GETURL = "api/history.php?",
     LIVEURL = "api/live.php?",
-    NEWURL = "api",
+    NEWURL = "api/sensors",
+    ROOMURL = "api/rooms",
     hideList = [],
     showList = [],
     init;
