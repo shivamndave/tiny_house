@@ -1,2 +1,4 @@
 **/.DS_Store
 /src/app/api/db_credentials.php
+/src/MGApp/MGApp/db_credentials.py
+src/MGApp/MGApp/__pycache__/*
