@@ -104,7 +104,7 @@ def rooms():
         for eqrm in equipment_rooms:
             query_snrm = '''SELECT * FROM `t_sensor_info` WHERE equipment_id=''' + str(eqrm['id'])
             dict_cursor.execute(query_snrm)
-            sensors.append(dict_cursor.fetchall())
+            sensors.append(dict_cursor.fetchone())
         app.logger.info(sensors)
         temp = {"sensors": sensors}
         room.update(temp)

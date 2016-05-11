@@ -162,7 +162,7 @@ homeController.directive('mgDisplay', function($interval, getDataService, charte
                     }
                 }]
             });
-            console.log(scope.status);
+            console.log(data.values.sensor);
             $interval(function() {
                 getDataService().then(function(tempData) {
                     var currentData = tempData[attrs.ind];
