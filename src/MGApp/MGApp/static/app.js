@@ -1,12 +1,17 @@
 var app = angular.module("app", ['ngRoute', 'appController']);
 app.config(['$routeProvider', function($routeProvider) {
    $routeProvider.
-   
+
    when('/home', {
       templateUrl: 'static/home/templates/home.html',
       controller: 'HomeController'
    }).
-   
+
+   when('/commands', {
+      templateUrl: 'static/commands/templates/commands_page.html',
+      controller: 'CommandsController'
+   }).
+
    otherwise({
       redirectTo: '/home'
    });
