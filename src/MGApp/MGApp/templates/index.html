@@ -38,10 +38,18 @@
     <script src-"static/common/controllers/setupGenDisplay"></script>
     <script src-"static/common/controllers/setupSetptDisplay"></script>
     <script src="static/home/controllers/HomeController.js"></script>
-    <script src="static/commands/controllers/CommandsController.js"></script>
+    <!-- <script src="static/commands/controllers/CommandsController.js"></script> -->
     <script src = "static/maps/controllers/MapController.js"></script>
   </head>
   <body>
-    <div ng-view></div>
+    <div class = "container" >
+      <div class = "col-md-2">
+        <ul class="nav nav-pills nav-stacked">
+          <li class="active hvr-grow"><a href="#">Home</a></li>
+          <li class="active hvr-grow"><a href="#/maps">Maps</a></li>
+        </ul>
+      </div>
+  </div>
+  <div ng-view></div>
   </body>
 </html>
