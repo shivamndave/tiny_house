@@ -1,87 +1,22 @@
 var homeController = angular.module('appController'),
-    GETURL = "api/history.php?",
-    LIVEURL = "api/live.php?",
-    NEWURL = "api/sensors",
-    ROOMURL = "api/rooms",
+    SENSORSURL = "api/sensors",
     hideList = [],
     showList = [],
     init;
-
-homeController.service('urlParser', function() {
-    this.getLive = function(id, latest) {
-        var tempURL = LIVEURL + "live=1&info_id=" + id.toString();
-        if (latest > 5) {
-            tempURL += "&latest=" + latest.toString();
-        }
-
-        return NEWURL;
-    }
-
-    this.getHist = function(id, latest) {
-        var tempURL = GETURL,
-            parDay = day.slice(0, 10),
-            parStart = getTime(start),
-            parEnd = getTime(end);
-
-        console.log("day: " + parDay + " | str time: " + parStart + " | end time: " + parEnd);
-        if (day && parStart && parEnd) {
-            tempURL += "&day=" + parDay + "&start=" + parStart + "&end=" + parEnd;
-            console.log("API call URL: " + tempURL);
-        }
-
-        return tempURL
-    }
-
-    // Gets only the time from the timepicker
-    // and formats it from 00:11:22 into 00h11m22s (history.php usage)
-    function getTime(time) {
-        var tempTime;
-        tempTime = replaceAt(time, 2, "h");
-        tempTime = replaceAt(tempTime, 5, "m");
-        tempTime += "s";
-        return tempTime;
-    }
-
-    // Replaces at a specified character
-    function replaceAt(str, ind, charac) {
-        return str.substr(0, ind) + charac + str.substr(ind + charac.length);
-    }
-});
-
-
-homeController.service('getDataService', function($http, urlParser) {
-    return getDataMethod;
-
-    function getDataMethod() {
-        var request = $http({
-            method: 'GET',
-            url: urlParser.getLive(0, 0)
-        }).then(function successCallback(response) {
-            console.log("data")
-            console.log(response.data)
-
-            return response.data.all;
-        });
-
-        return request;
-    }
-});
-
-homeController.service('charter', function() {});
 
 homeController.controller('HomeController', function($scope, getDataService) {
     init = true;
     hideList = [];
     showList = [];
-    console.log("data");
+    console.log(SENSORSURL);
 
-    getDataService().then(function(data) {
-        console.log(data);
-        $scope.init_data_array = data;
+    getDataService(null, SENSORSURL).then(function(data) {
+        // console.log(data);
+        $scope.init_data_array = data.all;
     });
 });
 
-homeController.directive('mgDisplay', function($interval, getDataService, charter) {
+homeController.directive('mgDisplay', function($interval, getDataService) {
     return {
         restrict: 'E',
         scope: {
@@ -95,6 +30,10 @@ homeController.directive('mgDisplay', function($interval, getDataService, charte
 
     function link(scope, element, attrs) {
         scope.$watch(attrs.display, function(data) {
+            scope.$on("$destroy", function(){
+                console.log()
+                element.remove();
+            });
             console.log(data);
             scope.sensorinfo_name = data.sensor_info.name;
             scope.sensorinfo_info = data.sensor_info.info;
@@ -163,16 +102,20 @@ homeController.directive('mgDisplay', function($interval, getDataService, charte
                 }]
             });
             console.log(data.values.sensor);
-            $interval(function() {
-                getDataService().then(function(tempData) {
-                    var currentData = tempData[attrs.ind];
+            var myInterval = $interval(function() {
+                getDataService(data.sensor_info.id, SENSORSURL).then(function(tempData) {
+                    console.log(tempData)
+                    var currentData = tempData.sensor;
                     console.logcurrentData
                     console.log(scope.chart_id.highcharts().series[0]);
-                    scope.chart_id.highcharts().series[0].setData(currentData.values.sensor, true);
+                    scope.latest_time = "Latest time: None";
+                    if(currentData.values.sensor.length > 0) {
+                        scope.chart_id.highcharts().series[0].setData(currentData.values.sensor, true);
 
-                    var latestTimeVal = currentData.values.sensor[currentData.values.sensor.length - 1][0],
-                    latestTimeConv = new Date(latestTimeVal);
-                    scope.latest_time = "Latest time: " + String(latestTimeConv);
+                        var latestTimeVal = currentData.values.sensor[currentData.values.sensor.length - 1][0],
+                        latestTimeConv = new Date(latestTimeVal);
+                        scope.latest_time = "Latest time: " + String(latestTimeConv);
+                    }
 
                     var latestStatVal = currentData.sensor_info.status,
                     statusText = "";

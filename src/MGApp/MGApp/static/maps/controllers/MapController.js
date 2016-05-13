@@ -1,37 +1,11 @@
 var mapController = angular.module('appController'),
   ROOMURL = "api/rooms";
-//This is just a controller for our maps.html page
-mapController.service('getDataService',function($http){
-  return getDataMethod;
-
-  function getDataMethod(){
-    var request = $http({
-        method: 'GET',
-        url: ROOMURL
-    }).then(function successCallback(response) {
-       console.log('data')
-       console.log(response.data)
-
-       return response.data.rooms;
-    });
-
-    return request;
-  }
-});
 
 mapController.controller('MapController', function($scope,getDataService) {
-  getDataService().then(function(data){
-    // $scope.sens = [];
-    // angular.forEach(data, function(room, index) {
-    //   angular.forEach(room.sensors, function(sens, index) {
-    //     $scope.sens.push(sens)
-    //   });
-    // });
-    $scope.test = data;
-    console.log(data);
+  getDataService(null, ROOMURL).then(function(data){
+    $scope.test = data.rooms;
     $scope.room_colors = ['blue-circle-button btn hvr-grow','green-circle-button btn hvr-grow','purple-circle-button btn hvr-grow','red-circle-button btn hvr-grow','orange-circle-button btn hvr-grow'];
   });
-  //$scope.test = room_dat;
 });
 
 
