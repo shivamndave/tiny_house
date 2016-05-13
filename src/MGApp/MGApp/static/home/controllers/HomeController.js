@@ -30,10 +30,6 @@ homeController.directive('mgDisplay', function($interval, getDataService) {
 
     function link(scope, element, attrs) {
         scope.$watch(attrs.display, function(data) {
-            scope.$on("$destroy", function(){
-                console.log()
-                element.remove();
-            });
             console.log(data);
             scope.sensorinfo_name = data.sensor_info.name;
             scope.sensorinfo_info = data.sensor_info.info;
@@ -102,7 +98,7 @@ homeController.directive('mgDisplay', function($interval, getDataService) {
                 }]
             });
             console.log(data.values.sensor);
-            var myInterval = $interval(function() {
+            var sensorInterval = $interval(function() {
                 getDataService(data.sensor_info.id, SENSORSURL).then(function(tempData) {
                     console.log(tempData)
                     var currentData = tempData.sensor;
@@ -127,7 +123,13 @@ homeController.directive('mgDisplay', function($interval, getDataService) {
                     }
                     scope.latest_status = "Latest status: " + statusText;
                 });
-            }, 5000)
+            }, 5000);
+
+            scope.$on("$destroy", function(){
+                console.log("destroy");
+                $interval.cancel(sensorInterval);
+                element.remove();
+            });
         });
     }
 });
