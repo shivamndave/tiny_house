@@ -22,14 +22,12 @@ onboardController.controller('OnboardController', function($scope) {
     }
   }
 
-  // called when the client connects
   function onConnect() {
     console.log("onConnect");
     client.subscribe("test_thing_we_have");
     console.log("subscribed");
   }
 
-  // called when the client loses its connection
   function onConnectionLost(responseObject) {
     if (responseObject.errorCode !== 0) {
       console.log("onConnectionLost:"+responseObject.errorMessage);
