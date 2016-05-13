@@ -7,13 +7,17 @@ app.config(['$routeProvider', function($routeProvider) {
       controller: 'HomeController'
    }).
 
-   when('/commands', {
-      templateUrl: 'static/commands/templates/commands_page.html',
-      controller: 'CommandsController'
-   }).
+  //  when('/commands', {
+  //     templateUrl: 'static/commands/templates/commands_page.html',
+  //     controller: 'CommandsController'
+  //  }).
    when('/maps', {
       templateUrl: 'static/maps/templates/Maps.html',
       controller: 'MapController'
+   }).
+   when('/sensor', {
+      templateUrl: 'static/sensors/templates/sensor.html',
+      controller: 'SensorController'
    }).
    otherwise({
       redirectTo: '/home'
