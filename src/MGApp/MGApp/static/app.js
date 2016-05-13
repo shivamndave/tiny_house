@@ -11,7 +11,10 @@ app.config(['$routeProvider', function($routeProvider) {
       templateUrl: 'static/commands/templates/commands_page.html',
       controller: 'CommandsController'
    }).
-
+   when('/maps', {
+      templateUrl: 'static/maps/templates/Maps.html',
+      controller: 'MapController'
+   }).
    otherwise({
       redirectTo: '/home'
    });

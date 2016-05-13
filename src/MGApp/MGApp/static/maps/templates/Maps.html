@@ -1,0 +1,21 @@
+<div ng-controller = "MapController">
+  <div class = "container fullscreen_bg" >
+    <div class = "row">
+      <div class = "col-md-2">
+        <ul class="nav nav-pills nav-stacked">
+          <li class="active hvr-grow"><a href="#">Home</a></li>
+          <li><a href="#" >Menu 1</a></li>
+          <li><a href="#">Menu 2</a></li>
+          <li><a href="#">Menu 3</a></li>
+        </ul>
+      </div>
+      <div classs = "col-md-2">
+        Search: <input class = "form-control" ng-model = "query">
+      </div>
+    <div class = "row" >
+      <div  ng-repeat="init_data in test | filter:query" >
+        <dir-button display='{{init_data}}'></dir-button>
+      </div>
+    </div>
+  </div>
+</div>

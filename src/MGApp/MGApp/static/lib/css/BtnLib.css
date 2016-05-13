@@ -1,0 +1,238 @@
+body {
+ font-size: 18px;
+}
+.btn:focus{
+  outline: none;
+  color:transparent;
+}
+.blue-circle-button {
+  box-shadow: 2px 4px 0 2px rgba(0,0,0,0.1);
+  border: .5em solid #000280;
+  font-size: 1em;
+  line-height: 1.1em;
+  color: #ffffff;
+  background-color: #0000ff;
+  margin: auto;
+  border-radius: 50%;
+  height: 7em;
+  width: 7em;
+  position: relative;
+}
+
+.green-circle-button {
+  box-shadow: 2px 4px 0 2px rgba(0,0,0,0.1);
+  border: .5em solid #008000;
+  font-size: 1em;
+  line-height: 1.1em;
+  color: #ffffff;
+  background-color: #228B22;
+  margin: auto;
+  border-radius: 50%;
+  height: 7em;
+  width: 7em;
+  position: relative;
+}
+
+
+.red-circle-button {
+  box-shadow: 2px 4px 0 2px rgba(0,0,0,0.1);
+  border: .5em solid #800000;
+  font-size: 1em;
+  line-height: 1.1em;
+  color: #ffffff;
+  background-color: #ff0000;
+  margin: auto;
+  border-radius: 50%;
+  height: 7em;
+  width: 7em;
+  position: relative;
+}
+.orange-circle-button {
+  box-shadow: 2px 4px 0 2px rgba(0,0,0,0.1);
+  border: .5em solid #e56717;
+  font-size: 1em;
+  line-height: 1.1em;
+  color: #ffffff;
+  background-color: #FF4500;
+  margin: auto;
+  border-radius: 50%;
+  height: 7em;
+  width: 7em;
+  position: relative;
+}
+
+.purple-circle-button {
+  box-shadow: 2px 4px 0 2px rgba(0,0,0,0.1);
+  border: .5em solid #4B0082;
+  font-size: 1em;
+  line-height: 1.1em;
+  color: #ffffff;
+  background-color: #4E387e;
+  margin: auto;
+  border-radius: 50%;
+  height: 7em;
+  width: 7em;
+  position: relative;
+}
+
+.purple-circle-button:hover {
+  color:#ffffff;
+    background-color: #4B0082;
+  text-decoration: none;
+  border-color: #4e387e;
+
+}
+
+
+.orange-circle-button:hover {
+  color:#ffffff;
+    background-color: #ff4500;
+  text-decoration: none;
+  border-color: #e56717;
+
+}
+
+.green-circle-button:hover {
+  color:#ffffff;
+    background-color: #228B22;
+  text-decoration: none;
+  border-color: #008000;
+
+}
+.green-circle-button:visited {
+  color:#000280;
+    background-color: #0000ff;
+  text-decoration: none;
+
+}
+.green-circle-link-greater-than {
+    font-size: 1em;
+}
+
+
+.blue-circle-button:hover {
+  color:#ffffff;
+    background-color: #0000ff;
+  text-decoration: none;
+  border-color: #000280;
+
+}
+.blue-circle-button:visited {
+  color:#000280;
+    background-color: #0000ff;
+  text-decoration: none;
+
+}
+.blue-circle-link-greater-than {
+    font-size: 1em;
+}
+
+
+.red-circle-button:hover {
+  color:#ffffff;
+    background-color: #ff0000;
+  text-decoration: none;
+  border-color: #800000;
+
+}
+.red-circle-button:visited {
+  color:#800000;
+    background-color: #800000;
+  text-decoration: none;
+
+}
+.red-circle-link-greater-than {
+    font-size: 1em;
+}
+
+/* Grow */
+.hvr-grow {
+    display: inline-block;
+    vertical-align: middle;
+    transform: translateZ(0);
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+    backface-visibility: hidden;
+    -moz-osx-font-smoothing: grayscale;
+    transition-duration: 0.3s;
+    transition-property: transform;
+}
+
+.hvr-grow:hover,
+.hvr-grow:focus,
+.hvr-grow:active {
+    transform: scale(1.1);
+}
+
+/* Dropdown Button */
+.dropbtn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    overflow:auto;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {
+  background-color: #c0c0c0
+}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {
+    background-color: #3e8e41;
+}
+.btn:focus{
+  outline: none;
+  color:transparent;
+}
+
+.animate-enter {
+	-webkit-transition: 1s linear all; /* Chrome */
+	transition: 1s linear all;
+	opacity: 0;
+}
+
+.animate-enter.animate-enter-active {
+	opacity: 1;
+}
+.fullscreen_bg {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-size: cover;
+    background-position: 50% 50%;
+    background-image: url('http://crusaderpictures.com/wp-content/uploads/2013/11/Blue-gradient1.png') ;
+    background-repeat:repeat;
+}
