@@ -32,60 +32,81 @@ def all():
 
     dict_cursor.execute('''SELECT * FROM `t_sensor_info`''')
     si = dict_cursor.fetchall()
-    # dict_cursor.close()
+
     values_si = []
     for s_item in si:
-        equipment_id = s_item['equipment_id']
-        sensor_id = s_item['id']
-        # app.logger.info(s_item)
-        # app.logger.info(equipment_id)
-        query_eq = '''SELECT * FROM `t_equipment` WHERE id=''' + str(equipment_id)
-        dict_cursor.execute(query_eq)
-        eq = dict_cursor.fetchone()
-        # app.logger.info(query_eq)
-        # app.logger.info(eq)
-        query_ai = '''SELECT * FROM `t_actuator_info` WHERE sensor_id=''' + str(sensor_id)
-        dict_cursor.execute(query_ai)
-        ai = dict_cursor.fetchone()
-        # app.logger.info(query_ai)
-        # app.logger.info(ai)
+        json.append(sensor_parser(s_item, dict_cursor))
 
-        values_ai = []
-        if ai:
-            query_data_ai = '''SELECT * FROM `t_data` WHERE actuator_id=''' + str(ai['id']) + ''' ORDER BY timestamp ASC'''
-            dict_cursor.execute(query_data_ai)
-            # app.logger.info(query_data_ai)
+    dict_cursor.close()
+    return jsonify(all=json)
 
-            for val in dict_cursor.fetchall():
-                values_ai.append([int(val['timestamp'].strftime("%s"))*1000, val['value']])
+@app.route("/api/sensors/<int:s_id>", methods=['GET'])
+def sensor_spec(s_id):
+    #app.logger.info(s_id)
+    json = []
 
-        values_si = []
-        query_data_si = '''SELECT * FROM `t_data` WHERE sensor_id=''' + str(sensor_id) + ''' ORDER BY timestamp ASC'''
-        dict_cursor.execute(query_data_si)
-        # app.logger.info(query_data_si)
+    cursor = mysql.connection.cursor()
+    dict_cursor = mysql.connection.cursor(cursorclass=DictCursor)
+
+    dict_cursor.execute('''SELECT * FROM `t_sensor_info` WHERE id=''' + str(s_id))
+    s_item = dict_cursor.fetchone()
+    if s_item:
+        sensor_object = sensor_parser(s_item, dict_cursor)
+    else:
+        sensor_object = None
+
+    return jsonify(sensor=sensor_object)
+
+def sensor_parser(s_item, dict_cursor):
+    equipment_id = s_item['equipment_id']
+    sensor_id = s_item['id']
+    # app.logger.info(s_item)
+    # app.logger.info(equipment_id)
+    query_eq = '''SELECT * FROM `t_equipment` WHERE id=''' + str(equipment_id)
+    dict_cursor.execute(query_eq)
+    eq = dict_cursor.fetchone()
+    # app.logger.info(query_eq)
+    # app.logger.info(eq)
+    query_ai = '''SELECT * FROM `t_actuator_info` WHERE sensor_id=''' + str(sensor_id)
+    dict_cursor.execute(query_ai)
+    ai = dict_cursor.fetchone()
+    # app.logger.info(query_ai)
+    # app.logger.info(ai)
+
+    values_ai = []
+    if ai:
+        query_data_ai = '''SELECT * FROM `t_data` WHERE actuator_id=''' + str(ai['id']) + ''' ORDER BY timestamp ASC'''
+        dict_cursor.execute(query_data_ai)
+        # app.logger.info(query_data_ai)
 
         for val in dict_cursor.fetchall():
-            values_si.append([int(val['timestamp'].strftime("%s"))*1000, val['value']])
+            values_ai.append([int(val['timestamp'].strftime("%s"))*1000, val['value']])
 
-        # app.logger.info(values_si)
-        values_dict = {"sensor": values_si, "actuator": values_ai}
+    values_si = []
+    query_data_si = '''SELECT * FROM `t_data` WHERE sensor_id=''' + str(sensor_id) + ''' ORDER BY timestamp ASC'''
+    dict_cursor.execute(query_data_si)
+    # app.logger.info(query_data_si)
 
-        query_data_status = '''SELECT * FROM `t_data` WHERE sensor_id=''' + str(sensor_id) + ''' ORDER BY timestamp DESC LIMIT 0, 1'''
-        dict_cursor.execute(query_data_status)
-        status = dict_cursor.fetchone()
-        #app.logger.info(status['value'])
-        status_dict = {}
-        if status['value'] == 9999:
-            status_dict = {"status": 0}
-        else:
-            status_dict = {"status": 1}
+    for val in dict_cursor.fetchall():
+        values_si.append([int(val['timestamp'].strftime("%s"))*1000, val['value']])
 
-        s_item.update(status_dict)
+    # app.logger.info(values_si)
+    values_dict = {"sensor": values_si, "actuator": values_ai}
 
-        _dict={"equipment": eq, "sensor_info": s_item, "actuator_info": ai, "values": values_dict}
-        json.append(_dict)
+    query_data_status = '''SELECT * FROM `t_data` WHERE sensor_id=''' + str(sensor_id) + ''' ORDER BY timestamp DESC LIMIT 0, 1'''
+    dict_cursor.execute(query_data_status)
+    status = dict_cursor.fetchone()
+    app.logger.info(status)
+    status_dict = {}
+    if status is None or status['value'] == 9999:
+        status_dict = {"status": 0}
+    else:
+        status_dict = {"status": 1}
 
-    return jsonify(all=json)
+    s_item.update(status_dict)
+
+    _dict={"equipment": eq, "sensor_info": s_item, "actuator_info": ai, "values": values_dict}
+    return _dict
 
 @app.route("/api/rooms", methods=['GET'])
 def rooms():
