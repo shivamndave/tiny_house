@@ -19,11 +19,11 @@ app.config['MYSQL_PASSWORD'] = DB_PASS
 app.config['MYSQL_DB'] = DB_NAME
 mysql.init_app(app)
 
-@app.route("/", methods=['GET'])
+@app.route("/")
 def index():
     return render_template('index.html')
 
-@app.route("/api/sensors", methods=['GET'])
+@app.route("/api/sensors")
 def all():
     json = []
 
@@ -108,7 +108,7 @@ def sensor_parser(s_item, dict_cursor):
     _dict={"equipment": eq, "sensor_info": s_item, "actuator_info": ai, "values": values_dict}
     return _dict
 
-@app.route("/api/rooms", methods=['GET'])
+@app.route("/api/rooms")
 def rooms():
     cursor = mysql.connection.cursor()
     dict_cursor = mysql.connection.cursor(cursorclass=DictCursor)
