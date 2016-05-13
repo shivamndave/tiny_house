@@ -117,20 +117,41 @@ def rooms():
     rms = dict_cursor.fetchall()
 
     for room in rms:
-        query_eqrm = '''SELECT * FROM `t_equipment` WHERE room_id=''' + str(room['id'])
-        dict_cursor.execute(query_eqrm)
-        equipment_rooms = dict_cursor.fetchall()
-        # app.logger.info(equipment_rooms)
-        sensors = []
-        for eqrm in equipment_rooms:
-            query_snrm = '''SELECT * FROM `t_sensor_info` WHERE equipment_id=''' + str(eqrm['id'])
-            dict_cursor.execute(query_snrm)
-            sensors.append(dict_cursor.fetchone())
-        app.logger.info(sensors)
-        temp = {"sensors": sensors}
-        room.update(temp)
+        room.update(room_parser(dict_cursor, room))
+
     dict_cursor.close()
     return jsonify(rooms=rms)
+
+@app.route("/api/rooms/<int:r_id>", methods=['GET'])
+def room(r_id):
+    cursor = mysql.connection.cursor()
+    dict_cursor = mysql.connection.cursor(cursorclass=DictCursor)
+    dict_cursor.execute('''SELECT * FROM `t_room` WHERE id=''' + str(r_id))
+
+    rm = dict_cursor.fetchone()
+    if rm:
+        rm.update(room_parser(dict_cursor, rm))
+
+
+    dict_cursor.close()
+    return jsonify(room=rm)
+
+def room_parser(dict_cursor, room):
+    query_eqrm = '''SELECT * FROM `t_equipment` WHERE room_id=''' + str(room['id'])
+    dict_cursor.execute(query_eqrm)
+    equipment_rooms = dict_cursor.fetchall()
+    # app.logger.info(equipment_rooms)
+    sensors = []
+    for eqrm in equipment_rooms:
+        query_snrm = '''SELECT * FROM `t_sensor_info` WHERE equipment_id=''' + str(eqrm['id'])
+        dict_cursor.execute(query_snrm)
+        sensors_array = dict_cursor.fetchall()
+        for sensor_obj in sensors_array:
+            sensors.append(sensor_obj)
+
+    # app.logger.info(sensors)
+    return {"sensors": sensors}
+
 
 if __name__ == "__main__":
     app.run("0.0.0.0", debug=True)
