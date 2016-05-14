@@ -1,9 +1,6 @@
 <div ng-controller="OnboardController">
-  <div class="container">
-    <input class = "form-control" ng-model = "inp_message">
-    <div ng-click="sendMQTTMessage(inp_message)">Send Message</div>
-    <p>
-      {{mqtt_message}}
-    </p>
-  </div>
+    <div class="container">
+        <div ng-disabled="show_form" type="button" class="btn btn-primary" ng-click="show_form || sendOnboardMessage()">Scan for Message</div>
+        <onboard-form ng-show="show_form" sensordata='sensordata'></onboard-form>
+    </div>
 </div>
