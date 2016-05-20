@@ -1,0 +1,23 @@
+.navbar-fixed-left {
+  width: 140px;
+  position: fixed;
+  border-radius: 0;
+  height: 100%;
+  z-index: 9999;
+}
+
+.navbar-fixed-left .navbar-nav > li {
+  float: left;  /* Cancel default li float: left */
+  width: 120px;
+}
+
+.navbar-fixed-left + .container {
+  padding-left: 160px;
+  /*background-color: #668B8B;*/
+}
+
+/* On using dropdown menu (To right shift popuped) */
+.navbar-fixed-left .navbar-nav > li > .dropdown-menu {
+  margin-top: -50px;
+  margin-left: 124px;
+}
