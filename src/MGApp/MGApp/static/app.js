@@ -14,6 +14,14 @@ app.config(['$routeProvider', function($routeProvider) {
       templateUrl: 'static/maps/templates/Maps.html',
       controller: 'MapController'
    }).
+   when('/sensors', {
+     templateUrl: 'static/sensors/templates/sensPage.html',
+     controller: 'SensorController'
+   }).
+   when('/sensors/:sensorid', {
+      templateUrl: 'static/sensors/templates/sensor.html',
+      controller: 'SpecSensorController'
+   }).
    otherwise({
       redirectTo: '/home'
    });

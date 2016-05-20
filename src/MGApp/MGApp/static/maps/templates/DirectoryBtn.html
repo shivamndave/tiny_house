@@ -1,8 +1,8 @@
-<div class = "col-lg-3 col-md-3 col-sm-6 col-xs-12">
+<div class = "col-md-2">
   <div class ="dropdown" >
     <button class="{{room_colors[type]}}" href="">{{room}}<span class="blue-circle-greater-than"></span></button>
     <div class = "dropdown-content">
-      <a ng-repeat="device in sensors" href ="#">{{device.name}}</a>
+      <a ng-repeat="device in sensors" href ="#/sensors/{{device.id}}">{{device.name}}</a>
     </div>
     </div>
   </div>
