@@ -1,6 +1,4 @@
 var appController = angular.module('appController', []);
-<<<<<<< HEAD
-=======
 
 appController.service('urlParser', function() {
       this.getLive = function(id, url) {
@@ -61,4 +59,3 @@ appController.service('getDataService',function($http, urlParser){
     return request;
   }
 });
->>>>>>> a7d8c55ccc192596468c502cd9d56da65a0486bf

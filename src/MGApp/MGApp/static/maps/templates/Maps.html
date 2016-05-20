@@ -2,12 +2,12 @@
   <div class = "container" >
     <div class = "row">
       <div classs = "col-md-2">
-        Search: <input class = "form-control" ng-model = "query">
+       <input class = "form-control" ng-model = "query">
       </div>
+    </div>
     <div class = "row" >
-      <div  ng-repeat="init_data in test | filter:query" >
+      <div ng-animate="{enter: 'animate-enter', leave: 'animate-leave'}"" ng-repeat="init_data in test | filter:query" >
         <dir-button display='{{init_data}}'></dir-button>
       </div>
     </div>
-  </div>
 </div>
