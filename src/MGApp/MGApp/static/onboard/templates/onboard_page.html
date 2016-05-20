@@ -1,0 +1,9 @@
+<div ng-controller="OnboardController">
+  <div class="container">
+    <input class = "form-control" ng-model = "inp_message">
+    <div ng-click="sendMQTTMessage(inp_message)">Send Message</div>
+    <p>
+      {{mqtt_message}}
+    </p>
+  </div>
+</div>

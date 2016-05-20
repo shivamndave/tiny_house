@@ -6,10 +6,10 @@ app.config(['$routeProvider', function($routeProvider) {
       templateUrl: 'static/home/templates/home.html',
       controller: 'HomeController'
    }).
-   // when('/commands', {
-   //    templateUrl: 'static/commands/templates/commands_page.html',
-   //    controller: 'CommandsController'
-   // }).
+   when('/onboard', {
+      templateUrl: 'static/onboard/templates/onboard_page.html',
+      controller: 'OnboardController'
+   }).
    when('/maps', {
       templateUrl: 'static/maps/templates/Maps.html',
       controller: 'MapController'
