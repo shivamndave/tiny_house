@@ -1,43 +1,44 @@
 <div>
-    <form class="white-txt">
+    <form name="myform" class="white-txt" ng-submit="add(fieldname, fieldunit, fieldlongunit, fieldsinfo, fieldeinfo, fieldmac, fielduid, fieldlocation, selectedRoom)">
         <div class="form-group">
             <label for="input" class="col-sm-2 form-control-label">Name</label>
             <div class="col-sm-10">
-                <input ng-model="model.Name" type="text" class="form-control" id="input" value="{{name}}">
+                <input type="text" class="form-control" id="input" ng-model="fieldname" value="{{name}}">
             </div>
             <label for="input" class="col-sm-2 form-control-label">Unit</label>
             <div class="col-sm-10">
-                <input ng-model="model.unit" type="text" class="form-control" id="input" maxlength="6" value="{{unit}}">
+                <input type="text" class="form-control" id="input" maxlength="6" ng-model="fieldunit" value="{{unit}}">
             </div>
             <label for="input" class="col-sm-2 form-control-label">Longunit</label>
             <div class="col-sm-10">
-                <input ng-model="model.longunit" type="text" class="form-control" id="input" maxlength="16" value="{{longunit}}">
+                <input type="text" class="form-control" id="input" maxlength="16" ng-model="fieldlongunit" value="{{longunit}}">
             </div>
             <label for="input" class="col-sm-2 form-control-label">Sensor Info</label>
             <div class="col-sm-10">
-                <input ng-model="model.sinfo" type="text" class="form-control" id="input" maxlength="1024" placeholder="Information about the sensor">
+                <input type="text" class="form-control" id="input" maxlength="1024" ng-model="fieldsinfo" placeholder="Information about the sensor">
             </div>
             <label for="input" class="col-sm-2 form-control-label">Mac-Address</label>
             <div class="col-sm-4">
-                <input ng-model="model.eqmac" ng-disabled="true" type="text" class="form-control" id="input" value="{{mac}}">
+                <input ng-disabled="true" type="text" class="form-control" id="input" ng-model="fieldmac" value="{{mac}}">
             </div>
             <label for="input" class="col-sm-2 form-control-label">Eq UID</label>
             <div class="col-sm-4">
-                <input ng-model="model.equid" ng-disabled="true" type="text" class="form-control" id="input" value="{{uid}}">
+                <input ng-disabled="true" type="text" class="form-control" id="input" ng-model="fielduid" value="{{uid}}">
             </div>
             <label for="input" class="col-sm-2 form-control-label">Equipment Info</label>
             <div class="col-sm-10">
-                <input ng-model="model.eqinfo" type="text" class="form-control" id="input" maxlength="1024" placeholder="Information about the equipment">
+                <input type="text" class="form-control" id="input" maxlength="1024" ng-model="fieldeinfo" placeholder="Information about the equipment">
             </div>
             <label for="input" class="col-sm-2 form-control-label">Equipment Location</label>
             <div class="col-sm-10">
-                <input ng-model="model.eqloc" type="text" class="form-control" id="input" maxlength="1024" placeholder="Location of the equipment">
+                <input type="text" class="form-control" id="input" maxlength="1024" ng-model="fieldlocation" placeholder="Location of the equipment">
             </div>
             <div class="col-sm-10">
-                <select class="form-control" ng-model="model.selectedRoom" ng-options="room.name for room in room_arr">
+                <select class="form-control" ng-model="selectedRoom" ng-options="room.name for room in room_arr">
                     <option value="">Select Room</option>
                 </select>
             </div>
+            <input type="submit" value="Submit" />
         </div>
     </form>
 </div>

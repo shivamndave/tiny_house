@@ -127,16 +127,26 @@ onboardController.directive('onboardForm', function(){
   }
     function link(scope,element,attrs) {
       scope.$watch(attrs.sensordata, function(data) {
+        console.log(data);
           scope.mac = data.mac_address;
+          scope.fieldmac = data.mac_address;
+          scope.fieldname = data.name;
           scope.name = data.name;
+          scope.fielduid = data.uid;
+          scope.fieldunit = data.unit;
           scope.uid = data.uid;
           scope.unit = data.unit;
           scope.longunit = data.longunit;
+          scope.fieldlongunit = data.longunit;
       });
 
       scope.$watch(attrs.rooms, function(data) {
         console.log(data);
         scope.room_arr = data;
       });
+
+      scope.add = function(fieldname, fieldunit, fieldlongunit, fieldsinfo, fieldeinfo, fieldmac, fielduid, fieldlocation, selectedRoom) { // <-- here is you value from the input
+        console.log(fieldname + " " + fieldunit  + " " +  fieldlongunit   + " " +  fieldmac  + " " +  fielduid  + " " +  fieldsinfo + " " + fieldeinfo + " " +  fieldlocation + " | " + selectedRoom.name);
+      };
     }
 });
