@@ -152,6 +152,30 @@ def room_parser(dict_cursor, room):
     # app.logger.info(sensors)
     return {"sensors": sensors}
 
+@app.route("/api/equipment")
+def equipment():
+    cursor = mysql.connection.cursor()
+    dict_cursor = mysql.connection.cursor(cursorclass=DictCursor)
+
+    dict_cursor.execute('''SELECT * FROM `t_equipment`''')
+    eqs = dict_cursor.fetchall()
+
+    for eq in eqs:
+        eq.update(eq_parser(dict_cursor, eq))
+
+    dict_cursor.close()
+    return jsonify(equipment=eqs)
+
+def eq_parser(dict_cursor, eq):
+    sensors = []
+    query_snrm = '''SELECT * FROM `t_sensor_info` WHERE equipment_id=''' + str(eq['id'])
+    dict_cursor.execute(query_snrm)
+    sensors_array = dict_cursor.fetchall()
+    for sensor_obj in sensors_array:
+        sensors.append(sensor_obj)
+
+    # app.logger.info(sensors)
+    return {"sensors": sensors}
 
 if __name__ == "__main__":
     app.run("0.0.0.0", debug=True)
