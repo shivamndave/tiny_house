@@ -1,5 +1,6 @@
 <div ng-controller="HomeController">
   <div class="container">
+    <div class ="row"><h1><font color="white"> Home</font> </h1> </div>
 	   <div  class="row" ng-repeat="init_data in init_data_array track by $index">
 		<mg-display display='{{init_data}}' ind={{$index}}></mg-display>
   	   </div>
