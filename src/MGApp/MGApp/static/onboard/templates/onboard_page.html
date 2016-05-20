@@ -1,6 +1,7 @@
-<div ng-controller="OnboardController">
+<div ng-controller="OnboardController" >
     <div class="container">
-        <div ng-disabled="show_form" type="button" class="btn btn-primary" ng-click="show_form || sendOnboardMessage()">Scan for Message</div>
-        <onboard-form ng-show="show_form" sensordata='sensordata'></onboard-form>
+        <div ng-disabled="cancel_button" type="button" class="btn btn-primary" ng-click="cancel_button || sendOnboardMessage()">Scan for Message</div>
+        <div class="row" ng-repeat="sensor_data in sensor_data_array track by $index">
+            <onboard-form rooms='{{rms}}' sensordata='{{sensor_data}}' ng-show="show_form"></onboard-form>
     </div>
 </div>
