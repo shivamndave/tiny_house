@@ -114,7 +114,25 @@ onboardController.controller('OnboardController', function($scope, getDataServic
   }
 });
 
-onboardController.directive('onboardForm', function(){
+appController.service('sendNewSensor',function($http){
+  return sendDataMethod;
+
+  function sendDataMethod(value){
+    var conf = {headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}};
+    $http({
+      url: "/api/post/new_sensor",
+      method: "POST",
+      data: JSON.stringify(value),
+      config: conf
+    }).success(function(data) {
+      console.log("Success POST")
+      console.log(data)
+    });
+  }
+
+});
+
+onboardController.directive('onboardForm', function(sendNewSensor, $http){
   return {
     restrict: 'E',
     scope: {
