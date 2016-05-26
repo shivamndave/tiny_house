@@ -154,7 +154,6 @@ def room_parser(dict_cursor, room):
 
 @app.route("/api/equipment")
 def equipment():
-    cursor = mysql.connection.cursor()
     dict_cursor = mysql.connection.cursor(cursorclass=DictCursor)
 
     dict_cursor.execute('''SELECT * FROM `t_equipment`''')
@@ -165,6 +164,26 @@ def equipment():
 
     dict_cursor.close()
     return jsonify(equipment=eqs)
+
+
+@app.route("/api/equipment/only/mac_address")
+def equipment_only_mac_address():
+    dict_cursor = mysql.connection.cursor(cursorclass=DictCursor)
+
+    dict_cursor.execute('''SELECT mac_address FROM `t_equipment`''')
+    eqs = [item['mac_address'] for item in dict_cursor.fetchall()]
+
+    dict_cursor.close()
+    return jsonify(mac_address_equipment=eqs)
+
+def macs_for_post():
+    dict_cursor = mysql.connection.cursor(cursorclass=DictCursor)
+
+    dict_cursor.execute('''SELECT mac_address FROM `t_equipment`''')
+    eqs = [item['mac_address'] for item in dict_cursor.fetchall()]
+
+    dict_cursor.close()
+    return eqs
 
 def eq_parser(dict_cursor, eq):
     sensors = []
