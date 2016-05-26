@@ -146,25 +146,39 @@ onboardController.directive('onboardForm', function(sendNewSensor, $http){
     function link(scope,element,attrs) {
       scope.$watch(attrs.sensordata, function(data) {
         console.log(data);
-          scope.mac = data.mac_address;
           scope.fieldmac = data.mac_address;
-          scope.fieldname = data.name;
-          scope.name = data.name;
+          scope.fieldsname = data.name;
           scope.fielduid = data.uid;
           scope.fieldunit = data.unit;
-          scope.uid = data.uid;
-          scope.unit = data.unit;
-          scope.longunit = data.longunit;
           scope.fieldlongunit = data.longunit;
       });
 
-      scope.$watch(attrs.rooms, function(data) {
-        console.log(data);
-        scope.room_arr = data;
+      scope.$watch(attrs.rooms, function(roomData) {
+        console.log(roomData);
+        scope.room_arr = roomData;
       });
 
-      scope.add = function(fieldname, fieldunit, fieldlongunit, fieldsinfo, fieldeinfo, fieldmac, fielduid, fieldlocation, selectedRoom) { // <-- here is you value from the input
-        console.log(fieldname + " " + fieldunit  + " " +  fieldlongunit   + " " +  fieldmac  + " " +  fielduid  + " " +  fieldsinfo + " " + fieldeinfo + " " +  fieldlocation + " | " + selectedRoom.name);
+      scope.add = function(fieldsname, fieldunit, fieldlongunit, fieldsinfo, fieldmac, fielduid, selectedRoom) { // <-- here is you value from the input
+        var fieldename = "Equipment " + fielduid.toString(),
+            fieldeinfo = "No equipment info given",
+            fieldlocation = "No location given";
+        if(!fieldsinfo){fieldsinfo = "No sensor info given"}
+        // console.log(fieldsname + " " + fieldunit  + " " +  fieldlongunit   + " " +  fieldmac  + " " +  fielduid + " " + fieldename  + " " +  fieldsinfo + " " + fieldeinfo + " " +  fieldlocation + " | " + selectedRoom.name);
+
+        var postData = {
+          "sensor_name": fieldsname,
+          "longunit": fieldlongunit,
+          "unit": fieldunit,
+          "mac_address": fieldmac,
+          "uid": fielduid,
+          "sensor_info": fieldsinfo,
+          "equipment_name": fieldename,
+          "equipment_info": fieldeinfo,
+          "location": fieldlocation,
+          "room_id": selectedRoom.id.toString()
+        };
+        console.log(postData)
+        sendNewSensor(postData)
       };
     }
 });
