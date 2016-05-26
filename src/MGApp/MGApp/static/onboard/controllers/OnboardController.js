@@ -119,31 +119,38 @@ appController.service('sendNewSensor',function($http){
 
   function sendDataMethod(value){
     var conf = {headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}};
-    $http({
+    return $http({
       url: "/api/post/new_sensor",
       method: "POST",
       data: JSON.stringify(value),
       config: conf
     }).success(function(data) {
-      console.log("Success POST")
-      console.log(data)
+      console.log("SUCCESS POST");
+      console.log(data);
+      return true;
+    }).error(function(data, status) {
+      console.log("FAILED POST");
+      console.log(data);
+      return false;
     });
   }
 
 });
 
-onboardController.directive('onboardForm', function(sendNewSensor, $http){
+onboardController.directive('onboardForm', function($http, sendNewSensor){
   return {
     restrict: 'E',
     scope: {
       sensordata: '@',
       rooms: '@',
-      onSubmit: '&'
+      onSubmit: '&',
+      ind: '@'
     },
     link: link,
     templateUrl: 'static/onboard/templates/onboard_form.html'
   }
     function link(scope,element,attrs) {
+      scope.submitButtonTog = false;
       scope.$watch(attrs.sensordata, function(data) {
         console.log(data);
           scope.fieldmac = data.mac_address;
@@ -177,8 +184,14 @@ onboardController.directive('onboardForm', function(sendNewSensor, $http){
           "location": fieldlocation,
           "room_id": selectedRoom.id.toString()
         };
+
         console.log(postData)
-        sendNewSensor(postData)
+        sendNewSensor(postData).then(function(value) {
+          console.log("Success - Button disabled")
+          scope.submitButtonTog = true;
+        }, function(reason) {
+          console.log("Rejected SAHN")
+        });
       };
     }
 });
