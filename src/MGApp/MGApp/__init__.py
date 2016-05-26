@@ -5,7 +5,7 @@
 # import threading
 # import handler
 import json
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, request
 from flask.ext.mysqldb import MySQL
 import MySQLdb
 from MySQLdb.cursors import DictCursor
