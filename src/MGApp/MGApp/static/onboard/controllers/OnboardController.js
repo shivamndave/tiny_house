@@ -36,33 +36,30 @@ onboardController.controller('OnboardController', function($scope, sendCommand) 
     $scope.show_form = true;
     var parsedSensor = parseSensorAdded(message.payloadString, mac_address);
     // var parsedSensor = parseSensorAdded(TEST_MSG, TEST_MAC),
-        sensors_array = formPush(parsedSensor);
-
-    console.log(sensors_array);
-    $scope.sensor_data_array = sensors_array;
+    formPush(parsedSensor);
     $scope.$apply();
   }
 
   function formPush(parsedSensor) {
-    var sensors = [];
+    // var sensors = [];
     for(var i = 0; i < parsedSensor.light_sensors; i++) {
       var iStr = i.toString();
-      sensors.push({"name": "Light Sensor " + iStr, "uid": "L" + iStr, "mac_address": parsedSensor.mac_address, "unit": "Lx", "longunit": "Lux"});
+      $scope.sensor_data_array.push({"name": "Light Sensor " + iStr, "uid": "L" + iStr, "mac_address": parsedSensor.mac_address, "unit": "Lx", "longunit": "Lux"});
     }
     for(var i = 0; i < parsedSensor.humidity_sensors; i++) {
       var iStr = i.toString();
-      sensors.push({"name": "Humidity Sensor " + iStr, "uid": "DH" + iStr, "mac_address": parsedSensor.mac_address, "unit": "RH", "longunit": "Rel. Humidity"});
+      $scope.sensor_data_array.push({"name": "Humidity Sensor " + iStr, "uid": "DH" + iStr, "mac_address": parsedSensor.mac_address, "unit": "RH", "longunit": "Rel. Humidity"});
     }
     for(var i = 0; i < parsedSensor.temperature_sensors; i++) {
       var iStr = i.toString();
-      sensors.push({"name": "Temperature Sensor " + iStr, "uid": "T" + iStr, "mac_address": parsedSensor.mac_address, "unit": "C", "longunit": "Celsius"});
+      $scope.sensor_data_array.push({"name": "Temperature Sensor " + iStr, "uid": "T" + iStr, "mac_address": parsedSensor.mac_address, "unit": "C", "longunit": "Celsius"});
     }
     for(var i = 0; i < parsedSensor.humid_temp_sensors; i++) {
       var iStr = i.toString();
-      sensors.push({"name": "Humidity Temp Sensor " + iStr, "uid": "DT" + iStr, "mac_address": parsedSensor.mac_address, "unit": "RH", "longunit": "Rel. Humidity"});
+      $scope.sensor_data_array.push({"name": "Humidity Temp Sensor " + iStr, "uid": "DT" + iStr, "mac_address": parsedSensor.mac_address, "unit": "RH", "longunit": "Rel. Humidity"});
     }
 
-    return sensors
+    // return sensors
 
   }
 
