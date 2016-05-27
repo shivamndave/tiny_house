@@ -81,7 +81,7 @@ specSensorController.directive('kgDisplay', function($interval, getDataService, 
     function link(scope, element, attrs) {
         scope.$watch(scope.display, function(data) {
             if (data){
-            console.log(scope);
+            // console.log(scope);
             scope.sensorinfo_name = data.sensor_info.name;
             scope.sensorinfo_info = data.sensor_info.info;
             scope.equipment_name = data.equipment.name;
