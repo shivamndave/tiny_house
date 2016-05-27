@@ -1,5 +1,5 @@
 var onboardController = angular.module('appController'),
-    CLIENTNAME = "169.233.220.41",
+    CLIENTNAME = "128.114.63.86",
     CLIENTPORT = 9001,
     TEST_CLIENTNAME = "test.mosquitto.org",
     TEST_CLIENTPORT = 8080,
@@ -7,8 +7,7 @@ var onboardController = angular.module('appController'),
     TEST_MAC = "00:0a:95:9d:68:16"
     CLIENTID   = "id",
     TOPIC_INTIALPUB = "testbed/nodeDiscover/command/",
-    TOPIC_INTIALSUB = "testbed/nodeDiscover/data/#",
-    ROOMURL = "api/rooms";
+    TOPIC_INTIALSUB = "testbed/nodeDiscover/data/#";
 
 
 onboardController.controller('OnboardController', function($scope, getDataService) {
@@ -25,11 +24,6 @@ onboardController.controller('OnboardController', function($scope, getDataServic
 
   initialClient.onConnectionLost = onConnectionLost;
   initialClient.onMessageArrived = onMessageArrived;
-
-  getDataService(null, ROOMURL).then(function(roomData){
-    console.log(roomData.rooms);
-    $scope.rms = roomData.rooms;
-  });
 
   $scope.sendOnboardMessage = function() {
     message = new Paho.MQTT.Message("START");
@@ -142,14 +136,12 @@ onboardController.directive('onboardForm', function($http, sendNewSensor){
     restrict: 'E',
     scope: {
       sensordata: '@',
-      rooms: '@',
-      onSubmit: '&',
-      ind: '@'
+      onSubmit: '&'
     },
     link: link,
     templateUrl: 'static/onboard/templates/onboard_form.html'
   }
-    function link(scope,element,attrs) {
+    function link(scope, element, attrs) {
       scope.submitButtonTog = false;
       scope.$watch(attrs.sensordata, function(data) {
         console.log(data);
@@ -165,7 +157,7 @@ onboardController.directive('onboardForm', function($http, sendNewSensor){
         scope.room_arr = roomData;
       });
 
-      scope.add = function(fieldsname, fieldunit, fieldlongunit, fieldsinfo, fieldmac, fielduid, selectedRoom) { // <-- here is you value from the input
+      scope.add = function(fieldsname, fieldunit, fieldlongunit, fieldsinfo, fieldmac, fielduid) { // <-- here is you value from the input
         var fieldename = "Equipment " + fielduid.toString(),
             fieldeinfo = "No equipment info given",
             fieldlocation = "No location given";
@@ -182,7 +174,7 @@ onboardController.directive('onboardForm', function($http, sendNewSensor){
           "equipment_name": fieldename,
           "equipment_info": fieldeinfo,
           "location": fieldlocation,
-          "room_id": selectedRoom.id.toString()
+          "room_id": "1"
         };
 
         console.log(postData)
