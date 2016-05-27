@@ -13,16 +13,20 @@ onboardController.controller('OnboardController', function($scope, sendCommand) 
   $scope.onConnect_button = true;
   $scope.sensordata = null;
 
-  client = sendCommand(onMessageArrived);
+  var client = sendCommand(onConnect, onMessageArrived);
 
   $scope.sendOnboardMessage = function() {
     message = new Paho.MQTT.Message("START");
-    message.destinationName = TOPIC_INTIALPUB;
+    message.destinationName = NODEDISCOVER_COMMAND;
     client.send(message);
-    client.subscribe(TOPIC_INTIALSUB);
+    client.subscribe(NODEDISCOVER_DATA);
     console.log("subscribed");
     $scope.cancel_button = true;
   };
+
+  function onConnect() {
+    console.log("Successful onConnect");
+  }
 
   function onMessageArrived(message) {
     console.log("onMessageArrived:" + message.payloadString);
@@ -30,8 +34,8 @@ onboardController.controller('OnboardController', function($scope, sendCommand) 
         mac_address = parseDest[parseDest.length - 1];
 
     $scope.show_form = true;
-    // var parsedSensor = parseSensorAdded(message.payloadString, mac_address);
-    var parsedSensor = parseSensorAdded(TEST_MSG, TEST_MAC),
+    var parsedSensor = parseSensorAdded(message.payloadString, mac_address);
+    // var parsedSensor = parseSensorAdded(TEST_MSG, TEST_MAC),
         sensors_array = formPush(parsedSensor);
 
     console.log(sensors_array);
