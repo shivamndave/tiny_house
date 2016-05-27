@@ -1,9 +1,9 @@
 var onboardController = angular.module('appController'),
     TEST_MSG = "DH=2 T=1 DT=0",
-    TEST_MAC = "00:0a:95:9d:68:16"
+    TEST_MAC = "000a959d6816"
     CLIENTID   = "id",
-    TOPIC_INTIALPUB = "testbed/nodeDiscover/command/",
-    TOPIC_INTIALSUB = "testbed/nodeDiscover/data/#";
+    NODEDISCOVER_COMMAND = "testbed/nodeDiscover/command/",
+    NODEDISCOVER_DATA = "testbed/nodeDiscover/data/#";
 
 
 onboardController.controller('OnboardController', function($scope, sendCommand) {
