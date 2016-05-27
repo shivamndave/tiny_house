@@ -139,25 +139,3 @@ specSensorController.directive('kgDisplay', function($interval, getDataService) 
         }});
     }
 });
-
-// sensorController.directive('sensPage', function(){
-//   return {
-//     restrict: 'E',
-//     scope: {
-//       display: '@',
-//     },
-//     link: link,
-//     templateUrl: 'static/sensors/templates/sensor.html'
-//   }
-//     function link(scope,element,attrs) {
-//       //console.log(attrs.display.sensors);
-//       scope.$watch(attrs.display, function(data){
-//         scope.id = data.sensor_info.id;
-//         scope.info = data.sensor_info.info;
-//         scope.longunit = data.sensor_info.longunit;
-//         scope.name = data.sensor_info.name;
-//         scope.status = data.sensor_info.status;
-//         scope.unit = data.sensor_info.unit;
-//         //scope.room_color = room_colors[data.type]
-//       });}
-// });
