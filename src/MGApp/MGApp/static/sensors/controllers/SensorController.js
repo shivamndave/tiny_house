@@ -61,12 +61,12 @@ specSensorController.controller('SpecSensorController', function($scope, $routeP
 
 sensorController.controller('SensorController', function($scope,getDataService) {
   getDataService(null, SENSURL).then(function(data){
-    console.log(data.all);
+    // console.log(data.all);
     $scope.SenInfo = data.all;
   });
 });
 
-specSensorController.directive('kgDisplay', function($interval, getDataService) {
+specSensorController.directive('kgDisplay', function($interval, getDataService, createSensorChart) {
     return {
         restrict: 'E',
         scope: {
