@@ -1,8 +1,4 @@
 var onboardController = angular.module('appController'),
-    CLIENTNAME = "128.114.63.86",
-    CLIENTPORT = 9001,
-    TEST_CLIENTNAME = "test.mosquitto.org",
-    TEST_CLIENTPORT = 8080,
     TEST_MSG = "DH=2 T=1 DT=0",
     TEST_MAC = "00:0a:95:9d:68:16"
     CLIENTID   = "id",
@@ -10,39 +6,23 @@ var onboardController = angular.module('appController'),
     TOPIC_INTIALSUB = "testbed/nodeDiscover/data/#";
 
 
-onboardController.controller('OnboardController', function($scope, getDataService) {
+onboardController.controller('OnboardController', function($scope, sendCommand) {
   $scope.sensor_data_array = [];
-  var initialClient = new Paho.MQTT.Client(TEST_CLIENTNAME, TEST_CLIENTPORT, CLIENTID);
-  // var initialClient = new Paho.MQTT.Client(CLIENTNAME, CLIENTPORT, CLIENTID);
   $scope.show_form = false;
   $scope.cancel_button = false;
   $scope.onConnect_button = true;
   $scope.sensordata = null;
 
-  console.log("Now trying to connect...");
-  initialClient.connect({onSuccess:onConnect});
-
-  initialClient.onConnectionLost = onConnectionLost;
-  initialClient.onMessageArrived = onMessageArrived;
+  client = sendCommand(onMessageArrived);
 
   $scope.sendOnboardMessage = function() {
     message = new Paho.MQTT.Message("START");
     message.destinationName = TOPIC_INTIALPUB;
-    initialClient.send(message);
-    initialClient.subscribe(TOPIC_INTIALSUB);
+    client.send(message);
+    client.subscribe(TOPIC_INTIALSUB);
     console.log("subscribed");
     $scope.cancel_button = true;
-  }
-
-  function onConnect() {
-    console.log("Successful onConnect");
-  }
-
-  function onConnectionLost(responseObject) {
-    if (responseObject.errorCode !== 0) {
-      console.log("onConnectionLost:" + responseObject.errorMessage);
-    }
-  }
+  };
 
   function onMessageArrived(message) {
     console.log("onMessageArrived:" + message.payloadString);
