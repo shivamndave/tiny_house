@@ -1,23 +1,68 @@
 var sensorController = angular.module('appController'),
     specSensorController = angular.module('appController'),
-  SENSURL = "api/sensors" ;
-specSensorController.controller('SpecSensorController', function($scope, $routeParams ,getDataService) {
-  getDataService($routeParams.sensorid,SENSURL).then(function(data){
-  console.log(data);
-  $scope.tempdata = data.sensor;
-  // $scope.id = tempdata.sensor_info.id;
-  // $scope.info = tempdata.sensor_info.info;
-  // $scope.longunit = tempdata.sensor_info.longunit;
-  // $scope.name = tempdata.sensor_info.name;
-  // $scope.status = tempdata.sensor_info.status;
-  // $scope.unit = tempdata.sensor_info.unit;
+    TOPIC_INTIALPUB = "testbed/gateway/mqtt/0013a20040daebd0",
+    TOPIC_INTIALSUB = "testbed/nodeDiscover/data/#",
+    SENSURL = "api/sensors";
+
+specSensorController.controller('SpecSensorController', function($scope, $routeParams ,getDataService, sendCommand) {
+  getDataService($routeParams.sensorid, SENSURL).then(function(data){
+    console.log(data);
+    $scope.tempdata = data.sensor;
   });
+
+  $scope.sendOnMessage = function() {
+    var client = sendCommand(onConnect, onMessageArrived);
+    function onConnect() {
+      console.log("Successful onConnect");
+      message1 = new Paho.MQTT.Message("\x41\x41\x30\x3D\x31\x0A");
+      message2 = new Paho.MQTT.Message("\x41\x41\x31\x3D\x31\x0A");
+      message3 = new Paho.MQTT.Message("\x41\x41\x32\x3D\x31\x0A");
+      message1.destinationName = TOPIC_INTIALPUB;
+      message2.destinationName = TOPIC_INTIALPUB;
+      message3.destinationName = TOPIC_INTIALPUB;
+      setTimeout(function() {
+        client.send(message1);
+      }, 1000);
+      setTimeout(function() {
+        client.send(message2);
+      }, 1000);
+      setTimeout(function() {
+        client.send(message3);
+      }, 1000);
+    }
+  };
+
+  $scope.sendOffMessage = function() {
+    var client = sendCommand(onConnect, onMessageArrived);
+    function onConnect() {
+      console.log("Successful onConnect");
+      message1 = new Paho.MQTT.Message("\x41\x41\x30\x3D\x30\x0A");
+      message2 = new Paho.MQTT.Message("\x41\x41\x31\x3D\x30\x0A");
+      message3 = new Paho.MQTT.Message("\x41\x41\x32\x3D\x30\x0A");
+      message1.destinationName = TOPIC_INTIALPUB;
+      message2.destinationName = TOPIC_INTIALPUB;
+      message3.destinationName = TOPIC_INTIALPUB;
+      setTimeout(function() {
+        client.send(message1);
+      }, 1000);
+      setTimeout(function() {
+        client.send(message2);
+      }, 1000);
+      setTimeout(function() {
+        client.send(message3);
+      }, 1000);
+    }
+  };
+
+  function onMessageArrived(message) {
+    console.log("onMessageArrived:" + message.payloadString);
+  }
 });
 
 sensorController.controller('SensorController', function($scope,getDataService) {
-  getDataService(null,SENSURL).then(function(data){
-  console.log(data.all);
-  $scope.SenInfo = data.all;
+  getDataService(null, SENSURL).then(function(data){
+    console.log(data.all);
+    $scope.SenInfo = data.all;
   });
 });
 
