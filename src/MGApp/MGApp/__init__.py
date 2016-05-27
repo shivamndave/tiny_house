@@ -5,7 +5,7 @@
 # import threading
 # import handler
 import json
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, request
 from flask.ext.mysqldb import MySQL
 import MySQLdb
 from MySQLdb.cursors import DictCursor
@@ -152,6 +152,80 @@ def room_parser(dict_cursor, room):
     # app.logger.info(sensors)
     return {"sensors": sensors}
 
+@app.route("/api/equipment")
+def equipment():
+    dict_cursor = mysql.connection.cursor(cursorclass=DictCursor)
+
+    dict_cursor.execute('''SELECT * FROM `t_equipment`''')
+    eqs = dict_cursor.fetchall()
+
+    for eq in eqs:
+        eq.update(eq_parser(dict_cursor, eq))
+
+    dict_cursor.close()
+    return jsonify(equipment=eqs)
+
+
+@app.route("/api/equipment/only/mac_address")
+def equipment_only_mac_address():
+    dict_cursor = mysql.connection.cursor(cursorclass=DictCursor)
+
+    dict_cursor.execute('''SELECT mac_address FROM `t_equipment`''')
+    eqs = [item['mac_address'] for item in dict_cursor.fetchall()]
+
+    dict_cursor.close()
+    return jsonify(mac_address_equipment=eqs)
+
+def macs_for_post():
+    dict_cursor = mysql.connection.cursor(cursorclass=DictCursor)
+
+    dict_cursor.execute('''SELECT mac_address FROM `t_equipment`''')
+    eqs = [item['mac_address'] for item in dict_cursor.fetchall()]
+
+    dict_cursor.close()
+    return eqs
+
+def eq_parser(dict_cursor, eq):
+    sensors = []
+    query_snrm = '''SELECT * FROM `t_sensor_info` WHERE equipment_id=''' + str(eq['id'])
+    dict_cursor.execute(query_snrm)
+    sensors_array = dict_cursor.fetchall()
+    for sensor_obj in sensors_array:
+        sensors.append(sensor_obj)
+
+    # app.logger.info(sensors)
+    return {"sensors": sensors}
+
+@app.route('/api/post/new_sensor', methods=['GET', 'POST'])
+def new_sensor():
+    if request.method == "POST":
+        cursor = mysql.connection.cursor()
+        dict_cursor = mysql.connection.cursor(cursorclass=DictCursor)
+        regal = ""
+        mac_addrs = macs_for_post()
+        post = request.get_json()
+        app.logger.info(mac_addrs)
+
+        # Will insert a new piece of equipment if it does not exist
+        if str(post['mac_address']) not in mac_addrs:
+            query_ns = ''' INSERT INTO `t_equipment` (`id`, `room_id`, `name`, `location`, `info`, `mac_address`) VALUES (NULL, \"''' + str(post['room_id']) + '''\", \"''' + str(post['equipment_name']) + '''\", \"''' + str(post['location']) + '''\", \"''' + str(post['equipment_info']) + '''\" , \"''' + str(post['mac_address']) + '''\");'''
+            cursor.execute(query_ns)
+            mysql.connection.commit()
+
+        dict_cursor.execute('''SELECT * FROM `t_equipment` WHERE mac_address = \"''' + str(post['mac_address']) + '''\"''')
+        eqid = dict_cursor.fetchone()
+        app.logger.info(eqid['id'])
+        
+        query_ns = ''' INSERT INTO `t_sensor_info` (`id`, `equipment_id`, `name`, `unit`, `longunit`, `info`, `uid`) VALUES (NULL, \"''' + str(eqid['id']) + '''\", \"''' + str(post['sensor_name']) + '''\", \"''' + str(post['unit']) + '''\", \"''' + str(post['longunit']) + '''\" , \"''' + str(post['sensor_info']) + '''\", \"''' + str(post['uid']) + '''\");'''
+        cursor.execute(query_ns)
+        mysql.connection.commit()
+
+        dict_cursor.close()
+        cursor.close()
+
+        # return "query_ns"
+        return jsonify(mac_address_equipment=eqid)
+    return "This is a post call"
 
 if __name__ == "__main__":
     app.run("0.0.0.0", debug=True)
