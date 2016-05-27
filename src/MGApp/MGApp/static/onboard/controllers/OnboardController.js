@@ -47,19 +47,19 @@ onboardController.controller('OnboardController', function($scope, sendCommand) 
     var sensors = [];
     for(var i = 0; i < parsedSensor.light_sensors; i++) {
       var iStr = i.toString();
-      sensors.push({"name": "Light Sensor " + iStr, "uid": "l" + iStr, "mac_address": parsedSensor.mac_address, "unit": "Lx", "longunit": "Lux"});
+      sensors.push({"name": "Light Sensor " + iStr, "uid": "L" + iStr, "mac_address": parsedSensor.mac_address, "unit": "Lx", "longunit": "Lux"});
     }
     for(var i = 0; i < parsedSensor.humidity_sensors; i++) {
       var iStr = i.toString();
-      sensors.push({"name": "Humidity Sensor " + iStr, "uid": "h" + iStr, "mac_address": parsedSensor.mac_address, "unit": "RH", "longunit": "Rel. Humidity"});
+      sensors.push({"name": "Humidity Sensor " + iStr, "uid": "DH" + iStr, "mac_address": parsedSensor.mac_address, "unit": "RH", "longunit": "Rel. Humidity"});
     }
     for(var i = 0; i < parsedSensor.temperature_sensors; i++) {
       var iStr = i.toString();
-      sensors.push({"name": "Temperature Sensor " + iStr, "uid": "t" + iStr, "mac_address": parsedSensor.mac_address, "unit": "C", "longunit": "Celsius"});
+      sensors.push({"name": "Temperature Sensor " + iStr, "uid": "T" + iStr, "mac_address": parsedSensor.mac_address, "unit": "C", "longunit": "Celsius"});
     }
     for(var i = 0; i < parsedSensor.humid_temp_sensors; i++) {
       var iStr = i.toString();
-      sensors.push({"name": "Humidity Temp Sensor " + iStr, "uid": "u" + iStr, "mac_address": parsedSensor.mac_address, "unit": "RH", "longunit": "Rel. Humidity"});
+      sensors.push({"name": "Humidity Temp Sensor " + iStr, "uid": "DT" + iStr, "mac_address": parsedSensor.mac_address, "unit": "RH", "longunit": "Rel. Humidity"});
     }
 
     return sensors
@@ -81,7 +81,7 @@ onboardController.controller('OnboardController', function($scope, sendCommand) 
       switch(tempVal[0]) {
         case 'L': sensorInfoDict["light_sensors"] = parseInt(tempVal[1]); break;
         case 'DH': sensorInfoDict["humidity_sensors"] = parseInt(tempVal[1]); break;
-        case 'D': sensorInfoDict["humidity_sensors"] = parseInt(tempVal[1]); break;
+        case 'D': sensorInfoDict["humidity_sensors"] = parseInt(tempVal[1]); sensorInfoDict["humid_temp_sensors"] = parseInt(tempVal[1]);  break;
         case 'T': sensorInfoDict["temperature_sensors"] = parseInt(tempVal[1]); break;
         case 'DT': sensorInfoDict["humid_temp_sensors"] = parseInt(tempVal[1]); break;
       }
