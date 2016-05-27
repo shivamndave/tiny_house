@@ -1,9 +1,7 @@
-<div ng-controller="OnboardController">
-  <div class="container">
-    <input class = "form-control" ng-model = "inp_message">
-    <div ng-click="sendMQTTMessage(inp_message)">Send Message</div>
-    <p>
-      {{mqtt_message}}
-    </p>
-  </div>
+<div ng-controller="OnboardController" >
+    <div class="container">
+        <div ng-disabled="cancel_button" type="button" class="btn btn-primary" ng-click="cancel_button || sendOnboardMessage()">Scan for Message</div>
+        <div class="row" ng-repeat="sensor_data in sensor_data_array track by $index">
+            <onboard-form sensordata='{{sensor_data}}' ng-show="show_form"></onboard-form>
+    </div>
 </div>

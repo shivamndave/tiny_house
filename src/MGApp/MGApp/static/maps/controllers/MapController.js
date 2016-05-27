@@ -1,7 +1,7 @@
 var mapController = angular.module('appController'),
   ROOMURL = "api/rooms";
 
-mapController.controller('MapController', function($scope,getDataService) {
+mapController.controller('MapController', function($scope, getDataService) {
   getDataService(null, ROOMURL).then(function(data){
     $scope.test = data.rooms;
     $scope.room_colors = ['blue-circle-button btn hvr-grow','green-circle-button btn hvr-grow','purple-circle-button btn hvr-grow','red-circle-button btn hvr-grow','orange-circle-button btn hvr-grow'];
