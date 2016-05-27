@@ -91,72 +91,48 @@ specSensorController.directive('kgDisplay', function($interval, getDataService, 
             scope.latest_time = "Loading latest time...";
             scope.latest_status = "Loading latest status...";
 
-            console.log("attrs.ind")
-            console.log(attrs.ind)
             scope.chart_id = angular.element("#"+String(attrs.ind));
-            scope.status = scope.chart_id.highcharts('StockChart', {
-                plotOptions: {
-                    line: {
-                        marker: {
-                            enabled: false
-                        }
-                    }
-                },
-                chart: {
-                    height: 300
-                },
-                rangeSelector: {
-                    enabled: true,
-                    selected: 4,
-                    buttons: [{
-                        type: 'minute',
-                        count: 1,
-                        text: '1m'
-                    }, {
-                        type: 'hour',
-                        count: 3,
-                        text: '1h'
-                    }, {
-                        type: 'day',
-                        count: 1,
-                        text: '1d'
-                    }, {
-                        type: 'all',
-                        text: 'All'
-                    }]
-                },
-                title: {
-                    text: data.sensor_info.name
-                },
-                subtitle: {
-                    text: data.equipment.name
-                },
-                xAxis: {
-                    type: 'datetime'
-                },
-                yAxis: {
-                    title: {
-                        text: data.sensor_info.longunit
-                    }
-                },
-                series: [{
-                    name: data.sensor_info.longunit,
-                    data: data.values.sensor,
-                    tooltip: {
-                        valueDecimals: 2,
-                        valueSuffix: " " + data.sensor_info.unit,
-                    }
-                }]
-            });
-            console.log(data.values.sensor);
+            scope.status = createSensorChart(scope.chart_id, data);
+
+            // console.log(data.values.sensor);
             var sensorInterval = $interval(function() {
                 getDataService(data.sensor_info.id, SENSORSURL).then(function(tempData) {
-                    console.log(tempData)
                     var currentData = tempData.sensor;
-                    console.logcurrentData
-                    console.log(scope.chart_id.highcharts().series[0]);
+
                     scope.latest_time = "Latest time: None";
                     if(currentData.values.sensor.length > 0) {
+                      if(currentData.actuator_info && currentData.values.sensor.length > 0 && currentData.values.actuator.length > 0) {
+                          setpointValue = currentData.values.actuator[currentData.values.actuator.length - 1][1];
+                          console.log(setpointValue);
+                          var chart_yAxis = scope.status.highcharts().yAxis;
+                          console.log(chart_yAxis);
+                          if(chart_yAxis.length == 0) {
+                            chart_yAxis[0].addPlotLine({
+                                value: setpointValue,
+                                color: 'red',
+                                width: 2,
+                                id: 'plot-line-1',
+                                color: 'red',
+                                dashStyle: 'shortdash',
+                                label: {
+                                  text: 'Setpoint'
+                                }
+                            });
+                          } else {
+                            chart_yAxis[0].removePlotLine('plot-line-1');
+                            chart_yAxis[0].addPlotLine({
+                              value: setpointValue,
+                              color: 'red',
+                              width: 2,
+                              id: 'plot-line-1',
+                              color: 'red',
+                              dashStyle: 'shortdash',
+                              label: {
+                                text: 'Setpoint'
+                              }
+                           });
+                          }
+                      }
                         scope.chart_id.highcharts().series[0].setData(currentData.values.sensor, true);
 
                         var latestTimeVal = currentData.values.sensor[currentData.values.sensor.length - 1][0],
