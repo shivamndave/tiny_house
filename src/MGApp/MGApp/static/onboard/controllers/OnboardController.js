@@ -134,20 +134,28 @@ onboardController.directive('onboardForm', function($http, sendNewSensor){
           scope.fielduid = data.uid;
           scope.fieldunit = data.unit;
           scope.fieldlongunit = data.longunit;
+          scope.fieldactua = false;
       });
 
       scope.$watch(attrs.rooms, function(roomData) {
         console.log(roomData);
         scope.room_arr = roomData;
       });
-
-      scope.add = function(fieldsname, fieldunit, fieldlongunit, fieldsinfo, fieldmac, fielduid) { // <-- here is you value from the input
+      scope.newValue = function(val) {
+        console.log(val);
+      }
+      scope.add = function(fieldsname, fieldunit, fieldlongunit, fieldsinfo, fieldmac, fielduid, fieldactua) { // <-- here is you value from the input
         var fieldename = "Equipment " + fielduid.toString(),
             fieldeinfo = "No equipment info given",
-            fieldlocation = "No location given";
+            fieldlocation = "No location given",
+            actautor_name = null,
+            actautor_info = null;
         if(!fieldsinfo){fieldsinfo = "No sensor info given"}
         // console.log(fieldsname + " " + fieldunit  + " " +  fieldlongunit   + " " +  fieldmac  + " " +  fielduid + " " + fieldename  + " " +  fieldsinfo + " " + fieldeinfo + " " +  fieldlocation + " | " + selectedRoom.name);
-
+        if(fieldactua){
+          actautor_name = fieldsname + " actuator";
+          actautor_info = "Actuator for " + fieldsname;
+        }
         var postData = {
           "sensor_name": fieldsname,
           "longunit": fieldlongunit,
@@ -158,7 +166,10 @@ onboardController.directive('onboardForm', function($http, sendNewSensor){
           "equipment_name": fieldename,
           "equipment_info": fieldeinfo,
           "location": fieldlocation,
-          "room_id": "1"
+          "room_id": "1",
+          "is_actuator": fieldactua,
+          "actuator_name": actautor_name,
+          "actuator_info": actautor_info
         };
 
         console.log(postData)
