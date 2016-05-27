@@ -1,4 +1,5 @@
 var appController = angular.module('appController', []),
+CLIENTID = "id"
 CLIENTNAME = "128.114.63.86",
 CLIENTPORT = 9001,
 TEST_CLIENTNAME = "test.mosquitto.org",
@@ -7,19 +8,15 @@ TEST_CLIENTPORT = 8080;
 appController.service('sendCommand', function(){
   return sendCommand;
 
-  function sendCommand(onMessageArrived){
-    var client = new Paho.MQTT.Client(TEST_CLIENTNAME, TEST_CLIENTPORT, CLIENTID);
-    // var initialClient = new Paho.MQTT.Client(CLIENTNAME, CLIENTPORT, CLIENTID);
+  function sendCommand(onConnect, onMessageArrived){
+    // var client = new Paho.MQTT.Client(TEST_CLIENTNAME, TEST_CLIENTPORT, CLIENTID);
+    var client = new Paho.MQTT.Client(CLIENTNAME, CLIENTPORT, CLIENTID);
 
     console.log("Now trying to connect...");
     client.connect({onSuccess:onConnect});
 
     client.onConnectionLost = onConnectionLost;
     client.onMessageArrived = onMessageArrived;
-
-    function onConnect() {
-      console.log("Successful onConnect");
-    }
 
     function onConnectionLost(responseObject) {
       if (responseObject.errorCode !== 0) {
