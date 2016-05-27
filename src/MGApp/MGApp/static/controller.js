@@ -69,6 +69,83 @@ appController.service('urlParser', function() {
       }
   });
 
+appController.service('createSensorChart', function(){
+  return createSensorChartMethod;
+
+  function createSensorChartMethod(chart_id, data) {
+    var tempPlotlines = [];
+    if(data.actuator_info && data.values.actuator.length > 0) {
+      var setpointValue = data.values.actuator[data.values.actuator.length - 1][1];
+      tempPlotlines = [{
+        value: setpointValue,
+        color: 'red',
+        width: 2,
+        id: 'plot-line-1',
+        color: 'red',
+        dashStyle: 'shortdash',
+        label: {
+          text: 'Setpoint'
+        }
+      }]
+    }
+
+    return chart_id.highcharts('StockChart', {
+      plotOptions: {
+        line: {
+          marker: {
+            enabled: false
+          }
+        }
+      },
+      chart: {height: 300},
+      rangeSelector: {
+          enabled: true,
+          selected: 4,
+          buttons: [{
+              type: 'minute',
+              count: 1,
+              text: '1m'
+          }, {
+              type: 'hour',
+              count: 3,
+              text: '1h'
+          }, {
+              type: 'day',
+              count: 1,
+              text: '1d'
+          }, {
+              type: 'all',
+              text: 'All'
+          }]
+        },
+        title: {
+            text: data.sensor_info.name
+        },
+        subtitle: {
+            text: data.equipment.name
+        },
+        xAxis: {
+            type: 'datetime'
+        },
+        yAxis: {
+            title: {
+                text: data.sensor_info.longunit
+            },
+            plotLines: tempPlotlines
+        },
+        series: [{
+            name: data.sensor_info.longunit,
+            data: data.values.sensor,
+            tooltip: {
+                valueDecimals: 2,
+                valueSuffix: " " + data.sensor_info.unit,
+            }
+        }]
+    });
+  }
+});
+
+
 appController.service('getDataService',function($http, urlParser){
   return getDataMethod;
 
