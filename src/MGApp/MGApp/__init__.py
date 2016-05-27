@@ -215,10 +215,19 @@ def new_sensor():
         dict_cursor.execute('''SELECT * FROM `t_equipment` WHERE mac_address = \"''' + str(post['mac_address']) + '''\"''')
         eqid = dict_cursor.fetchone()
         app.logger.info(eqid['id'])
-        
+
         query_ns = ''' INSERT INTO `t_sensor_info` (`id`, `equipment_id`, `name`, `unit`, `longunit`, `info`, `uid`) VALUES (NULL, \"''' + str(eqid['id']) + '''\", \"''' + str(post['sensor_name']) + '''\", \"''' + str(post['unit']) + '''\", \"''' + str(post['longunit']) + '''\" , \"''' + str(post['sensor_info']) + '''\", \"''' + str(post['uid']) + '''\");'''
         cursor.execute(query_ns)
         mysql.connection.commit()
+
+        dict_cursor.execute('''SELECT * FROM `t_sensor_info` WHERE uid = \"''' + str(post['uid']) + '''\"''')
+        seid = dict_cursor.fetchone()
+        app.logger.info(seid['id'])
+
+        if post['is_actuator']:
+            query_ns = ''' INSERT INTO `t_actuator_info` (`id`, `equipment_id`, `sensor_id`, `name`, `info`) VALUES (NULL, \"''' + str(eqid['id']) + '''\", \"''' + str(seid['id']) + '''\", \"''' + str(post['actuator_name']) + '''\" , \"''' + str(post['actuator_info']) + '''\");'''
+            cursor.execute(query_ns)
+            mysql.connection.commit()
 
         dict_cursor.close()
         cursor.close()
