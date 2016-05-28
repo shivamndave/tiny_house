@@ -4,11 +4,26 @@ var sensorController = angular.module('appController'),
     TOPIC_INTIALSUB = "testbed/nodeDiscover/data/#",
     SENSURL = "api/sensors";
 
-appController.service('sendNewSetpoint',function($http){
+appController.service('sendNewSetpoint',function($http, $timeout, sendCommand){
   return sendDataMethod;
 
   function sendDataMethod(value){
-    var conf = {headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}};
+    var conf = {headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}},
+        client = sendCommand(onConnect, onMessageArrived);
+
+        function onConnect() {
+          console.log("Successful onConnect");
+            console.log("Test3");
+            var mess4 = ("AP0=").concat(value.data.toString());
+            var message4 = new Paho.MQTT.Message(mess4);
+            message4.destinationName = TOPIC_INTIALPUB;
+            client.send(message4);
+        }
+
+      function onMessageArrived(message) {
+        console.log("onMessageArrived:" + message.payloadString);
+      }
+
     return $http({
       url: "/api/post/actuator/new_data",
       method: "POST",
@@ -33,6 +48,7 @@ specSensorController.controller('SpecSensorController', function($scope, $routeP
     $scope.tempdata = data.sensor;
 
     $scope.showLight = function() {
+      console.log($scope.tempdata);
       return $scope.tempdata.actuator_info && $scope.tempdata.sensor_info.uid[0] == 'L';
     }
 
@@ -83,6 +99,7 @@ specSensorController.controller('SpecSensorController', function($scope, $routeP
     var postData = {
       "actuator_id": $scope.tempdata.actuator_info.id,
       "data": setpoint_value,
+      "uid": $scope.tempdata.sensor_info.uid
     };
 
     console.log(postData)
@@ -93,56 +110,119 @@ specSensorController.controller('SpecSensorController', function($scope, $routeP
     });
   }
 
-
-  $scope.sendOnMessage = function() {
+  $scope.sendAS = function() {
     var client = sendCommand(onConnect, onMessageArrived);
     function onConnect() {
       console.log("Successful onConnect");
-       $timeout(function() {
-        console.log("Test");
-        message1 = new Paho.MQTT.Message("\x41\x41\x30\x3D\x31\x0A");
-        message1.destinationName = TOPIC_INTIALPUB;
-        client.send(message1);
-      }, 5000);
-       $timeout(function() {
-        console.log("Test");
-        message2 = new Paho.MQTT.Message("\x41\x41\x31\x3D\x31\x0A");
+        console.log("Test2");
+        var mess2 = "AS0=L0";
+        var message2 = new Paho.MQTT.Message(mess2);
         message2.destinationName = TOPIC_INTIALPUB;
         client.send(message2);
-      }, 5000);
-       $timeout(function() {
-        console.log("Test");
-        message3 = new Paho.MQTT.Message("\x41\x41\x32\x3D\x31\x0A");
-        message3.destinationName = TOPIC_INTIALPUB;
-        client.send(message3);
-      }, 5000);
     }
   };
 
-  $scope.sendOffMessage = function() {
+  $scope.sendAO1 = function() {
     var client = sendCommand(onConnect, onMessageArrived);
     function onConnect() {
       console.log("Successful onConnect");
-       $timeout(function() {
-        console.log("Test");
-        message1 = new Paho.MQTT.Message("\x41\x41\x30\x3D\x30\x0A");
-        message1.destinationName = TOPIC_INTIALPUB;
-        client.send(message1);
-      }, 5000);
-       $timeout(function() {
-        console.log("Test");
-        message2 = new Paho.MQTT.Message("\x41\x41\x31\x3D\x30\x0A");
-        message2.destinationName = TOPIC_INTIALPUB;
-        client.send(message2);
-      }, 5000);
-       $timeout(function() {
-        console.log("Test");
-        message3 = new Paho.MQTT.Message("\x41\x41\x32\x3D\x30\x0A");
-        message3.destinationName = TOPIC_INTIALPUB;
-        client.send(message3);
-      }, 5000);
+      console.log("Test3");
+      var mess3 = ("AO0=1");
+      var message3 = new Paho.MQTT.Message(mess3);
+      message3.destinationName = TOPIC_INTIALPUB;
+      client.send(message3);
     }
   };
+
+  $scope.sendAO2 = function() {
+    var client = sendCommand(onConnect, onMessageArrived);
+    function onConnect() {
+      console.log("Successful onConnect");
+      console.log("Test3");
+      var mess3 = ("AO1=1");
+      var message3 = new Paho.MQTT.Message(mess3);
+      message3.destinationName = TOPIC_INTIALPUB;
+      client.send(message3);
+    }
+  };
+
+  $scope.sendAO3 = function() {
+    var client = sendCommand(onConnect, onMessageArrived);
+    function onConnect() {
+      console.log("Successful onConnect");
+      console.log("Test3");
+      var mess3 = ("AO2=1");
+      var message3 = new Paho.MQTT.Message(mess3);
+      message3.destinationName = TOPIC_INTIALPUB;
+      client.send(message3);
+    }
+  };
+
+  $scope.sendAA = function() {
+    var client = sendCommand(onConnect, onMessageArrived);
+    function onConnect() {
+      console.log("Successful onConnect");
+        console.log("Test1");
+        var message1 = new Paho.MQTT.Message("AA0=1");
+        message1.destinationName = TOPIC_INTIALPUB;
+        client.send(message1);
+      }
+  };
+$scope.sendOnMessage1 = function() {
+  var client = sendCommand(onConnect, onMessageArrived);
+  function onConnect() {
+     console.log("Test");
+     message1 = new Paho.MQTT.Message("AA0=1");
+     message1.destinationName = TOPIC_INTIALPUB;
+     client.send(message1);
+   }
+};
+$scope.sendOnMessage2 = function() {
+  var client = sendCommand(onConnect, onMessageArrived);
+  function onConnect() {
+     console.log("Test");
+     message2 = new Paho.MQTT.Message("AA1=1");
+     message2.destinationName = TOPIC_INTIALPUB;
+     client.send(message2);
+  }
+};
+$scope.sendOnMessage3 = function() {
+  var client = sendCommand(onConnect, onMessageArrived);
+  function onConnect() {
+     console.log("Test");
+     message3 = new Paho.MQTT.Message("AA2=1");
+     message3.destinationName = TOPIC_INTIALPUB;
+     client.send(message3);
+  }
+}
+
+$scope.sendOffMessage1 = function() {
+  var client = sendCommand(onConnect, onMessageArrived);
+  function onConnect() {
+     console.log("Test");
+     message1 = new Paho.MQTT.Message("AA0=0");
+     message1.destinationName = TOPIC_INTIALPUB;
+     client.send(message1);
+  }
+}
+$scope.sendOffMessage2 = function() {
+  var client = sendCommand(onConnect, onMessageArrived);
+  function onConnect() {
+     console.log("Test");
+     message2 = new Paho.MQTT.Message("AA1=0");
+     message2.destinationName = TOPIC_INTIALPUB;
+     client.send(message2);
+  }
+}
+$scope.sendOffMessage3 = function() {
+  var client = sendCommand(onConnect, onMessageArrived);
+  function onConnect() {
+     console.log("Test");
+     message3 = new Paho.MQTT.Message("AA2=0");
+     message3.destinationName = TOPIC_INTIALPUB;
+     client.send(message3);
+  }
+}
 
   function onMessageArrived(message) {
     console.log("onMessageArrived:" + message.payloadString);
