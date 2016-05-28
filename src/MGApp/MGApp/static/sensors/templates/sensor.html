@@ -3,15 +3,23 @@
   <div class = "row">
     <kg-display display='tempdata' ind = '0'></kg-display>
   </div>
-</div>
 <div class="row" ng-show="showLight()">
-  <div type="button" class="btn btn-primary" ng-click="sendOnMessage()">Send On</div>
-  <div type="button" class="btn btn-primary" ng-click="sendOffMessage()">Send Off</div>
+  <div type="button" class="btn btn-primary" ng-click="sendOnMessage1()">1 Send On</div>
+  <div type="button" class="btn btn-primary" ng-click="sendOnMessage2()">2 Send On</div>
+  <div type="button" class="btn btn-primary" ng-click="sendOnMessage3()">3 Send On</div>
+  <div type="button" class="btn btn-primary" ng-click="sendOffMessage1()">1 Send Off</div>
+  <div type="button" class="btn btn-primary" ng-click="sendOffMessage2()">2 Send Off</div>
+  <div type="button" class="btn btn-primary" ng-click="sendOffMessage3()">3 Send Off</div>
+  <div type="button" class="btn btn-primary" ng-click="sendAS()">sendAS</div>
+  <div type="button" class="btn btn-primary" ng-click="sendAO1()">1 sendAO</div>
+  <div type="button" class="btn btn-primary" ng-click="sendAO2()">2 sendAO</div>
+  <div type="button" class="btn btn-primary" ng-click="sendAO3()">3 sendAO</div>
+  <div type="button" class="btn btn-primary" ng-click="sendAA()">sendAA</div>
+  <div class = "col-md-6"> <input type="text" value="10" class="dial2"></input></div>
 </div>
 <div class="row" ng-show="showHumid()">
-<div class = "col-md-6"> <input type="text" value="10" class="dial2"></input></div>
-<div class = "col-md-6"> <input type="text" value="20" class="dial2"></input></div>
-<div class = "col-md-6"></div>
 <div class="row" ng-show="showTHumid()">showTHumid</div>
 <div class="row" ng-show="showTemp()">showTemp</div>
+</div>
+</div>
 </div>
