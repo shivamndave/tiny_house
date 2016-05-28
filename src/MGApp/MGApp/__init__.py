@@ -4,6 +4,7 @@
 # import socketserver
 # import threading
 # import handler
+import datetime
 import json
 from flask import Flask, jsonify, render_template, request
 from flask.ext.mysqldb import MySQL
@@ -196,12 +197,23 @@ def eq_parser(dict_cursor, eq):
     # app.logger.info(sensors)
     return {"sensors": sensors}
 
+@app.route('/api/post/actuator/new_data', methods=['GET', 'POST'])
+def new_actuator_data():
+    if request.method == "POST":
+        cursor = mysql.connection.cursor()
+        dict_cursor = mysql.connection.cursor(cursorclass=DictCursor)
+        post = request.get_json()
+
+        query_ns = '''INSERT INTO `censeps_data`.`t_data` (`id`, `sensor_id`, `actuator_id`, `value`, `timestamp`) VALUES (NULL, NULL, \"''' + str(post['actuator_id']) + '''\",\"''' + str(post['data']) + '''\",\"''' + str(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')) + '''\");'''
+        cursor.execute(query_ns)
+        mysql.connection.commit()
+        return "This is a post call"
+
 @app.route('/api/post/new_sensor', methods=['GET', 'POST'])
 def new_sensor():
     if request.method == "POST":
         cursor = mysql.connection.cursor()
         dict_cursor = mysql.connection.cursor(cursorclass=DictCursor)
-        regal = ""
         mac_addrs = macs_for_post()
         post = request.get_json()
         app.logger.info(mac_addrs)
