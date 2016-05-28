@@ -89,29 +89,6 @@ onboardController.controller('OnboardController', function($scope, sendCommand) 
   }
 });
 
-appController.service('sendNewSensor',function($http){
-  return sendDataMethod;
-
-  function sendDataMethod(value){
-    var conf = {headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}};
-    return $http({
-      url: "/api/post/new_sensor",
-      method: "POST",
-      data: JSON.stringify(value),
-      config: conf
-    }).success(function(data) {
-      console.log("SUCCESS POST");
-      console.log(data);
-      return true;
-    }).error(function(data, status) {
-      console.log("FAILED POST");
-      console.log(data);
-      return false;
-    });
-  }
-
-});
-
 onboardController.directive('onboardForm', function($http, sendNewSensor){
   return {
     restrict: 'E',
