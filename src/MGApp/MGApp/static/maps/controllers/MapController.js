@@ -6,9 +6,9 @@ mapController.controller('MapController', function($scope, getDataService) {
     $scope.test = data.rooms;
     $scope.room_colors = ['blue-circle-button btn hvr-grow','green-circle-button btn hvr-grow','purple-circle-button btn hvr-grow','red-circle-button btn hvr-grow','orange-circle-button btn hvr-grow'];
     console.log(data.rooms.length);
-    var sys = arbor.ParticleSystem(1000, 400,1);
-    sys.parameters({gravity:true});
-    sys.renderer = Renderer("#viewport") ;
+    // var sys = arbor.ParticleSystem(1000, 400,1);
+    // sys.parameters({gravity:true});
+    // sys.renderer = Renderer("#viewport") ;
     // for(var i=0;i<data.rooms.length ;i++) {
     //   var data = {
     //     nodes:{
