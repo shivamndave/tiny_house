@@ -1,13 +1,30 @@
 <div ng-controller = "MapController">
   <div class = "container" >
+    <div class ="row"><h1><font color="white"> Welcome to your Tiny House! </font> </h1> </div>
     <div class = "row">
-      <div classs = "col-md-2">
+      <div classs = "col-md-4"></div>
+      <div classs = "col-md-4">
        <input class = "form-control" ng-model = "query">
       </div>
+      <div classs = "col-md-4"></div>
     </div>
     <div class = "row" >
-      <div ng-animate="{enter: 'animate-enter', leave: 'animate-leave'}"" ng-repeat="init_data in test | filter:query" >
+      <div ng-animate="{enter: 'animate-enter', leave: 'animate-leave'}" ng-repeat="init_data in test | filter:query" >
         <dir-button display='{{init_data}}'></dir-button>
       </div>
     </div>
+    <!-- <canvas id="viewport" width="800" height="600"></canvas> -->
+    <!-- <script language="javascript" type="text/javascript">
+      var sys = arbor.ParticleSystem(1000, 400,1);
+      sys.parameters({gravity:true});
+      sys.renderer = Renderer("#viewport") ;
+      var animals = sys.addNode('Animals',{'color':'red','shape':'dot','label':'Animals'});
+      var dog = sys.addNode('dog',{'color':'green','shape':'dot','label':'dog'});
+      var cat = sys.addNode('cat',{'color':'blue','shape':'dot','label':'cat'});
+      sys.addEdge(animals, dog);
+      sys.addEdge(animals, cat);
+
+
+
+    </script> -->
 </div>

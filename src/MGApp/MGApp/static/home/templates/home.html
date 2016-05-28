@@ -1,7 +1,20 @@
 <div ng-controller="HomeController">
   <div class="container">
+    <div class ="row"><h1><font color="white"> Home</font> </h1> </div>
 	   <div  class="row" ng-repeat="init_data in init_data_array track by $index">
 		<mg-display display='{{init_data}}' ind={{$index}}></mg-display>
   	   </div>
   </div>
+  <script>
+    var n = noty({
+      text: 'Welcome to your Experimental Micro Grid',
+      type: 'alert',
+      animation: {
+        open: {height: 'toggle'}, // jQuery animate function property object
+        close: {height: 'toggle'}, // jQuery animate function property object
+        easing: 'swing', // easing
+        speed: 500 // opening & closing animation speed
+      }
+    });
+  </script>
 </div>

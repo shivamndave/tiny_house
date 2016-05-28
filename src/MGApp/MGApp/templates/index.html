@@ -6,6 +6,7 @@
     <!-- Load in files
     <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>-->
 
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
     <script src="static/bower_components/jquery/dist/jquery.min.js"></script>
     <script src="static/bower_components/jquery-ui/jquery-ui.js"></script>
 
@@ -30,12 +31,15 @@
     <link rel="stylesheet" type="text/css" href="static/lib/css/BtnLib.css">
     <link rel="stylesheet" type="text/css" href="static/lib/css/navlib.css">
     <link rel="stylesheet" type="text/css" href="static/lib/css/style.css">
+    <link rel="stylesheet" href="static/lib/dist/remodal.css">
+    <link rel="stylesheet" href="static/lib/dist/remodal-default-theme.css">
 
     <script src="static/bower_components/angular/angular.min.js"></script>
 
     <script src="static/bower_components/angular-route/angular-route.js"></script>
     <script src="static/app.js"></script>
     <script src="static/controller.js"></script>
+
 
     <script src-"static/common/controllers/setupGenDisplay"></script>
     <script src-"static/common/controllers/setupSetptDisplay"></script>
@@ -44,12 +48,18 @@
     <script src="static/onboard/controllers/OnboardController.js"></script>
     <script src = "static/maps/controllers/MapController.js"></script>
     <script src = "static/sensors/controllers/SensorController.js"></script>
+    <script src = "static/sensors/controllers/jquery.knob.min.js"></script>
+    <script language="javascript" type="text/javascript" src="static/lib/arbor-v0.92/lib/arbor.js" ></script>
+    <script language="javascript" type="text/javascript" src="static/lib/arbor-v0.92/demos/_/graphics.js" ></script>
+    <script language="javascript" type="text/javascript" src="static/lib/arbor-v0.92/demos/halfviz/src/renderer.js" ></script>
+    <script type="text/javascript" src="static/lib/noty-2.3.8/js/noty/packaged/jquery.noty.packaged.min.js"></script>
+    <script src="static/lib/dist/remodal.min.js"></script>
   </head>
   <body background = "static/lib/images/Gradient.jpg">
   <div class="col-md-6 navbar navbar-inverse navbar-fixed-left">
   <a class="navbar-brand" href="#/home">Home</a>
   <ul class="nav navbar-nav">
-   <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">User <span class="caret"></span></a>
+   <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown">User <span class="caret"></span></a>
      <ul class="dropdown-menu" role="User">
       <li><a href="#">personal settings</a></li>
       <li><a href="#">privacy</a></li>
@@ -57,7 +67,7 @@
      </ul>
    </li>
    <li class="divider"></li>
-   <li><a href="#/maps">Maps</a></li>
+   <li><a href="#/maps">Directory</a></li>
    <li class="divider"></li>
    <li><a href="#/sensors">Sensors</a></li>
    <li><a href="#/onboard">Onboard</a></li>

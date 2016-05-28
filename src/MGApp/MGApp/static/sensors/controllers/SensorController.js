@@ -49,11 +49,40 @@ specSensorController.controller('SpecSensorController', function($scope, $routeP
       return $scope.tempdata.actuator_info && $scope.tempdata.sensor_info.uid[0] == 'T';
     }
   });
+  $('.dial2').knob(
+  {
+    'min':10,
+    'max':50,
+    'width':200,
+    'height':200,
+    'displayInput':true,
+    'release' : function (setpoint_value) {
+      var text = 'Are you sure you want change your set point value to '+ setpoint_value;
+      noty({
+        text: text,
+        type: 'warning',
+        buttons: [
+          {addClass: 'btn btn-primary', text: 'Yes change set point', onClick: function($noty) {
+              $scope.sendActuation(setpoint_value);
 
-  $scope.sendActuation = function() {
+              $noty.close();
+              noty({text: 'you have successfully changed your set point value', type: 'success'});
+            }
+          },
+          {addClass: 'btn btn-danger', text: 'Cancel', onClick: function($noty) {
+              $noty.close();
+              noty({text: 'Mistake avoided!', type: 'error'});
+            }
+          }
+        ]
+      });
+    }
+  });
+
+  $scope.sendActuation = function(setpoint_value) {
     var postData = {
       "actuator_id": $scope.tempdata.actuator_info.id,
-      "data": 10,
+      "data": setpoint_value,
     };
 
     console.log(postData)
