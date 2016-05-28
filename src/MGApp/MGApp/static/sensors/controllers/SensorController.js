@@ -4,31 +4,89 @@ var sensorController = angular.module('appController'),
     TOPIC_INTIALSUB = "testbed/nodeDiscover/data/#",
     SENSURL = "api/sensors";
 
-specSensorController.controller('SpecSensorController', function($scope, $routeParams ,getDataService, sendCommand) {
+appController.service('sendNewSetpoint',function($http){
+  return sendDataMethod;
+
+  function sendDataMethod(value){
+    var conf = {headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}};
+    return $http({
+      url: "/api/post/actuator/new_data",
+      method: "POST",
+      data: JSON.stringify(value),
+      config: conf
+    }).success(function(data) {
+      console.log("SUCCESS POST");
+      console.log(data);
+      return true;
+    }).error(function(data, status) {
+      console.log("FAILED POST");
+      console.log(data);
+      return false;
+    });
+  }
+});
+
+
+specSensorController.controller('SpecSensorController', function($scope, $routeParams,  $timeout, getDataService, sendCommand, sendNewSetpoint) {
   getDataService($routeParams.sensorid, SENSURL).then(function(data){
     console.log(data);
     $scope.tempdata = data.sensor;
+
+    $scope.showLight = function() {
+      return $scope.tempdata.actuator_info && $scope.tempdata.sensor_info.uid[0] == 'L';
+    }
+
+    $scope.showHumid = function() {
+      return $scope.tempdata.actuator_info && $scope.tempdata.sensor_info.uid.substring(0,2) == 'DH';
+
+    }
+
+    $scope.showTHumid = function() {
+      return $scope.tempdata.actuator_info && $scope.tempdata.sensor_info.uid.substring(0,2) == 'DT';
+    }
+
+    $scope.showTempe = function() {
+      return $scope.tempdata.actuator_info && $scope.tempdata.sensor_info.uid[0] == 'T';
+    }
   });
+
+  $scope.sendActuation = function() {
+    var postData = {
+      "actuator_id": $scope.tempdata.actuator_info.id,
+      "data": 10,
+    };
+
+    console.log(postData)
+    sendNewSetpoint(postData).then(function(value) {
+      console.log("Success - Button disabled")
+    }, function(reason) {
+      console.log("Rejected SAHN")
+    });
+  }
+
 
   $scope.sendOnMessage = function() {
     var client = sendCommand(onConnect, onMessageArrived);
     function onConnect() {
       console.log("Successful onConnect");
-      message1 = new Paho.MQTT.Message("\x41\x41\x30\x3D\x31\x0A");
-      message2 = new Paho.MQTT.Message("\x41\x41\x31\x3D\x31\x0A");
-      message3 = new Paho.MQTT.Message("\x41\x41\x32\x3D\x31\x0A");
-      message1.destinationName = TOPIC_INTIALPUB;
-      message2.destinationName = TOPIC_INTIALPUB;
-      message3.destinationName = TOPIC_INTIALPUB;
-      setTimeout(function() {
+       $timeout(function() {
+        console.log("Test");
+        message1 = new Paho.MQTT.Message("\x41\x41\x30\x3D\x31\x0A");
+        message1.destinationName = TOPIC_INTIALPUB;
         client.send(message1);
-      }, 1000);
-      setTimeout(function() {
+      }, 5000);
+       $timeout(function() {
+        console.log("Test");
+        message2 = new Paho.MQTT.Message("\x41\x41\x31\x3D\x31\x0A");
+        message2.destinationName = TOPIC_INTIALPUB;
         client.send(message2);
-      }, 1000);
-      setTimeout(function() {
+      }, 5000);
+       $timeout(function() {
+        console.log("Test");
+        message3 = new Paho.MQTT.Message("\x41\x41\x32\x3D\x31\x0A");
+        message3.destinationName = TOPIC_INTIALPUB;
         client.send(message3);
-      }, 1000);
+      }, 5000);
     }
   };
 
@@ -36,21 +94,24 @@ specSensorController.controller('SpecSensorController', function($scope, $routeP
     var client = sendCommand(onConnect, onMessageArrived);
     function onConnect() {
       console.log("Successful onConnect");
-      message1 = new Paho.MQTT.Message("\x41\x41\x30\x3D\x30\x0A");
-      message2 = new Paho.MQTT.Message("\x41\x41\x31\x3D\x30\x0A");
-      message3 = new Paho.MQTT.Message("\x41\x41\x32\x3D\x30\x0A");
-      message1.destinationName = TOPIC_INTIALPUB;
-      message2.destinationName = TOPIC_INTIALPUB;
-      message3.destinationName = TOPIC_INTIALPUB;
-      setTimeout(function() {
+       $timeout(function() {
+        console.log("Test");
+        message1 = new Paho.MQTT.Message("\x41\x41\x30\x3D\x30\x0A");
+        message1.destinationName = TOPIC_INTIALPUB;
         client.send(message1);
-      }, 1000);
-      setTimeout(function() {
+      }, 5000);
+       $timeout(function() {
+        console.log("Test");
+        message2 = new Paho.MQTT.Message("\x41\x41\x31\x3D\x30\x0A");
+        message2.destinationName = TOPIC_INTIALPUB;
         client.send(message2);
-      }, 1000);
-      setTimeout(function() {
+      }, 5000);
+       $timeout(function() {
+        console.log("Test");
+        message3 = new Paho.MQTT.Message("\x41\x41\x32\x3D\x30\x0A");
+        message3.destinationName = TOPIC_INTIALPUB;
         client.send(message3);
-      }, 1000);
+      }, 5000);
     }
   };
 
@@ -81,7 +142,6 @@ specSensorController.directive('kgDisplay', function($interval, getDataService, 
     function link(scope, element, attrs) {
         scope.$watch(scope.display, function(data) {
             if (data){
-            // console.log(scope);
             scope.sensorinfo_name = data.sensor_info.name;
             scope.sensorinfo_info = data.sensor_info.info;
             scope.equipment_name = data.equipment.name;
