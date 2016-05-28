@@ -1,43 +1,12 @@
 <div ng-controller = "SpecSensorController">
-<script>
-$(function() {
-  $('#toggle-two').bootstrapToggle({
-    on: 'Enabled',
-    off: 'Disabled'
-  });
-})
-$('.dial1').knob(
-{
-  'min':10,
-  'max':50,
-  'width':200,
-  'height':200,
-  'displayInput':true,
-  'release':function(v) {alert(v);}
-});
-$('.dial2').knob(
-{
-  'min':10,
-  'max':50,
-  'width':200,
-  'height':200,
-  'displayInput':true,
-  'fgColor':"#FF0000",
-  'release':function(v) {alert(v);}
-});
-</script>
 <div class="container">
   <div class = "row">
     <kg-display display='tempdata' ind = '0'></kg-display>
   </div>
 </div>
 <div class="row">
-<div class= "col-md-2">
-<input type="checkbox" data-toggle="toggle" data-on="Enabled" data-off="Disabled"></input>
-<input type="checkbox" id="toggle-two"></input>
-</div>
-<div class = "col-md-6"> <input type="text" value="10" class="dial1"></input></div>
+<div class = "col-md-6"> <input type="text" value="10" class="dial2"></input></div>
+<div class = "col-md-6"> <input type="text" value="20" class="dial2"></input></div>
 <div class = "col-md-6">
-<input type="text" value="10" class="dial2"></input>
 </div>
 </div>

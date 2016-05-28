@@ -1,16 +1,50 @@
 var sensorController = angular.module('appController'),
     specSensorController = angular.module('appController'),
-  SENSURL = "api/sensors" ;
+    SENSURL = "api/sensors" ;
 specSensorController.controller('SpecSensorController', function($scope, $routeParams ,getDataService) {
   getDataService($routeParams.sensorid,SENSURL).then(function(data){
   console.log(data);
   $scope.tempdata = data.sensor;
+
   // $scope.id = tempdata.sensor_info.id;
   // $scope.info = tempdata.sensor_info.info;
   // $scope.longunit = tempdata.sensor_info.longunit;
   // $scope.name = tempdata.sensor_info.name;
   // $scope.status = tempdata.sensor_info.status;
   // $scope.unit = tempdata.sensor_info.unit;
+  });
+  $('.dial2').knob(
+  {
+    'min':10,
+    'max':50,
+    'width':200,
+    'height':200,
+    'displayInput':true,
+    'release' : function (setponint_value) {
+      console.log(setponint_value);
+      console.log(setponint_value);
+      var text = 'Are you sure you want change your set point value to '+setponint_value;
+      noty({
+        text: text,
+        type: 'warning',
+        buttons: [
+          {addClass: 'btn btn-primary', text: 'Yes change set point', onClick: function($noty) {
+
+              // this = button element
+              // $noty = $noty element
+
+              $noty.close();
+              noty({text: 'you have successfully changed your set point value', type: 'success'});
+            }
+          },
+          {addClass: 'btn btn-danger', text: 'Cancel', onClick: function($noty) {
+              $noty.close();
+              noty({text: 'Mistake avoided!', type: 'error'});
+            }
+          }
+        ]
+      });
+    }
   });
 });
 
@@ -20,6 +54,7 @@ sensorController.controller('SensorController', function($scope,getDataService) 
   $scope.SenInfo = data.all;
   });
 });
+
 
 specSensorController.directive('kgDisplay', function($interval, getDataService) {
     return {

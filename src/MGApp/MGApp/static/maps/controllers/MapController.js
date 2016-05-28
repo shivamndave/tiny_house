@@ -9,18 +9,18 @@ mapController.controller('MapController', function($scope, getDataService) {
     var sys = arbor.ParticleSystem(1000, 400,1);
     sys.parameters({gravity:true});
     sys.renderer = Renderer("#viewport") ;
-    for(var i=0;i<data.rooms.length ;i++) {
-      var data = {
-        nodes:{
-          animals:{'color':'red','shape':'dot','label':'Animals'},
-          dog:{'color':'green','shape':'dot','label':'dog'},
-          cat:{'color':'blue','shape':'dot','label':'cat'}
-        },
-        edges:{
-          animals:{ dog:{}, cat:{} }}
-        };
-
-    }
+    // for(var i=0;i<data.rooms.length ;i++) {
+    //   var data = {
+    //     nodes:{
+    //       animals:{'color':'red','shape':'dot','label':'Animals'},
+    //       dog:{'color':'green','shape':'dot','label':'dog'},
+    //       cat:{'color':'blue','shape':'dot','label':'cat'}
+    //     },
+    //     edges:{
+    //       animals:{ dog:{}, cat:{} }}
+    //     };
+    //
+    // }
 
   });
 });
