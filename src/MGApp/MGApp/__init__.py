@@ -232,7 +232,7 @@ def new_sensor():
         cursor.execute(query_ns)
         mysql.connection.commit()
 
-        dict_cursor.execute('''SELECT * FROM `t_sensor_info` WHERE uid = \"''' + str(post['uid']) + '''\"''')
+        dict_cursor.execute('''SELECT * FROM `t_sensor_info` WHERE uid = \"''' + str(post['uid']) + '''\" AND equipment_id = \"''' + str(eqid['id']) + '''\"''')
         seid = dict_cursor.fetchone()
         app.logger.info(seid['id'])
 
