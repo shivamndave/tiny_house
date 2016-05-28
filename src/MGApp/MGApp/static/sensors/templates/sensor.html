@@ -4,8 +4,13 @@
     <kg-display display='tempdata' ind = '0'></kg-display>
   </div>
 </div>
-<div class="row" ng-show="tempdata.actuator_info">
+<div class="row" ng-show="showLight()">
   <div type="button" class="btn btn-primary" ng-click="sendOnMessage()">Send On</div>
   <div type="button" class="btn btn-primary" ng-click="sendOffMessage()">Send Off</div>
 </div>
+<div class="row" ng-show="showHumid()">
+  <div type="button" class="btn btn-primary" ng-click="sendActuation()">PUSH A SET POINT</div>
+</div>
+<div class="row" ng-show="showTHumid()">showTHumid</div>
+<div class="row" ng-show="showTemp()">showTemp</div>
 </div>
