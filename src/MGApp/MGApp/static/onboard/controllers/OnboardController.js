@@ -41,7 +41,6 @@ onboardController.controller('OnboardController', function($scope, sendCommand) 
   }
 
   function formPush(parsedSensor) {
-    // var sensors = [];
     for(var i = 0; i < parsedSensor.light_sensors; i++) {
       var iStr = i.toString();
       $scope.sensor_data_array.push({"name": "Light Sensor " + iStr, "uid": "L" + iStr, "mac_address": parsedSensor.mac_address, "unit": "Lx", "longunit": "Lux"});
@@ -58,9 +57,6 @@ onboardController.controller('OnboardController', function($scope, sendCommand) 
       var iStr = i.toString();
       $scope.sensor_data_array.push({"name": "Humidity Temp Sensor " + iStr, "uid": "DT" + iStr, "mac_address": parsedSensor.mac_address, "unit": "RH", "longunit": "Rel. Humidity"});
     }
-
-    // return sensors
-
   }
 
   function parseSensorAdded(sensorStr, mac_address) {
