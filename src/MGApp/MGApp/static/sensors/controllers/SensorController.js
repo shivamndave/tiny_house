@@ -68,7 +68,7 @@ specSensorController.controller('SpecSensorController', function($scope, $routeP
   $('.dial2').knob(
   {
     'min':10,
-    'max':50,
+    'max':500,
     'width':200,
     'height':200,
     'displayInput':true,
