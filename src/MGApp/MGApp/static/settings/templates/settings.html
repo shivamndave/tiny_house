@@ -1,0 +1,36 @@
+<div ng-controller="SettingsController" >
+    <div class="container">
+      <div class="btn-group">
+        <label class="btn btn-primary active">
+          <input ng-change='newSettingView(value)' ng-model="value" value="rooms" type="radio" name="options" id="option1" autocomplete="off" checked> Rooms
+        </label>
+        <label class="btn btn-primary">
+          <input ng-change='newSettingView(value)' ng-model="value" value="equipment" type="radio" name="options" id="option2" autocomplete="off"> Equipment
+        </label>
+        <label class="btn btn-primary">
+          <input ng-change='newSettingView(value)' ng-model="value" value="sensors" type="radio" name="options" id="option3" autocomplete="off"> Sensors
+        </label>
+        <label class="btn btn-primary">
+          <input ng-change='newSettingView(value)' ng-model="value" value="actuators" type="radio" name="options" id="option1" autocomplete="off"> Actuators
+        </label>
+      </div>
+    </div>
+    <div class="container">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+                <th><font color="white">ID</font></th>
+                <th><font color="white">Name</font></th>
+                <th><font color="white">Info</font></th>
+            </tr>
+          </thead>
+          <tbody >
+              <tr ng-repeat = "data_obj in data_value track by $index" >
+                <td><font color="black">{{data_obj.id || data_obj.sensor_info.id || data_obj.actuator_info.id}}</td>
+                <td><font color="black"><a href="#/settings/{{value}}/{{data_obj.id || data_obj.sensor_info.id || data_obj.actuator_info.id}}">{{data_obj.name || data_obj.sensor_info.name || data_obj.actuator_info.name}}</a></td>
+                <td><font color="black">{{data_obj.info || data_obj.sensor_info.info || data_obj.actuator_info.info}}</td>
+              </tr>
+          </tbody>
+        </table>
+    </div>
+</div>

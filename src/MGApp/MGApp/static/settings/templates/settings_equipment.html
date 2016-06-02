@@ -1,0 +1,29 @@
+<div class="container">
+    <form name="equipment_form" class="white-txt" ng-submit="equipment_edit(fieldeid, fieldename, fieldeinfo, fieldelocation, fieldmacaddress, fieldroomselected)">
+        <div class="form-group">
+            <label for="input" class="col-sm-2 form-control-label">ID</label>
+            <div class="col-sm-10">
+                <input ng-disabled="true" type="text" class="form-control" id="input" ng-model="fieldeid">
+            </div>
+            <label for="input" class="col-sm-2 form-control-label">Name</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="input" maxlength="16" ng-model="fieldename">
+            </div>
+            <label for="input" class="col-sm-2 form-control-label">Type</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="input" maxlength="1024" ng-model="fieldeinfo">
+            </div>
+            <label for="input" class="col-sm-2 form-control-label">Sensor Info</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="input" maxlength="16" ng-model="fieldelocation">
+            </div>
+            <label for="input" class="col-sm-2 form-control-label">Mac Address</label>
+            <div class="col-sm-10">
+                <input ng-disabled="true" type="text" class="form-control" id="input" ng-model="fieldmacaddress">
+            </div>
+            <label for="input" class="col-sm-2 form-control-label">Room</label>
+            <select ng-options="room.id as room.name for room in fieldrooms" ng-model="fieldroomselected"></select>
+            <input ng-disabled="submitButtonTog" type="submit" value="Submit" />
+        </div>
+    </div>
+</div>
