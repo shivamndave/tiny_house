@@ -166,6 +166,19 @@ def equipment():
     dict_cursor.close()
     return jsonify(equipment=eqs)
 
+@app.route("/api/equipment/<int:e_id>", methods=['GET'])
+def equipment_spec(e_id):
+    cursor = mysql.connection.cursor()
+    dict_cursor = mysql.connection.cursor(cursorclass=DictCursor)
+    dict_cursor.execute('''SELECT * FROM `t_equipment` WHERE id=''' + str(e_id))
+
+    eq = dict_cursor.fetchone()
+    if eq:
+        eq.update(room_parser(dict_cursor, eq))
+
+
+    dict_cursor.close()
+    return jsonify(equipment=eq)
 
 @app.route("/api/equipment/only/mac_address")
 def equipment_only_mac_address():
