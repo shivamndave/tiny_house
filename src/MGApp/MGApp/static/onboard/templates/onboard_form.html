@@ -1,5 +1,5 @@
 <div>
-    <form name="myform" class="white-txt" ng-submit="add(fieldsname, fieldunit, fieldlongunit, fieldsinfo, fieldmac, fielduid)">
+    <form name="myform" class="white-txt" ng-submit="add(fieldsname, fieldunit, fieldlongunit, fieldsinfo, fieldmac, fielduid, fieldactua)">
         <div class="form-group">
             <label for="input" class="col-sm-2 form-control-label">Name</label>
             <div class="col-sm-10">
@@ -25,6 +25,14 @@
             <div class="col-sm-4">
                 <input ng-disabled="true" type="text" class="form-control" id="input" ng-model="fielduid">
             </div>
+            <div class="btn-group">
+              <label class="btn btn-primary active">
+                <input ng-model="fieldactua" ng-value="false" type="radio" checked> Is not actuator
+              </label>
+              <label class="btn btn-primary">
+                <input ng-model="fieldactua" ng-value="true" type="radio"> Is Actuator
+              </label>
+          </div>
             <input ng-disabled="submitButtonTog" type="submit" value="Submit" />
         </div>
     </form>
