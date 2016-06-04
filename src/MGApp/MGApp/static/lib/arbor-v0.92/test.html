@@ -1,0 +1,43 @@
+<html>
+    <head>
+        <script language="javascript" type="text/javascript"  src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+        <script language="javascript" type="text/javascript" src="./lib/arbor.js" ></script>
+        <script language="javascript" type="text/javascript" src="./demos/_/graphics.js" ></script>
+        <script language="javascript" type="text/javascript" src="./demos/halfviz/src/renderer.js" ></script>
+    </head>
+    <body>
+      <h1>This is a test</h1>
+      <canvas id="viewport" width="800" height="600"></canvas>
+      <script language="javascript" type="text/javascript">
+        // var sys = arbor.ParticleSystem(1000, 400,1);
+        // sys.parameters({gravity:true});
+        // sys.renderer = Renderer("#viewport") ;
+        // var animals = sys.addNode('Animals',{'color':'red','shape':'dot','label':'Animals'});
+        // var dog = sys.addNode('dog',{'color':'green','shape':'dot','label':'dog'});
+        // var cat = sys.addNode('cat',{'color':'blue','shape':'dot','label':'cat'});
+        // sys.addEdge(animals, dog);
+        // sys.addEdge(animals, cat);
+
+        var sys = arbor.ParticleSystem(1000, 400,1);
+        sys.parameters({gravity:true});
+        sys.renderer = Renderer("#viewport") ;
+        var data = {
+          nodes:{
+            animals:{'color':'red','shape':'dot','label':'Animals'},
+            dog:{'color':'green','shape':'dot','label':'dog'},
+            cat:{'color':'blue','shape':'dot','label':'cat'},
+            mouse1:{'color':'blue','shape':'square','label':'Carol'},
+            mouse2:{'color':'red','shape':'triangle','label':'mouse'},
+            mouse3:{'color':'red','shape':'dot','label':'mouse'},
+            mouse4:{'color':'red','shape':'dot','label':'mouse'}
+          },
+          edges:{
+            animals:{ dog:{}, cat:{},mouse1:{},mouse2:{},mouse3:{},mouse4:{}}
+          }
+        };
+        sys.graft(data);
+
+      </script>
+
+    </body>
+</html>

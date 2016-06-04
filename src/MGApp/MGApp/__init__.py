@@ -4,6 +4,7 @@
 # import socketserver
 # import threading
 # import handler
+import datetime
 import json
 from flask import Flask, jsonify, render_template, request
 from flask.ext.mysqldb import MySQL
@@ -108,6 +109,91 @@ def sensor_parser(s_item, dict_cursor):
     _dict={"equipment": eq, "sensor_info": s_item, "actuator_info": ai, "values": values_dict}
     return _dict
 
+@app.route("/api/actuators")
+def all_actuators():
+    json = []
+
+    cursor = mysql.connection.cursor()
+    dict_cursor = mysql.connection.cursor(cursorclass=DictCursor)
+
+    dict_cursor.execute('''SELECT * FROM `t_actuator_info`''')
+    ai = dict_cursor.fetchall()
+
+    for at_item in ai:
+        json.append(actuator_parser(at_item, dict_cursor))
+
+    dict_cursor.close()
+    return jsonify(all=json)
+
+@app.route("/api/actuators/<int:a_id>", methods=['GET'])
+def actuator_spec(a_id):
+    #app.logger.info(s_id)
+    json = []
+
+    cursor = mysql.connection.cursor()
+    dict_cursor = mysql.connection.cursor(cursorclass=DictCursor)
+
+    dict_cursor.execute('''SELECT * FROM `t_actuator_info` WHERE id=''' + str(a_id))
+    a_item = dict_cursor.fetchone()
+    if a_item:
+        actuator_object = actuator_parser(a_item, dict_cursor)
+    else:
+        actuator_object = None
+
+    return jsonify(actuator=actuator_object)
+
+def actuator_parser(a_item, dict_cursor):
+    equipment_id = a_item['equipment_id']
+    sensor_id = a_item['sensor_id']
+    actuator_id = a_item['id']
+
+    query_eq = '''SELECT * FROM `t_equipment` WHERE id=''' + str(equipment_id)
+    dict_cursor.execute(query_eq)
+    eq = dict_cursor.fetchone()
+    # app.logger.info(query_eq)
+    # app.logger.info(eq)
+
+    query_si = '''SELECT * FROM `t_sensor_info` WHERE id=''' + str(sensor_id)
+    dict_cursor.execute(query_si)
+    si = dict_cursor.fetchone()
+    # app.logger.info(query_ai)
+    # app.logger.info(ai)
+
+
+    values_si = []
+    if si:
+        query_data_si = '''SELECT * FROM `t_data` WHERE sensor_id=''' + str(sensor_id) + ''' ORDER BY timestamp ASC'''
+        dict_cursor.execute(query_data_si)
+
+        for val in dict_cursor.fetchall():
+            values_si.append([int(val['timestamp'].strftime("%s"))*1000, val['value']])
+
+    values_ai = []
+    query_data_ai = '''SELECT * FROM `t_data` WHERE actuator_id=''' + str(actuator_id) + ''' ORDER BY timestamp ASC'''
+    dict_cursor.execute(query_data_ai)
+    # app.logger.info(query_data_si)
+
+    for val in dict_cursor.fetchall():
+        values_ai.append([int(val['timestamp'].strftime("%s"))*1000, val['value']])
+
+    # app.logger.info(values_si)
+    values_dict = {"sensor": values_si, "actuator": values_ai}
+
+    query_data_status = '''SELECT * FROM `t_data` WHERE sensor_id=''' + str(sensor_id) + ''' ORDER BY timestamp DESC LIMIT 0, 1'''
+    dict_cursor.execute(query_data_status)
+    status = dict_cursor.fetchone()
+    app.logger.info(status)
+    status_dict = {}
+    if status is None or status['value'] == 9999:
+        status_dict = {"status": 0}
+    else:
+        status_dict = {"status": 1}
+
+        si.update(status_dict)
+
+    _dict={"equipment": eq, "sensor_info": si, "actuator_info": a_item, "values": values_dict}
+    return _dict
+
 @app.route("/api/rooms")
 def rooms():
     cursor = mysql.connection.cursor()
@@ -165,6 +251,19 @@ def equipment():
     dict_cursor.close()
     return jsonify(equipment=eqs)
 
+@app.route("/api/equipment/<int:e_id>", methods=['GET'])
+def equipment_spec(e_id):
+    cursor = mysql.connection.cursor()
+    dict_cursor = mysql.connection.cursor(cursorclass=DictCursor)
+    dict_cursor.execute('''SELECT * FROM `t_equipment` WHERE id=''' + str(e_id))
+
+    eq = dict_cursor.fetchone()
+    if eq:
+        eq.update(room_parser(dict_cursor, eq))
+
+
+    dict_cursor.close()
+    return jsonify(equipment=eq)
 
 @app.route("/api/equipment/only/mac_address")
 def equipment_only_mac_address():
@@ -196,12 +295,23 @@ def eq_parser(dict_cursor, eq):
     # app.logger.info(sensors)
     return {"sensors": sensors}
 
+@app.route('/api/post/actuator/new_data', methods=['GET', 'POST'])
+def new_actuator_data():
+    if request.method == "POST":
+        cursor = mysql.connection.cursor()
+        dict_cursor = mysql.connection.cursor(cursorclass=DictCursor)
+        post = request.get_json()
+
+        query_ns = '''INSERT INTO `censeps_data`.`t_data` (`id`, `sensor_id`, `actuator_id`, `value`, `timestamp`) VALUES (NULL, NULL, \"''' + str(post['actuator_id']) + '''\",\"''' + str(post['data']) + '''\",\"''' + str(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')) + '''\");'''
+        cursor.execute(query_ns)
+        mysql.connection.commit()
+        return "This is a post call"
+
 @app.route('/api/post/new_sensor', methods=['GET', 'POST'])
 def new_sensor():
     if request.method == "POST":
         cursor = mysql.connection.cursor()
         dict_cursor = mysql.connection.cursor(cursorclass=DictCursor)
-        regal = ""
         mac_addrs = macs_for_post()
         post = request.get_json()
         app.logger.info(mac_addrs)
@@ -215,10 +325,19 @@ def new_sensor():
         dict_cursor.execute('''SELECT * FROM `t_equipment` WHERE mac_address = \"''' + str(post['mac_address']) + '''\"''')
         eqid = dict_cursor.fetchone()
         app.logger.info(eqid['id'])
-        
+
         query_ns = ''' INSERT INTO `t_sensor_info` (`id`, `equipment_id`, `name`, `unit`, `longunit`, `info`, `uid`) VALUES (NULL, \"''' + str(eqid['id']) + '''\", \"''' + str(post['sensor_name']) + '''\", \"''' + str(post['unit']) + '''\", \"''' + str(post['longunit']) + '''\" , \"''' + str(post['sensor_info']) + '''\", \"''' + str(post['uid']) + '''\");'''
         cursor.execute(query_ns)
         mysql.connection.commit()
+
+        dict_cursor.execute('''SELECT * FROM `t_sensor_info` WHERE uid = \"''' + str(post['uid']) + '''\" AND equipment_id = \"''' + str(eqid['id']) + '''\"''')
+        seid = dict_cursor.fetchone()
+        app.logger.info(seid['id'])
+
+        if post['is_actuator']:
+            query_ns = ''' INSERT INTO `t_actuator_info` (`id`, `equipment_id`, `sensor_id`, `name`, `info`) VALUES (NULL, \"''' + str(eqid['id']) + '''\", \"''' + str(seid['id']) + '''\", \"''' + str(post['actuator_name']) + '''\" , \"''' + str(post['actuator_info']) + '''\");'''
+            cursor.execute(query_ns)
+            mysql.connection.commit()
 
         dict_cursor.close()
         cursor.close()
@@ -226,6 +345,63 @@ def new_sensor():
         # return "query_ns"
         return jsonify(mac_address_equipment=eqid)
     return "This is a post call"
+
+@app.route("/api/rooms/update", methods=['GET', 'POST'])
+def room_update():
+    if request.method == "POST":
+        cursor = mysql.connection.cursor()
+        post = request.get_json()
+        cursor.execute ("""
+            UPDATE t_room
+            SET name=%s, type=%s, info=%s
+            WHERE id=%s
+        """, (post['name'], post['type'], post['info'], post['id']))
+        mysql.connection.commit()
+        return "Success"
+    return "This is a post call"
+
+@app.route("/api/equipment/update", methods=['GET', 'POST'])
+def equipment_update():
+    if request.method == "POST":
+        cursor = mysql.connection.cursor()
+        post = request.get_json()
+        cursor.execute ("""
+            UPDATE t_equipment
+            SET room_id=%s, name=%s, location=%s, info=%s
+            WHERE id=%s
+        """, (post['room_id'], post['name'], post['location'], post['info'], post['id']))
+        mysql.connection.commit()
+        return "Success"
+    return "This is a post call"
+
+@app.route("/api/sensors/update", methods=['GET', 'POST'])
+def sensors_update():
+    if request.method == "POST":
+        cursor = mysql.connection.cursor()
+        post = request.get_json()
+        cursor.execute ("""
+            UPDATE t_sensor_info
+            SET name=%s, unit=%s, longunit=%s, info=%s
+            WHERE id=%s
+        """, (post['name'], post['unit'], post['longunit'], post['info'], post['id']))
+        mysql.connection.commit()
+        return "Success"
+    return "This is a post call"
+
+@app.route("/api/actuators/update", methods=['GET', 'POST'])
+def actuators_update():
+    if request.method == "POST":
+        cursor = mysql.connection.cursor()
+        post = request.get_json()
+        cursor.execute ("""
+            UPDATE t_actuator_info
+            SET name=%s, info=%s
+            WHERE id=%s
+        """, (post['name'], post['info'], post['id']))
+        mysql.connection.commit()
+        return "Success"
+    return "This is a post call"
+
 
 if __name__ == "__main__":
     app.run("0.0.0.0", debug=True)
