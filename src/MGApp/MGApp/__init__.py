@@ -155,7 +155,7 @@ def actuator_parser(a_item, dict_cursor):
 
     query_si = '''SELECT * FROM `t_sensor_info` WHERE id=''' + str(sensor_id)
     dict_cursor.execute(query_si)
-    si = dict_cursor.fetchall()
+    si = dict_cursor.fetchone()
     # app.logger.info(query_ai)
     # app.logger.info(ai)
 
