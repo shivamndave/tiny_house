@@ -347,5 +347,62 @@ def new_sensor():
         return jsonify(mac_address_equipment=eqid)
     return "This is a post call"
 
+@app.route("/api/rooms/update", methods=['GET', 'POST'])
+def room_update():
+    if request.method == "POST":
+        cursor = mysql.connection.cursor()
+        post = request.get_json()
+        cursor.execute ("""
+            UPDATE t_room
+            SET name=%s, type=%s, info=%s
+            WHERE id=%s
+        """, (post['name'], post['type'], post['info'], post['id']))
+        mysql.connection.commit()
+        return "Success"
+    return "This is a post call"
+
+@app.route("/api/equipment/update", methods=['GET', 'POST'])
+def equipment_update():
+    if request.method == "POST":
+        cursor = mysql.connection.cursor()
+        post = request.get_json()
+        cursor.execute ("""
+            UPDATE t_equipment
+            SET room_id=%s, name=%s, location=%s, info=%s
+            WHERE id=%s
+        """, (post['room_id'], post['name'], post['location'], post['info'], post['id']))
+        mysql.connection.commit()
+        return "Success"
+    return "This is a post call"
+
+@app.route("/api/sensors/update", methods=['GET', 'POST'])
+def sensors_update():
+    if request.method == "POST":
+        cursor = mysql.connection.cursor()
+        post = request.get_json()
+        cursor.execute ("""
+            UPDATE t_sensor_info
+            SET name=%s, unit=%s, longunit=%s, info=%s
+            WHERE id=%s
+        """, (post['name'], post['unit'], post['longunit'], post['info'], post['id']))
+        mysql.connection.commit()
+        return "Success"
+    return "This is a post call"
+
+@app.route("/api/actuators/update", methods=['GET', 'POST'])
+def actuators_update():
+    if request.method == "POST":
+        cursor = mysql.connection.cursor()
+        post = request.get_json()
+        cursor.execute ("""
+            UPDATE t_actuator_info
+            SET name=%s, info=%s
+            WHERE id=%s
+        """, (post['name'], post['info'], post['id']))
+        mysql.connection.commit()
+        return "Success"
+    return "This is a post call"
+
+
 if __name__ == "__main__":
     app.run("0.0.0.0", debug=True)
