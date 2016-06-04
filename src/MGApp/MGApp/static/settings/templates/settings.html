@@ -26,9 +26,9 @@
           </thead>
           <tbody >
               <tr ng-repeat = "data_obj in data_value track by $index" >
-                <td><font color="black">{{data_obj.id || data_obj.sensor_info.id || data_obj.actuator_info.id}}</td>
-                <td><font color="black"><a href="#/settings/{{value}}/{{data_obj.id || data_obj.sensor_info.id || data_obj.actuator_info.id}}">{{data_obj.name || data_obj.sensor_info.name || data_obj.actuator_info.name}}</a></td>
-                <td><font color="black">{{data_obj.info || data_obj.sensor_info.info || data_obj.actuator_info.info}}</td>
+                <td><font color="black">{{idGet(value, data_obj).id}}</td>
+                <td><font color="black"><a href="#/settings/{{value}}/{{idGet(value, data_obj).id}}">{{idGet(value, data_obj).name}}</a></td>
+                <td><font color="black">{{idGet(value, data_obj).info}}</td>
               </tr>
           </tbody>
         </table>
