@@ -1,5 +1,5 @@
 <div class="container">
-    <form name="actuator_form" class="white-txt" ng-submit="actuator_edit(fieldaid, fieldaname, fieldainfo, fieldequipmentselected, fieldsensorselected)">
+    <form name="actuator_form" class="white-txt" ng-submit="actuator_edit(fieldaid, fieldaname, fieldainfo, fieldequipment, fieldsensor)">
         <div class="form-group">
             <label for="input" class="col-sm-2 form-control-label">ID</label>
             <div class="col-sm-10">
@@ -9,15 +9,18 @@
             <div class="col-sm-10">
                 <input type="text" class="form-control" id="input" maxlength="16" ng-model="fieldaname">
             </div>
-            <label for="input" class="col-sm-2 form-control-label">Sensor Info</label>
+            <label for="input" class="col-sm-2 form-control-label">Actuator Info</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" id="input" maxlength="1024" ng-model="fieldainfo">
             </div>
             <label for="input" class="col-sm-2 form-control-label">Equipment</label>
-            <select ng-options="equipment.id as equipment.name for equipment in fieldequipment" ng-model="fieldequipmentselected"></select>
-
+            <div class="col-sm-10">
+                <input ng-disabled="true" type="text" class="form-control" id="input" ng-model="fieldequipment">
+            </div>
             <label for="input" class="col-sm-2 form-control-label">Sensor</label>
-            <select ng-options="sensor.sensor_info.id as sensor.sensor_info.name for sensor in fieldsensors" ng-model="fieldsensorselected"></select>
+            <div class="col-sm-10">
+                <input ng-disabled="true" type="text" class="form-control" id="input" ng-model="fieldsensor">
+            </div>
 
             <input ng-disabled="submitButtonTog" type="submit" value="Submit" />
         </div>
