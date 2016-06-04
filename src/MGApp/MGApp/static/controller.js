@@ -91,6 +91,28 @@ appController.service('urlParser', function() {
     }
   });
 
+  appController.service('postToDB', function($http){
+    return postToDBMethod;
+
+    function postToDBMethod(urlValue, value){
+      var conf = {headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}};
+      return $http({
+        url: urlValue,
+        method: "POST",
+        data: JSON.stringify(value),
+        config: conf
+      }).success(function(data) {
+        console.log("SUCCESS POST");
+        console.log(data);
+        return true;
+      }).error(function(data, status) {
+        console.log("FAILED POST");
+        console.log(data);
+        return false;
+      });
+    }
+  });
+
 appController.service('createSensorChart', function(){
   return createSensorChartMethod;
 
