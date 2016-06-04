@@ -1,5 +1,5 @@
 <div class="container">
-    <form name="sensor_form" class="white-txt" ng-submit="sensor_edit(fieldsid, fieldsuid, fieldsname, fieldsinfo, fieldsunit, fieldslongunit, fieldequipmentselected)">
+    <form name="sensor_form" class="white-txt" ng-submit="sensor_edit(fieldsid, fieldsuid, fieldsname, fieldsinfo, fieldsunit, fieldslongunit, fieldequipment)">
         <div class="form-group">
             <label for="input" class="col-sm-2 form-control-label">ID</label>
             <div class="col-sm-10">
@@ -26,7 +26,9 @@
                 <input type="text" class="form-control" id="input" maxlength="16" ng-model="fieldslongunit">
             </div>
             <label for="input" class="col-sm-2 form-control-label">Equipment</label>
-            <select ng-options="equipment.id as equipment.name for equipment in fieldequipment" ng-model="fieldequipmentselected"></select>
+            <div class="col-sm-10">
+                <input ng-disabled="true" type="text" class="form-control" id="input" ng-model="fieldequipment">
+            </div>
             <input ng-disabled="submitButtonTog" type="submit" value="Submit" />
         </div>
     </div>
