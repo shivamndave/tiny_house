@@ -189,8 +189,7 @@ def actuator_parser(a_item, dict_cursor):
     else:
         status_dict = {"status": 1}
 
-    for si_item in si:
-        si_item.update(status_dict)
+        si.update(status_dict)
 
     _dict={"equipment": eq, "sensor_info": si, "actuator_info": a_item, "values": values_dict}
     return _dict
