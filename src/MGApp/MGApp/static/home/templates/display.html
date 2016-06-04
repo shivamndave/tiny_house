@@ -1,34 +1,35 @@
 <span>
 	<div class='row row-nrm white-txt'>
 	<div class='rx-ish'>
-		<div class="col-md-6 chart" id={{ind}} style="margin: 0 auto;">
+		<div class="col-xs-6 col-md-6" id={{ind}} style="margin: 0 auto;">
         </div>
 	  <h2 ng-hide="true" id="statusID-msg"> was under maintainance. Charts cannot be displayed </h2>
 	</div>
 
-	<div class='col-md-6'>
-	  	<div class='col-md-4 back-sensor'>
+	<div class=' col-xs-6 col-md-4 col-md-6'>
+		<div class= "row">
+	  	<div class='col-xs-6 col-md- back-sensor'>
 	  		<p>Sensor Name: {{sensorinfo_name}}</p>
 	  		<p>Sensor Info: {{sensorinfo_info}}</p>
 	  	</div>
-	  	<div class='col-md-6 back-equip'>
+	  	<div class='col-xs-6  col-md-4 col-md-6 back-equip'>
 	  		<p>Equipment Name: {{equipment_name}}</p>
 			<p>Location: {{equipment_location}}</p>
 			<p>Eq Info: {{equipment_info}}</p>
 		</div>
-		<div class='col-md-4 back-actua'>
+		<div class='col-xs-6  col-md-4col-md-4 back-actua'>
 		    {{actuatorDiv}}
 		</div>
-
-	<div class='col-md-12 row row-nrm back-set'>
+	</div>
+	<div class='col-xs-6 col-md-4 col-md-12 row row-nrm back-set'>
 	  <p id='setpt-statusID'></p>
 	</div>
 
-	  <div class='col-md-12 row row-nrm back-ts'>
+	  <div class='col-xs-6 col-md-12 row row-nrm back-ts'>
 	    <div class='col-md-6'>
 	      <p id='latestdt-statusID'>{{latest_time}}</p>
 		</div>
-			<div class='col-md-6'>
+			<div class='col-xs-6 col-md-6'>
 			  <p id='lateststat-statusID'>{{latest_status}}</p>
 			</div>
 	  </div>

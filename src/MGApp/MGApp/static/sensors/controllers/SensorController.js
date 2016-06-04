@@ -27,6 +27,8 @@ specSensorController.controller('SpecSensorController', function($scope, $routeP
       noty({
         text: text,
         type: 'warning',
+        dismissQueue: true,
+        maxVisible:1,
         buttons: [
           {addClass: 'btn btn-primary', text: 'Yes change set point', onClick: function($noty) {
 
@@ -34,12 +36,12 @@ specSensorController.controller('SpecSensorController', function($scope, $routeP
               // $noty = $noty element
 
               $noty.close();
-              noty({text: 'you have successfully changed your set point value', type: 'success'});
+              noty({text: 'you have successfully changed your set point value',timeout: true,timeout:500, type: 'success'});
             }
           },
           {addClass: 'btn btn-danger', text: 'Cancel', onClick: function($noty) {
               $noty.close();
-              noty({text: 'Mistake avoided!', type: 'error'});
+              noty({text: 'Mistake avoided!',timeout: true,timeout:500, type: 'error'});
             }
           }
         ]

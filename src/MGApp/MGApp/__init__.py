@@ -121,6 +121,20 @@ def rooms():
 
     dict_cursor.close()
     return jsonify(rooms=rms)
+# 
+# @app.route("/api/integ/<int:t_1>/<int:t_2>")
+# def integ(t_1,t_2):
+#     cursor = mysql.connection.cursor()
+#     dict_cursor = mysql.connection.cursor(cursorclass=DictCursor)
+#
+#     dict_cursor.execute('''SELECT * FROM `t_room`''')
+#     rms = dict_cursor.fetchall()
+#
+#     for room in rms:
+#         room.update(room_parser(dict_cursor, room))
+#
+#     dict_cursor.close()
+#     return jsonify(rooms=rms)
 
 @app.route("/api/rooms/<int:r_id>", methods=['GET'])
 def room(r_id):
@@ -215,7 +229,7 @@ def new_sensor():
         dict_cursor.execute('''SELECT * FROM `t_equipment` WHERE mac_address = \"''' + str(post['mac_address']) + '''\"''')
         eqid = dict_cursor.fetchone()
         app.logger.info(eqid['id'])
-        
+
         query_ns = ''' INSERT INTO `t_sensor_info` (`id`, `equipment_id`, `name`, `unit`, `longunit`, `info`, `uid`) VALUES (NULL, \"''' + str(eqid['id']) + '''\", \"''' + str(post['sensor_name']) + '''\", \"''' + str(post['unit']) + '''\", \"''' + str(post['longunit']) + '''\" , \"''' + str(post['sensor_info']) + '''\", \"''' + str(post['uid']) + '''\");'''
         cursor.execute(query_ns)
         mysql.connection.commit()

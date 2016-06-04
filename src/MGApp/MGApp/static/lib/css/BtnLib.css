@@ -2,6 +2,12 @@ body {
  font-size: 18px;
  width:1000px;
 }
+.gridster li{
+  list-style: none;
+}
+.yellow{background:yellow;}
+.blue{background:blue;}
+.green{background:green;}
 .animate-enter,
 .animate-leave
 {
